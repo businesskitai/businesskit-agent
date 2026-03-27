@@ -1,0 +1,24 @@
+{
+  "name": "businesskit-agent",
+  "version": "1.0.0",
+  "description": "Autonomous business agent team for BusinessKit — powered by your own Turso DB",
+  "type": "module",
+  "scripts": {
+    "setup":   "npx tsx setup.ts",
+    "ceo":     "npx tsx -e \"import('./agents/csuite/ceo.ts').then(m => m.ceo.weeklyBriefing()).then(b => console.log(JSON.stringify(b,null,2)))\"",
+    "cron:hourly":  "npx tsx agents/growth/scheduler.ts hourly",
+    "cron:daily":   "npx tsx agents/growth/scheduler.ts daily",
+    "cron:weekly":  "npx tsx agents/growth/scheduler.ts weekly"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.15"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx":        "^4.19.0",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}

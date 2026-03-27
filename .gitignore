@@ -65,10 +65,25 @@ web_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variable files
+# dotenv environment variable files / secrets
 .env
 .env.*
 !.env.example
+
+# Local-only agent session memory
+progress.md
+
+# Build output
+dist/
+.wrangler/
+*.js.map
+
+# OS
+.DS_Store
+
+# Editor
+.vscode
+.idea
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -80,20 +95,15 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
 
 # vuepress build output
 .vuepress/dist
 
 # vuepress v2.x temp and cache directory
 .temp
-.cache
 
 # Sveltekit cache directory
 .svelte-kit/
