@@ -1,81 +1,33 @@
 {
   "name": "BusinessKit Agent",
-  "description": "Your autonomous business team. 16 agents — CEO, CMO, COO, CBO, Blog Writer, Newsletter Writer, Copywriter, Course Creator, Store Manager, Jobs Manager, Forms Builder, Docs Writer, SEO Agent, Analytics Agent, Social Agent, Scheduler. Powered by your own Turso database. Also works with Gemini CLI (GEMINI.md), Codex (AGENTS.md), Cursor (.cursorrules), and any terminal via cli.ts.",
+  "description": "Autonomous business agent team for BusinessKit — CEO, CMO, COO, CBO, Blog Writer, Course Creator, Store Manager, Newsletter Writer, CRM Agent, Social Agent and more. Works with Claude Code, Claude Cowork, Gemini CLI, Codex, and any terminal. Powered by your own Turso database.",
   "version": "1.0.0",
   "author": "BusinessKit",
   "homepage": "https://businesskit.io",
-  "repository": "https://github.com/businesskit/businesskit-agent",
-  "works_with": [
-    "cowork",
-    "claude-code"
-  ],
+  "repository": "https://github.com/businesskit-io/businesskit-agent",
+  "works_with": ["cowork", "claude-code"],
   "commands": [
-    {
-      "name": "ceo",
-      "description": "CEO weekly briefing + orchestration"
-    },
-    {
-      "name": "cmo",
-      "description": "CMO content calendar + growth strategy"
-    },
-    {
-      "name": "cbo",
-      "description": "CBO revenue report + pricing audit"
-    },
-    {
-      "name": "coo",
-      "description": "COO publish queue + operations pipeline"
-    },
-    {
-      "name": "blog-writer",
-      "description": "Write a blog post"
-    },
-    {
-      "name": "course-creator",
-      "description": "Create a course with lessons"
-    },
-    {
-      "name": "store-manager",
-      "description": "Add a product to the store"
-    },
-    {
-      "name": "newsletter-writer",
-      "description": "Write and send a newsletter"
-    },
-    {
-      "name": "jobs-manager",
-      "description": "Post a job listing"
-    },
-    {
-      "name": "forms-builder",
-      "description": "Build a form"
-    },
-    {
-      "name": "docs-writer",
-      "description": "Write a docs article"
-    },
-    {
-      "name": "analytics-agent",
-      "description": "Full analytics snapshot"
-    },
-    {
-      "name": "seo-agent",
-      "description": "SEO audit and recommendations"
-    },
-    {
-      "name": "social-agent",
-      "description": "Post to social via n8n"
-    },
-    {
-      "name": "scheduler",
-      "description": "Run hourly/daily/weekly scheduler jobs"
-    }
+    { "name": "ceo",               "description": "CEO — weekly briefing, cross-agent orchestration, priority setting" },
+    { "name": "cmo",               "description": "CMO — content calendar, campaign strategy, growth recommendations" },
+    { "name": "coo",               "description": "COO — content pipeline, publish queue, scheduling oversight" },
+    { "name": "cbo",               "description": "CBO — revenue analysis, product strategy, pricing recommendations" },
+    { "name": "blog-writer",       "description": "Blog Writer — create and publish blog posts" },
+    { "name": "newsletter-writer", "description": "Newsletter Writer — write and send newsletters to subscribers" },
+    { "name": "copywriter",        "description": "Copywriter — landing pages, product descriptions, profile bio and tagline" },
+    { "name": "course-creator",    "description": "Course Creator — build courses with lessons and manage students" },
+    { "name": "store-manager",     "description": "Store Manager — add downloads, meetings, webinars, events, listings, sponsorships, services" },
+    { "name": "jobs-manager",      "description": "Jobs Manager — post job listings and view applications" },
+    { "name": "forms-builder",     "description": "Forms Builder — build forms with questions and view submissions" },
+    { "name": "docs-writer",       "description": "Docs Writer — write knowledge base articles and manage collections" },
+    { "name": "crm",               "description": "CRM Agent — contacts, deals, outreach pipeline, tasks, approval flow" },
+    { "name": "social",            "description": "Social Agent — schedule and publish to 13 platforms via Zernio" },
+    { "name": "analytics",         "description": "Analytics Agent — full snapshot of traffic, revenue, links and forms" },
+    { "name": "seo",               "description": "SEO Agent — audit slugs, meta descriptions and category SEO" },
+    { "name": "scheduler",         "description": "Scheduler — run publish queue and manage scheduled content" },
+    { "name": "deep",              "description": "Deep Mode — CEO takes over, plans and delegates to full team" }
   ],
   "setup": {
-    "env_required": [
-      "TURSO_URL",
-      "TURSO_TOKEN"
-    ],
+    "env_required": ["TURSO_URL", "TURSO_TOKEN"],
     "instructions": "Copy .env.example to .env and paste your Turso credentials from BusinessKit → Settings → Credentials"
   }
 }

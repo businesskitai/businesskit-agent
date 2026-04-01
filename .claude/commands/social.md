@@ -1,17 +1,45 @@
-# /social — Post to Social Platforms
+# /social — Agent-First SMM
 
-Posts directly to X, LinkedIn, Facebook, Instagram using tokens from credentials table.
-No n8n required. Works in Claude Code, Cowork, and terminal.
+Posts, schedules, and analyzes social media via Zernio API.
+Reads `social_accounts`, `social_posts`, `connections` tables from user's Turso.
 
-1. `socialAgent.configuredPlatforms()` → show which platforms have tokens saved
-2. If none configured: tell user to add credentials in BusinessKit → Settings → Credentials
-3. Ask: which content to post? (blog post, product, job, page)
-4. Ask: custom message or auto-generate from title + excerpt?
-5. Ask: post to all configured platforms or specific ones?
-6. `socialAgent.post({ content_type, content_id, title, excerpt, slug, platforms, message })`
-7. Show results per platform: posted / failed + post_id or error
+## Session start
+1. `socialAgent.socialSummary()` — connected accounts, post counts, drafts
+2. `socialAgent.listAccounts()` — platforms + connection mode per account
 
-## Credentials needed per platform
+## Posting
+```
+"Post my latest blog post to LinkedIn and X"
+→ socialAgent.crossPostBlog(postId, title, slug, excerpt)
+
+"Announce my new course on all platforms"
+→ socialAgent.announceProduct(productId, title, slug, priceCents)
+
+"Post this to Twitter: [content]"
+→ socialAgent.post({ content, platforms: ['twitter'] })
+
+"Schedule this for Monday 9am"
+→ socialAgent.post({ content, scheduledFor: '2026-04-07T09:00:00', timezone })
+
+"Add to queue"
+→ socialAgent.post({ content, useQueue: true })
+```
+
+## Inbox + Analytics
+```
+"Show my unread DMs"        → socialAgent.getInbox({ status: 'unread' })
+"Show my scheduled posts"   → socialAgent.getScheduled()
+"How are my accounts doing" → socialAgent.getAnalytics(accountId) per account
+```
+
+## Connection modes
+- `zernio_byok` → posts directly via user's own Zernio key
+- `zernio_platform` → free tier, must use dashboard POST /api/social/schedule
+- `n8n` → fires n8n webhook
+
+Platform key (ZERNIO_API_KEY) is never used locally — only through the Worker endpoint.
+
+## Credentials needed per platform (optional if Zernio not used)
 
 | Platform | Credentials required |
 |---|---|
@@ -20,4 +48,4 @@ No n8n required. Works in Claude Code, Cowork, and terminal.
 | Facebook | facebook_page_id, facebook_page_token |
 | Instagram | instagram_account_id, instagram_access_token |
 
-User adds these in: BusinessKit dashboard → Settings → Credentials
+User adds these in: BusinessKit dashboard → Settings → Connections
