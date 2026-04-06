@@ -1,249 +1,206 @@
 # BusinessKit Agent
 
-Your autonomous business team — 16 agents that read and write directly to your Turso database.
+Your autonomous business team — CEO, CMO, COO, CBO, Blog Writer, Course Creator, Store Manager, Newsletter Writer, CRM Agent, Social Agent, SEO Agent, Analytics Agent, and more.
 
-CEO briefs you every week. Blog Writer publishes posts. Store Manager launches products. Social Agent posts to X, LinkedIn, Facebook, and Instagram. All from a conversation.
+Reads and writes directly to your Turso database. Works with Claude Code, Claude Cowork, Gemini CLI, Codex, and any terminal.
 
 ---
 
 ## Setup
 
 **Step 1 — Clone and install**
-
 ```bash
-git clone https://github.com/businesskitai/businesskit-agent
+git clone https://github.com/businesskit-io/businesskit-agent
 cd businesskit-agent
 npm install
 ```
 
-**Step 2 — Add your Turso credentials**
-
+**Step 2 — Add credentials**
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` and paste your credentials. Find them at **BusinessKit → Settings → Credentials**:
-
+Open `.env`. Paste your Turso credentials from **BusinessKit → Settings → Credentials**:
 ```
-TURSO_URL=libsql://your-db-name.turso.io
+TURSO_URL=libsql://your-db.turso.io
 TURSO_TOKEN=your-auth-token
 ```
 
-**Step 3 — Verify connection**
-
+**Step 3 — Verify**
 ```bash
 npm run setup
 ```
 
-You should see your business name and profile confirmed. If not, check your `.env`.
+You'll see your business name confirmed. If not, check your `.env`.
 
 ---
 
-## How to use it
+## How to use
 
-### Option A — Claude Code (recommended)
+### Claude Code
+Open this folder. Type any slash command:
 
-Open this folder in Claude Code. Type any slash command to activate an agent.
+```
+/ceo        /cmo        /coo        /cbo
+/blog-writer  /newsletter-writer  /copywriter
+/course-creator  /store-manager  /jobs-manager
+/forms-builder   /docs-writer
+/crm        /social     /analytics  /seo
+/scheduler  /deep
+```
 
-### Option B — Claude Cowork
+### Claude Cowork
+Install the BusinessKit plugin. Same commands, runs in your browser.
 
-Install the BusinessKit plugin from [claude.com/plugins](https://claude.com/plugins). Same commands, runs in your browser.
-
-### Option C — Terminal
-
+### Terminal
 ```bash
 npx tsx cli.ts ceo
 npx tsx cli.ts blog-writer
-npx tsx cli.ts analytics
+npx tsx cli.ts crm
+npx tsx cli.ts social
 ```
 
 ---
 
-## Agents + what to say
+## Agents
 
-### Start here — CEO briefing
-
-```
-/ceo
-```
-
-Gives you: revenue last 30 days, traffic breakdown, content inventory, top products, and a prioritised action list. Start every week here.
-
----
+### C-Suite
+| Command | Does |
+|---|---|
+| `/ceo` | Weekly briefing — revenue, traffic, priorities, cross-agent orchestration |
+| `/cmo` | 4-week content calendar, content gap analysis, growth recommendations |
+| `/coo` | Publish queue, draft pipeline, scheduling oversight |
+| `/cbo` | Revenue report, pricing audit, upsell strategy |
 
 ### Content
+| Command | Does | Writes to |
+|---|---|---|
+| `/blog-writer` | 8 content formats: listicle, how-to, checklist, QA, versus, roundup, news, ultimate guide | `posts`, `compare`, `alternative`, `prompt`, `notes`, `guides` |
+| `/newsletter-writer` | Write and send newsletters | `newsletter` + SES/Resend |
+| `/copywriter` | Landing pages, product descriptions, profile bio | `pages`, `products` |
+| `/course-creator` | Courses with lessons | `products` (type=course) |
+| `/store-manager` | Downloads, meetings, webinars, events, listings, sponsorships, services | `products` |
+| `/jobs-manager` | Job listings and applications | `job_listings` |
+| `/forms-builder` | Forms with questions and analytics | `forms`, `questions` |
+| `/docs-writer` | Knowledge base articles | `doc_collections`, `doc_articles` |
 
+### CRM (agent-first)
 ```
-/blog-writer
+/crm
 ```
+> "Add a lead: Sarah Chen, LinkedIn @sarahchen, founder at TechCo"
+> "Show my top 10 leads by score"
+> "Draft a DM for my hottest lead"
+> "Show who replied to my outreach"
+> "Create a $5,000 deal for John"
+> "What tasks are due today?"
+> "Show pending approvals"
 
-> "Write a post about the top 5 email marketing mistakes"
-> "List my drafts"
-> "Publish my draft post about pricing"
+Agent drives the full pipeline: research → enrich → score → draft DM → approve → send → follow-up.
+Every DM/email draft waits for your approval before sending (unless you set `auto_approve=1`).
 
-```
-/newsletter-writer
-```
-
-> "Write this week's newsletter — highlight the new course launch"
-> "How many subscribers do I have?"
-> "Send the newsletter"
-
-```
-/course-creator
-```
-
-> "Create a course called Email Marketing Mastery at $97"
-> "Add a lesson: Introduction to Email Lists"
-> "Show me who enrolled in my course"
-
-```
-/store-manager
-```
-
-> "Add a 1:1 coaching call at $150 — link my Calendly"
-> "Create a webinar called Build Your First Funnel for $29"
-> "Add a sponsorship slot at $500/month"
-> "List all my live products"
-
-```
-/copywriter
-```
-
-> "Write a landing page for my email course"
-> "Improve the description on my coaching product"
-> "Update my profile bio"
-
-```
-/docs-writer
-```
-
-> "Create a Getting Started article in the FAQ collection"
-> "Write a doc: How to access your purchase"
-
-```
-/jobs-manager
-```
-
-> "Post a job: Senior Designer, remote, full-time"
-> "Show me applications for the designer role"
-
-```
-/forms-builder
-```
-
-> "Build a waitlist form with name and email"
-> "Create a client intake form with 5 questions"
-> "Show me submissions for my contact form"
-
----
-
-### Growth
-
-```
-/analytics
-```
-
-> "Show me my analytics"
-> "Which product made the most revenue last month?"
-> "Where is my traffic coming from?"
-
-```
-/seo
-```
-
-> "Audit my SEO"
-> "Fix the missing excerpts on my posts"
-> "Set SEO title and description for my blog category"
-
+### Social (agent-first, powered by Zernio)
 ```
 /social
 ```
-
 > "Post my latest blog post to LinkedIn and X"
-> "Announce the new course launch on all platforms"
-> "Post to Instagram with a custom caption"
+> "Announce my new course on all platforms"
+> "Schedule a post for Monday 9am"
+> "Show my unread DMs and comments"
+> "How are my accounts performing?"
 
-*Requires social tokens saved in BusinessKit → Settings → Credentials*
+Posts to 13 platforms via [Zernio API](https://zernio.com). Reads your connected accounts from Turso. Writes `social_posts` + `social_post_platforms` on every action.
 
----
+**Requires:** Zernio API key saved in BusinessKit → Settings → Credentials (BYOK).
+Free-tier users: use the dashboard → posting is capped at 20/month via the platform key.
 
-### Pipeline
+### Growth
+| Command | Does |
+|---|---|
+| `/analytics` | Full snapshot: revenue, traffic, top products, link clicks |
+| `/seo` | Audit all content for SEO issues, fix titles/descriptions, content gap analysis, LLM visibility tracking |
+| `/scheduler` | Run publish queue, manage scheduled content |
 
-```
-/coo
-```
-
-> "Show me all my drafts"
-> "What content is scheduled to publish today?"
-> "Run the publish queue"
-
-```
-/cmo
-```
-
-> "Build me a 4-week content calendar"
-> "What content gaps do I have?"
-
-```
-/cbo
-```
-
-> "Show me my revenue breakdown"
-> "Which products should I price differently?"
-
-```
-/scheduler
-```
-
-> "Run the publish queue"
-> "Schedule my draft post for Monday 9am"
-
----
-
-### Deep Mode — full autonomous run
-
+### Deep Mode
 ```
 /deep
 ```
-
-CEO takes over. Reads your progress history, checks analytics, writes a plan, and delegates to the whole team. Use this when you want to hand off your weekly content work entirely.
+CEO reads memory, checks analytics, writes a plan, delegates to the full team. Hand off your weekly business work entirely.
 
 ---
 
-## Adding social credentials
+## Memory — synced across machines
 
-Go to **BusinessKit → Settings → Credentials** and add:
+Agent memory is stored in your Turso database (`memory_log` table, max 20 rows). Not a local file — synced everywhere.
 
-| Platform | What you need |
+```ts
+import { sessionContext } from './lib/memory.ts'
+const { memory, skills } = await sessionContext()
+// memory: last 20 agent actions
+// skills: your brand voice, SEO rules, store guidelines
+```
+
+---
+
+## Skills — live in Turso, editable from dashboard
+
+Agent skills (brand voice, SEO rules, store pricing) live in `agent_skills` table. Edit them in **BusinessKit → Dashboard → Agent Skills** and agents pick them up immediately — no file changes needed.
+
+Default skills seeded on first run:
+- `brand-voice` — your tone, style, what to avoid
+- `seo` — target keywords, internal linking rules
+- `store` — pricing guidelines, product naming
+- `analytics` — how to interpret your data
+
+---
+
+## Content formats (Blog Writer)
+
+Inspired by SEObot's approach — each format has a specific structure and word count target:
+
+| Format | Min words | Best for |
+|---|---|---|
+| `listicle` | 2000 | "Top 10 X" — high traffic |
+| `how-to` | 2000 | "How to X" — high search intent |
+| `ultimate-guide` | 3000 | Definitive resource — best for LLM citations |
+| `checklist` | 1200 | Practical checklists |
+| `qa` | 1500 | FAQ articles — long-tail keywords |
+| `versus` | 2000 | "X vs Y" — high buying intent → `compare` table |
+| `roundup` | 2000 | "Best X" — affiliate/referral traffic |
+| `news` | 800 | Timely coverage with cited sources |
+| `programmatic` | 1000 | Template-based SEO at scale |
+
+---
+
+## LLM Visibility (SEO Agent)
+
+The SEO agent tracks whether ChatGPT, Claude, Gemini, and Perplexity mention your brand. Strategy: publish comprehensive, well-cited content that LLMs reference.
+
+```
+/seo → "Check my LLM visibility"
+/seo → "What content gaps do I have?"
+/seo → "Audit my SEO"
+```
+
+---
+
+## Social credentials
+
+Go to **BusinessKit → Settings → Credentials** and add your Zernio API key:
+
+| Credential | What |
 |---|---|
-| X / Twitter | API Key, API Secret, Access Token, Access Secret |
-| LinkedIn | Access Token, Person URN (`urn:li:person:xxxxx`) |
-| Facebook | Page ID, Page Token |
-| Instagram | Account ID, Access Token |
+| Zernio API key | Enables posting to all 13 platforms |
 
-The Social Agent reads these from your Turso database and posts directly — no third-party tools needed.
-
----
-
-## How agents work
-
-Each agent is a TypeScript class. It runs a SQL query against your Turso database and returns structured data. You are the LLM. The agent just does the database work.
-
-```
-You say:    /blog-writer → "Write a post about email marketing"
-Agent does: SELECT profile from Turso → INSERT post row → returns slug + URL
-```
-
-Nothing is stored locally. Everything goes into your own Turso database that you own and control.
+Alternatively connect platforms in **BusinessKit → Settings → Social** using the Zernio OAuth flow.
 
 ---
 
 ## Requirements
 
 - Node.js 18+
-- A BusinessKit account with Turso connected
-- Social platform tokens (optional — for `/social`)
+- BusinessKit account with Turso connected
+- Zernio API key (optional, for social posting)
 
 ---
 
@@ -251,9 +208,30 @@ Nothing is stored locally. Everything goes into your own Turso database that you
 
 | Tool | How |
 |---|---|
-| Claude Code | Slash commands in `.claude/commands/` |
+| Claude Code | `/` slash commands in `.claude/commands/` |
 | Claude Cowork | Plugin at claude.com/plugins |
 | Gemini CLI | Reads `GEMINI.md` automatically |
 | Codex | Reads `AGENTS.md` automatically |
 | Cursor | Reads `.cursorrules` automatically |
 | Any terminal | `npx tsx cli.ts <agent>` |
+
+---
+
+## Architecture
+
+```
+Your Turso DB (you own it)
+    ↑
+lib/db.ts, lib/memory.ts, lib/profile.ts
+    ↑
+agents/_base.ts (profile isolation enforced on every query)
+    ↑
+agents/csuite/   agents/creators/   agents/growth/
+    ↑
+.claude/commands/   (slash commands — Claude Code + Cowork)
+.agents/skills/     (universal skills — all tools)
+```
+
+Phase 1 (now): local repo — Claude Code + Cowork + terminal
+Phase 2 (next): in-app MCP server on Cloudflare Worker
+Phase 3 (later): autonomous cron via Cloudflare Durable Objects

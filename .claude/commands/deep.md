@@ -4,16 +4,16 @@ Activates multi-step autonomous planning. CEO takes control and delegates to the
 
 ## What happens
 
-1. Read `progress.md` via `readProgress()` — understand what was done last session
+1. Load Turso session memory via `readProgress()` / `sessionContext()` from `lib/memory.ts` — last 20 actions in `memory_log`
 2. CEO calls `analyticsAgent.snapshot()` — get current state of the business
-3. CEO writes a structured todo plan based on: open items from progress.md + analytics gaps + user's request
+3. CEO writes a structured todo plan based on: recent memory + analytics gaps + user's request
 4. Execute each todo by delegating to the right agent:
    - Content → Blog Writer, Newsletter Writer, Course Creator, Store Manager
    - Distribution → Social Agent, Newsletter Writer
    - Intelligence → Analytics Agent, SEO Agent
    - Pipeline → COO (publish queue), Scheduler
-5. After each completed action: `logAction(description)` to update progress.md
-6. At end of session: `setOpenItems([...])` to record what's left for next time
+5. After each completed action: `logAction(description)` or `logMemory(agent, action, metadata)` — writes to `memory_log` in Turso
+6. At end of session: `setOpenItems([...])` — also stored in `memory_log` (via compatibility helpers)
 
 ## Todo format
 
@@ -30,7 +30,7 @@ Activates multi-step autonomous planning. CEO takes control and delegates to the
 
 CEO delegates to sub-agents with focused context — not the full history.
 Each sub-agent gets: the task description + just what it needs (brand context, relevant data).
-Results come back to CEO, logged to progress.md, todo marked complete.
+Results come back to CEO, logged to `memory_log`, todo marked complete.
 
 ## Ask user when
 

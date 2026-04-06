@@ -1,55 +1,47 @@
-# /analytics-agent — Analytics Snapshot - Reading Analytics
+# Analytics Skill — Reading the Data
 
-All analytics columns are JSON stored as TEXT. Always parse before use.
+## How analytics columns work
 
-## Column Shapes
+All analytics are stored as JSON in TEXT columns. Parse with JSON.parse().
 
-```ts
-// Time-series arrays (index 0 = oldest)
-analytics_7d:  number[]   // 7 daily values
-analytics_30d: number[]   // 30 daily values
-analytics_12m: number[]   // 12 monthly values
-
-// Lifetime map (key = 'YYYY-MM')
-analytics_lifetime: { [month: string]: number }
-revenue_lifetime:   { [month: string]: number }  // in cents
-
-// Breakdown maps (key = country/browser/etc, value = count)
-country_clicks:  { [country: string]: number }
-referrer_clicks: { [referrer: string]: number }
-device_clicks:   { [device: string]: number }
+### Time series arrays
+```
+analytics_7d  = [n, n, n, n, n, n, n]     → last 7 days, oldest first
+analytics_30d = [n, n, ..., n]              → last 30 days
+analytics_12m = [n, n, ..., n]              → last 12 months
+analytics_24h = [n, n, ..., n]              → last 24 hours (hourly)
 ```
 
-## Common Patterns
-
-```ts
-import { profileSummary } from '../../lib/analytics.ts'
-const snap = await profileSummary(profileId)
-
-// Total revenue in dollars
-const totalUSD = (snap.total_revenue / 100).toFixed(2)
-
-// Revenue trend: compare last 15 days vs prior 15 days
-const rev30d   = snap.revenue_30d
-const recent   = rev30d.slice(15).reduce((a, b) => a + b, 0)
-const prior    = rev30d.slice(0, 15).reduce((a, b) => a + b, 0)
-const trend    = prior > 0 ? `${Math.round((recent - prior) / prior * 100)}%` : 'new'
-
-// Top country
-const topCountry = snap.top_countries[0]?.[0] ?? 'Unknown'
-
-// Monthly revenue for a chart
-const months = Object.entries(snap.revenue_lifetime)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([month, cents]) => ({ month, revenue: cents / 100 }))
+### Lifetime object
+```
+analytics_lifetime = { "2026-03": 142, "2026-04": 89, ... }
+revenue_lifetime   = { "2026-03": 42000, "2026-04": 15000, ... }
+// values are counts (clicks) or cents (revenue)
 ```
 
-## ATLAS is the canonical reader
+### Breakdown objects (country, device, referrer)
+```
+country_clicks  = { "US": 420, "GB": 88, "IN": 45, ... }
+device_clicks   = { "mobile": 312, "desktop": 201 }
+referrer_clicks = { "twitter.com": 88, "direct": 204, ... }
+```
 
-Use `atlas.snapshot()`, `atlas.revenueReport()`, `atlas.trafficReport()` instead of raw queries.
-Only query analytics tables directly if you need something ATLAS doesn't expose.
+## Key metrics to surface in briefings
+
+**Traffic**: total_clicks, top country, top referrer, 30d trend (compare last 30d vs prior 30d)
+**Revenue**: total_earnings (cents → divide by 100), total_sales count, top product by revenue
+**Content**: posts published this month, drafts waiting, newsletter subscribers
+**Social**: posts published, scheduled, accounts connected
+
+## Revenue trend calculation
+```ts
+const months = Object.entries(revenue_lifetime).sort()
+const last   = months.slice(-1)[0]?.[1] ?? 0
+const prior  = months.slice(-2,-1)[0]?.[1] ?? 0
+const trend  = prior > 0 ? ((last - prior) / prior * 100).toFixed(1) + '%' : 'N/A'
+```
 
 ## Never write to analytics tables
-
-Analytics tables are written by the BusinessKit platform (CF queue consumer).
-Agents are read-only consumers of analytics data.
+Analytics are updated by the app on user actions (clicks, purchases).
+Agents read analytics. The app writes analytics. Never reverse this.
+Exception: seed a product_analytics or link_analytics row when creating a new product/link.

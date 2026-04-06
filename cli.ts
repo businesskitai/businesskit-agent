@@ -28,6 +28,8 @@ const AGENTS: Record<string, string> = {
   'jobs-manager': 'creators/jobs-manager',
   'forms-builder': 'creators/forms-builder',
   'docs-writer': 'creators/docs-writer',
+  'crm': 'creators/crm-agent',
+  'crm-agent': 'creators/crm-agent',
   'analytics-agent': 'growth/analytics-agent',
   'seo-agent': 'growth/seo-agent',
   'social-agent': 'growth/social-agent',
@@ -107,6 +109,7 @@ Creators:
   jobs-manager       List job listings
   forms-builder      List forms
   docs-writer        List articles
+  crm                CRM contacts and pipeline
 
 Growth:
   analytics-agent    Full analytics snapshot

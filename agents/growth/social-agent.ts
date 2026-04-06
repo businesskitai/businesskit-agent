@@ -331,13 +331,15 @@ export class SocialAgent extends BaseAgent {
 
   private async logProgress(ok: boolean, preview: string, platforms: string[]) {
     try {
-      const { appendFileSync } = await import('fs')
-      const ts   = new Date().toISOString().slice(0, 16).replace('T', ' ')
-      const line = ok
-        ? `- ${ts}: Posted "${preview}..." to ${platforms.join(', ')}\n`
-        : `- ${ts}: Failed to post "${preview}..." to ${platforms.join(', ')}\n`
-      appendFileSync('./progress.md', line, 'utf8')
-    } catch { /* progress.md is optional */ }
+      const { logMemory } = await import('../../lib/memory.ts')
+      await logMemory(
+        'social',
+        ok
+          ? `Posted "${preview.slice(0, 80)}..." to ${platforms.join(', ')}`
+          : `Failed to post "${preview.slice(0, 80)}..."`,
+        { platforms, ok }
+      )
+    } catch { /* memory_log optional until provisioned */ }
   }
 }
 

@@ -1,9 +1,10 @@
-import { db as _defaultDB } from '../lib/db.ts'
+import { db } from '../lib/db.ts'
 import { getBrandContext, type BrandContext } from '../lib/profile.ts'
 import { ulid, now, iso } from '../lib/id.ts'
 import type { Client } from '@libsql/client'
 
-export { ulid, now, iso }
+/** Singleton Turso client — agents may import `db` for raw queries */
+export { db, ulid, now, iso }
 
 /**
  * BaseAgent — extend this for every agent.
@@ -21,7 +22,7 @@ export abstract class BaseAgent {
   protected db: Client
 
   constructor(injectedDB?: Client) {
-    this.db = injectedDB ?? _defaultDB
+    this.db = injectedDB ?? db
   }
 
   /** Call at the start of any agent method that needs the DB */

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "BusinessKit",
   "homepage": "https://businesskit.io",
-  "repository": "https://github.com/businesskit-io/businesskit-agent",
+  "repository": "https://github.com/businesskitai/businesskit-agent",
   "works_with": ["cowork", "claude-code"],
   "commands": [
     { "name": "ceo",               "description": "CEO — weekly briefing, cross-agent orchestration, priority setting" },

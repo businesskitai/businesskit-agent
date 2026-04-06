@@ -57,80 +57,99 @@ These all live in the `products` table under different `type` values.
 ## Current Repository Structure
 
 ```
-businesskit-agent/
+businesskit-agent/                          ← clone this repo
 │
-├── CLAUDE.md                        ← brain: full schema + rules + brand context
-├── PLAN.md                          ← this file
-├── README.md                        ← setup in 3 commands
+├── CLAUDE.md                               ← 🧠 project brain — auto-loaded by Claude Code
+├── AGENTS.md                               ← Codex entry point — auto-loaded by Codex
+├── GEMINI.md                               ← Gemini CLI entry point — auto-loaded
+├── README.md                               ← user guide
+├── memory.md                               ← 📝 preferences (gitignored, never committed)
+├── .env                                    ← your Turso credentials (gitignored, you create this)
+├── .env.example                            ← template — committed, shows what to fill in
 ├── .gitignore
-├── .env.example                     ← TURSO_URL, TURSO_TOKEN
-├── mcp.json                         ← local MCP server config
-├── cli.ts                           ← universal CLI entry point (npx / bun / tsx)
-├── setup.ts                         ← validates Turso connection on first run
+├── .cursorrules                            ← Cursor IDE rules — auto-loaded by Cursor
+├── .mcp.json                               ← MCP server config (Turso)
 ├── package.json
 ├── tsconfig.json
+├── cli.ts                                  ← npx tsx cli.ts <agent>
+├── setup.ts                                ← npm run setup — verifies Turso connection
+├── provision-migrations.ts                 ← ⚠️ copy entries into main app's provision.ts
+├── PLAN.md                                 ← phased build plan
+├── PRD-Agent-Harness.md                    ← harness architecture reference
 │
-├── lib/
-│   ├── db.ts                        ← Turso client singleton (Phase 1: process.env)
-│   ├── db.adapter.ts                ← Phase 2 bridge: injects sharedMap["userClient"]
-│   ├── id.ts                        ← ulid() + now() + iso()
-│   ├── slug.ts                      ← toSlug() + uniqueSlug()
-│   ├── profile.ts                   ← getBrandContext() — profile + settings + credentials
-│   └── analytics.ts                 ← read-only analytics helpers
+├── context/                                ← 📖 brand docs — committed, fill in once
+│   ├── brand.md                            ← brand voice, audience, tone, products
+│   └── business.md                         ← goals, revenue model, publishing schedule
 │
 ├── agents/
-│   ├── _base.ts                     ← BaseAgent: profile isolation, archive(), publish(), count()
-│   │
+│   ├── _base.ts                            ← BaseAgent class — all agents extend this
 │   ├── csuite/
-│   │   ├── ceo.ts
-│   │   ├── cmo.ts
-│   │   ├── coo.ts
-│   │   └── cbo.ts
-│   │
+│   │   ├── ceo.ts                          ← CEO — briefing, orchestration
+│   │   ├── cmo.ts                          ← CMO — content calendar, growth
+│   │   ├── coo.ts                          ← COO — publish queue, pipeline
+│   │   └── cbo.ts                          ← CBO — revenue, pricing
 │   ├── creators/
-│   │   ├── blog-writer.ts
-│   │   ├── newsletter-writer.ts
-│   │   ├── copywriter.ts
-│   │   ├── course-creator.ts
-│   │   ├── store-manager.ts
-│   │   ├── jobs-manager.ts
-│   │   ├── forms-builder.ts
-│   │   └── docs-writer.ts
-│   │
+│   │   ├── blog-writer.ts                  ← 8 content types, all content tables
+│   │   ├── newsletter-writer.ts            ← newsletter + SES/Resend send
+│   │   ├── copywriter.ts                   ← pages, product descriptions, bio
+│   │   ├── course-creator.ts               ← products (type=course) + lessons
+│   │   ├── store-manager.ts                ← all other product types
+│   │   ├── jobs-manager.ts                 ← job_listings + applications
+│   │   ├── forms-builder.ts                ← forms + questions
+│   │   ├── docs-writer.ts                  ← doc_collections + doc_articles
+│   │   └── crm-agent.ts                    ← contacts, deals, outreach pipeline
 │   └── growth/
-│       ├── analytics-agent.ts
-│       ├── seo-agent.ts
-│       ├── social-agent.ts
-│       └── scheduler.ts
+│       ├── analytics-agent.ts              ← read-only analytics snapshot
+│       ├── seo-agent.ts                    ← audit, fix, LLM visibility
+│       ├── social-agent.ts                 ← Zernio API → 13 platforms
+│       └── scheduler.ts                    ← publish queue, cron
+│
+├── lib/
+│   ├── db.ts                               ← Turso client (reads TURSO_URL + TURSO_TOKEN)
+│   ├── db.adapter.ts                       ← Phase 2 bridge for CF Worker / sharedMap
+│   ├── memory.ts                           ← memory_log + agent_skills Turso helpers
+│   ├── profile.ts                          ← getBrandContext() — profile + credentials
+│   ├── analytics.ts                        ← read-only analytics helpers
+│   ├── id.ts                               ← ulid() + now() + iso()
+│   └── slug.ts                             ← toSlug() + uniqueSlug()
+│
+├── .agents/skills/                         ← 🌐 universal skills — all tools read this
+│   ├── agents.md                           ← roster, routing rules, dependency direction
+│   ├── schema.md                           ← all 30+ tables, columns, ID/timestamp rules
+│   ├── brand.md                            ← content quality bars, voice rules
+│   ├── analytics.md                        ← how to read JSON analytics columns
+│   └── store.md                            ← product types, required fields, pricing
 │
 ├── .claude/
-│   ├── skills/                      ← auto-loaded context (passive, always present)
-│   │   ├── schema.md
-│   │   ├── brand.md
-│   │   ├── store.md
-│   │   ├── analytics.md
-│   │   └── agents.md
-│   │
-│   └── commands/                    ← slash commands (active, triggered by /name)
-│       ├── ceo.md
-│       ├── cmo.md
-│       ├── coo.md
-│       ├── cbo.md
-│       ├── blog-writer.md
-│       ├── newsletter-writer.md
-│       ├── copywriter.md
-│       ├── course-creator.md
-│       ├── store-manager.md
-│       ├── jobs-manager.md
-│       ├── forms-builder.md
-│       ├── docs-writer.md
+│   ├── commands/                           ← slash commands for Claude Code + Cowork
+│   │   ├── ceo.md                          ← /ceo
+│   │   ├── cmo.md                          ← /cmo
+│   │   ├── coo.md                          ← /coo
+│   │   ├── cbo.md                          ← /cbo
+│   │   ├── blog-writer.md                  ← /blog-writer
+│   │   ├── newsletter-writer.md            ← /newsletter-writer
+│   │   ├── copywriter.md                   ← /copywriter
+│   │   ├── course-creator.md               ← /course-creator
+│   │   ├── store-manager.md                ← /store-manager
+│   │   ├── jobs-manager.md                 ← /jobs-manager
+│   │   ├── forms-builder.md                ← /forms-builder
+│   │   ├── docs-writer.md                  ← /docs-writer
+│   │   ├── crm.md                          ← /crm
+│   │   ├── social.md                       ← /social
+│   │   ├── analytics.md                    ← /analytics
+│   │   ├── seo.md                          ← /seo
+│   │   ├── scheduler.md                    ← /scheduler
+│   │   └── deep.md                         ← /deep
+│   └── skills/                             ← Claude Code specific (mirrors .agents/skills/)
+│       ├── README.md
+│       ├── agents.md
+│       ├── schema.md
+│       ├── brand.md
 │       ├── analytics.md
-│       ├── seo.md
-│       ├── social.md
-│       └── scheduler.md
+│       └── store.md
 │
 └── .claude-plugin/
-    └── plugin.json                  ← Cowork + Claude Code plugin manifest
+    └── plugin.json                         ← Claude Cowork plugin manifest
 ```
 
 ---
@@ -168,14 +187,20 @@ npx tsx cli.ts scheduler hourly   # run publish queue
 
 **Delivered**:
 - [x] `CLAUDE.md` — full schema, brand rules, agent roster
-- [x] `lib/` — 6 files: db, db.adapter, id, slug, profile, analytics
+- [x] `lib/` — db, db.adapter, **memory.ts** (memory_log + agent_skills), id, slug, profile, analytics
+- [x] `provision-migrations.ts` — copy `NEW_TABLES_SQL` / `MIGRATIONS_SQL` into main app `src/lib/provision.ts`
 - [x] `agents/_base.ts` — BaseAgent with profile isolation
-- [x] 16 agents: 4 C-Suite + 8 Creators + 4 Growth
-- [x] 16 slash commands in `.claude/commands/`
-- [x] 5 skill files in `.claude/skills/`
+- [x] Agents: 4 C-Suite + 9 Creators (incl. CRM) + 4 Growth
+- [x] Slash commands in `.claude/commands/` (incl. `/crm`, `/deep`)
+- [x] 5 skill files in `.claude/skills/` and `.agents/skills/`
+- [x] `context/brand.md` + `context/business.md` — committed brand docs
 - [x] `cli.ts` — universal terminal entry point
 - [x] `.claude-plugin/plugin.json`
 - [x] `README.md` + `.env.example` + `setup.ts`
+
+**Not in repo (live in Turso after provision)**:
+- `memory_log` — last 20 agent actions per profile (replaces `progress.md`)
+- `agent_skills` — dashboard-editable skills (brand-voice, seo, store, analytics)
 
 ---
 

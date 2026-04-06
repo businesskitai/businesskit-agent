@@ -1,60 +1,63 @@
-# BusinessKit Agent
+# Agent Roster + Routing Rules
 
-Autonomous business agent team. SQL queries against the user's Turso DB.
+## When to use an agent vs a skill
+- **Use an agent** when the task requires synthesizing multiple data sources, making decisions, or coordinating across tables
+- **Use a skill directly** when the task is purely executional and straightforward
 
-## Setup
+## Agent routing
 
-Copy `.env.example` → `.env` with TURSO_URL + TURSO_TOKEN, then `npm install`.
+| User says... | Route to |
+|---|---|
+| "brief me" / "what's happening" / "weekly update" | CEO |
+| "revenue" / "how are sales" / "pricing" | CBO |
+| "content calendar" / "what should I write" / "growth" | CMO |
+| "publish queue" / "what's scheduled" / "pipeline" | COO |
+| "write a post" / "blog" / "article" / "guide" | Blog Writer |
+| "newsletter" / "email my subscribers" | Newsletter Writer |
+| "product description" / "landing page" / "copy" | Copywriter |
+| "course" / "lessons" | Course Creator |
+| "add product" / "store" / "launch" | Store Manager |
+| "job listing" / "hiring" | Jobs Manager |
+| "build a form" / "intake form" | Forms Builder |
+| "docs" / "knowledge base" / "article" | Docs Writer |
+| "lead" / "contact" / "deal" / "outreach" / "pipeline" / "CRM" | CRM Agent |
+| "post to" / "social" / "schedule" / "LinkedIn" / "Twitter" / "Instagram" | Social Agent |
+| "analytics" / "traffic" / "clicks" / "revenue breakdown" | Analytics Agent |
+| "SEO" / "meta" / "keyword" / "LLM visibility" / "content gaps" | SEO Agent |
+| "schedule" / "publish queue" / "cron" | Scheduler |
+| "do everything" / "take over" / "weekly work" | Deep Mode (CEO orchestrates) |
 
-## How agents work
-
-Each agent is a TypeScript class that runs SQL against the user's Turso DB and returns structured data. No LLM calls inside agents — you are the LLM.
-
-## Run an agent
-
-```bash
-npx tsx cli.ts ceo              # CEO weekly briefing
-npx tsx cli.ts blog-writer      # list blog posts
-npx tsx cli.ts store-manager    # list products
-npx tsx cli.ts scheduler hourly # run publish queue
+## Agent dependency direction
 ```
+C-Suite (CEO, CMO, COO, CBO)
+    ↓ delegates to
+Growth (Analytics, SEO, Social, Scheduler)
+    ↓ and
+Creators (Blog, Newsletter, Copywriter, Course, Store, Jobs, Forms, Docs, CRM)
+    ↓ uses
+lib/ (db, memory, profile, id, slug)
+```
+**Never reverse.** Creators never call C-Suite. Growth never calls C-Suite.
 
-## Agent roster
+## C-Suite agents
+- **CEO** — reads analytics + memory → writes priorities → delegates. Never writes content directly.
+- **CMO** — content strategy, calendar, gap analysis. Delegates writing to creators.
+- **COO** — publish queue, scheduling. Moves things from draft → scheduled → published.
+- **CBO** — revenue analysis, pricing recommendations. Read-only analytics.
 
-- **CEO** `agents/csuite/ceo.ts` — weekly briefing, orchestration
-- **CMO** `agents/csuite/cmo.ts` — content calendar, growth strategy
-- **COO** `agents/csuite/coo.ts` — publish queue, scheduling
-- **CBO** `agents/csuite/cbo.ts` — revenue, pricing
-- **Blog Writer** `agents/creators/blog-writer.ts` — posts table
-- **Newsletter Writer** `agents/creators/newsletter-writer.ts` — subscribers + email
-- **Copywriter** `agents/creators/copywriter.ts` — pages, descriptions
-- **Course Creator** `agents/creators/course-creator.ts` — products type=course
-- **Store Manager** `agents/creators/store-manager.ts` — all product types
-- **Jobs Manager** `agents/creators/jobs-manager.ts` — job_listings
-- **Forms Builder** `agents/creators/forms-builder.ts` — forms + questions
-- **Docs Writer** `agents/creators/docs-writer.ts` — doc_collections + doc_articles
-- **Analytics Agent** `agents/growth/analytics-agent.ts` — read-only analytics
-- **SEO Agent** `agents/growth/seo-agent.ts` — slugs, meta, collections
-- **Social Agent** `agents/growth/social-agent.ts` — direct posting via credentials table
-- **Scheduler** `agents/growth/scheduler.ts` — publish queue cron
+## Creator agents
+- **Blog Writer** — writes to posts, compare, alternative, prompt, notes, guides, newsletter tables
+- **Newsletter Writer** — writes newsletter content + sends via SES/Resend
+- **Copywriter** — writes pages, product descriptions, profile bio/tagline
+- **Course Creator** — products (type=course) + lessons JSON
+- **Store Manager** — all other product types
+- **Jobs Manager** — job_listings + job_applications
+- **Forms Builder** — forms + questions + seeds form_analytics
+- **Docs Writer** — doc_collections + doc_articles (AUTOINCREMENT ids)
+- **CRM Agent** — full pipeline: add → enrich → score → draft → approve → send → follow-up
 
-## Skills
-
-Universal skills live in `.agents/skills/` — loaded by all tools (Gemini CLI, Codex, Antigravity, Claude Code).
-
-See:
-- `.agents/skills/schema.md` — full table reference
-- `.agents/skills/brand.md` — voice, tone, quality bars
-- `.agents/skills/store.md` — product types + commerce rules
-- `.agents/skills/analytics.md` — reading JSON analytics columns
-- `.agents/skills/agents.md` — agent roster + dependency direction
-
-Claude-specific overrides go here in `.claude/skills/` if needed.
-
-## Key rule
-
-Every write scopes to `profile_id`. Never write without it. Never hard delete — use `hidden=1`.
-
-## Full schema
-
-See `CLAUDE.md` for complete table definitions.
+## Growth agents
+- **Analytics Agent** — read-only. Never writes to analytics tables.
+- **SEO Agent** — audits content, fixes seo_title/seo_description, tracks LLM visibility
+- **Social Agent** — posts via Zernio (BYOK) or n8n. Writes social_posts + social_post_platforms.
+- **Scheduler** — runs publish queue, manages scheduled_for dates
