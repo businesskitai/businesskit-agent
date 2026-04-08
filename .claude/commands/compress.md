@@ -1,49 +1,73 @@
 ---
-description: Compress session context into a structured log with user-selected items
+description: Compress session context into a structured log before /compact
 ---
 
-# /compress — Compress and Log Session
+# /compress — Compress and Save Session
 
-Interactive session compression. Saves key items before running /compact.
+Save what matters before running /compact. Uses pi's proven compaction format.
 
 ## Steps
 
-1. Show the user a multi-select checklist:
+1. Ask the user what to keep (or infer from conversation):
 
    ```
-   What should I preserve? (type numbers, comma-separated)
-   1. Key learnings and discoveries
-   2. Solutions and fixes applied
-   3. Decisions made and their rationale
-   4. Files created or modified
-   5. Agent actions taken (DB writes, publishes, etc)
-   6. Next steps and open items
+   What should I save? (numbers, comma-separated — or 'all')
+   1. Goal and what we were trying to accomplish
+   2. Decisions made and why
+   3. Agent actions taken (posts published, contacts added, etc)
+   4. Files or DB rows changed
+   5. Next steps
+   6. Open questions
    ```
 
-2. Ask: "Anything specific to highlight? (or type 'skip')"
+2. Ask: "Anything specific to highlight? (or 'skip')"
 
-3. Suggest a topic slug from the conversation:
-   "Suggested topic: [slug]. Accept or type your own:"
+3. Suggest a topic from the conversation: "Suggested: [slug]. Accept or rename:"
 
-4. Write the log to:
+4. Write to `CC-Session-Logs/YYYY-MM-DD-HH-MM-[topic].md`:
 
-   ```
-   CC-Session-Logs/YYYY-MM-DD-HH-MM-[topic].md
-   ```
+```markdown
+# [topic]
+Date: [ISO timestamp]
+Agent: [which agent was active]
 
-   Only include sections the user selected.
-   Always include Summary (used by /resume).
+## Goal
+[What we were trying to accomplish — 1-2 sentences]
 
-5. Log to agent_memory:
+## Constraints & Preferences
+- [user said: always/never do X]
+- [preference discovered this session]
+
+## Progress
+### Done
+- [specific action with IDs or file paths]
+- [DB writes: table, id, what changed]
+
+### In Progress
+- [anything mid-way]
+
+## Next Steps
+1. [most important — be specific]
+2. [second]
+
+## Open Questions
+- [unresolved]
+
+---
+Raw Log
+[optional: paste key exchanges for searchability]
+```
+
+1. Log to agent_memory:
 
    ```ts
    import { logMemory } from './lib/memory.ts'
-   await logMemory('session', 'Compressed: [topic]', { log_file: filename })
+   await logMemory('session', 'Compressed: [topic]', { file: 'CC-Session-Logs/...' })
    ```
 
-6. Tell user: "Saved to [filename]. Run /compact to compress context."
+2. Tell user: "Saved to [filename]. Run /compact now."
 
 ## Key rule
 
-/resume reads ONLY the Summary section by default — keep it dense and actionable.
-Raw session log is there for searchability, never wastes tokens on load.
+/resume reads ONLY the sections above "---\nRaw Log" — make them dense and actionable.
+Raw log is for search, never loaded into context.

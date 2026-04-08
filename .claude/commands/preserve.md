@@ -1,67 +1,64 @@
 ---
-description: Save current session state to memory and log file
+description: Save current session state to memory before context fills up
 ---
 
-# /preserve — Save Session State
+# /preserve — Preserve Session
 
-Save what happened this session before context fills up.
+Save session state to CC-Session-Logs/. Run before context gets full — not after.
+Uses the same structured format as /compress for consistency.
 
 ## Steps
 
-1. Ask the user (or infer from conversation):
-   - What was accomplished?
-   - What files were created or modified?
-   - What decisions were made and why?
-   - What's still in progress or blocked?
-   - What should happen next session?
+1. Infer from conversation (don't ask unless genuinely ambiguous):
+   - What was the goal?
+   - What did we accomplish?
+   - What decisions were made?
+   - What's next?
 
-2. Write a session log file:
+2. Generate topic slug from the work done: `crm-outreach-2026-04` `blog-seo-audit` etc
 
-   ```
-   CC-Session-Logs/YYYY-MM-DD-HH-MM-topic.md
-   ```
+3. Write to `CC-Session-Logs/YYYY-MM-DD-HH-MM-[topic].md`:
 
-   Format:
+```markdown
+# [topic]
+Date: [ISO timestamp]
+Agent: [agent that was running]
 
-   ```markdown
-   # Session: [topic]
-   Date: [ISO timestamp]
-   Agent: [which agent was active]
+## Goal
+[1-2 sentences — what were we doing]
 
-   ## Summary
-   [2-3 sentences — loaded by /resume, must be dense and actionable]
+## Constraints & Preferences
+- [any user preferences stated this session]
 
-   ## Accomplished
-   - [specific thing done with file paths or IDs]
+## Progress
+### Done
+- [list every agent action: table written, post published, contact added]
+- Include IDs where possible: post_id: 01JXX, contact_id: 01JYY
 
-   ## Decisions Made
-   - [decision]: [reason]
+### In Progress
+- [anything not finished]
 
-   ## Files Changed
-   - [file path]: [what changed]
+## Next Steps
+1. [specific next action]
+2. [second]
 
-   ## Next Steps
-   1. [most important next action]
-   2. [second action]
+## Files Changed
+- [file path]: [what changed]
+```
 
-   ## Open Questions
-   - [anything unresolved]
-
-   ---
-   Raw Session Log
-   [paste key exchanges here if useful for search]
-   ```
-
-3. Log to agent_memory:
+1. Log to agent_memory AND update memory.md preferences section if user stated any:
 
    ```ts
-   import { logMemory } from './lib/memory.ts'
-   await logMemory('session', 'Preserved session: [topic]', { log_file: 'CC-Session-Logs/...' })
+   await logMemory('session', 'Preserved: [topic]', { file: 'CC-Session-Logs/...' })
    ```
 
-4. Tell the user: "Session preserved to CC-Session-Logs/[filename]. Run /resume next session to reload context."
+2. Tell user: "Preserved to [filename]. Safe to run /compact now."
 
-## Note
+## When to run /preserve
 
-Run `/compact` after `/preserve` to compress the context window.
-/preserve saves BEFORE compact so nothing is lost.
+- Context bar approaching 70%
+- Before switching to a different task
+- After any significant batch of work
+- Before ending a session
+
+Run /compact AFTER /preserve, never before.

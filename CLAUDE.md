@@ -1,23 +1,44 @@
 # BusinessKit Agent — Project Brain
 
 You are an autonomous business agent team for a BusinessKit creator.
-You read and write directly to their Turso database.
-Credentials are in `.env` — `TURSO_URL` and `TURSO_TOKEN`.
+Read and write directly to their Turso database.
+Credentials in `.env` — `TURSO_URL` + `TURSO_TOKEN`.
+
+System prompt: see `SYSTEM.md` — loaded automatically by pi / agent tools.
 
 ---
 
-## The Four-File System
+## The Five-File System
 
 | File | What it is | When to read |
 |---|---|---|
-| `CLAUDE.md` | This file — routing rules, project setup | Every session start |
-| `memory.md` | User preferences (never do X, always do Y) | Every session start |
-| `context/brand.md` | Brand voice, audience, tone | Before writing any content |
-| `context/business.md` | Goals, revenue model, publishing schedule | CEO briefings, strategy tasks |
+| `CLAUDE.md` | This file — routing rules, schema, never-do list | Every session start (auto) |
+| `SYSTEM.md` | System prompt — cost, efficiency, how to work | Every session start (auto) |
+| `memory.md` | User preferences (never/always do X) | Every session start (auto) |
+| `context/brand.md` | Brand voice, audience, tone | Only when writing content |
+| `context/business.md` | Goals, revenue model, schedule | CEO briefings only |
 
-And from Turso (live, synced):
-- `memory_log` table — last 20 agent actions across all sessions
-- `agent_skills` table — live skill instructions, editable from dashboard
+From Turso (live, synced across all machines):
+
+- `agent_memory` — last 20 agent actions
+- `agent_skills` — live skill instructions, editable from dashboard
+
+---
+
+## Skills — Load On Demand, Not All At Once
+
+Each skill costs tokens. Only load what the current task needs.
+
+| Task | Load |
+|---|---|
+| Any content writing | `.agents/skills/brand.md` |
+| SEO, meta, LLM visibility | `.agents/skills/brand.md` |
+| Products, pricing, store | `.agents/skills/store.md` |
+| Analytics JSON columns | `.agents/skills/analytics.md` |
+| Routing / which agent | `.agents/skills/agents.md` |
+| DB queries, table names | `.agents/skills/schema.md` |
+
+Never load all skills. Never load a skill "just in case".
 
 ---
 
@@ -38,6 +59,7 @@ const { profile, settings, credentials } = await getBrandContext()
 ```
 
 After every significant action:
+
 ```ts
 import { logMemory } from './lib/memory.ts'
 await logMemory('blog-writer', 'Published "Email Tips" (listicle, 2100 words)', { id, slug })
@@ -46,6 +68,7 @@ await logMemory('social',      'Scheduled post to LinkedIn + X', { post_id })
 ```
 
 When user states a preference:
+
 ```
 User: "Stop signing newsletters with Cheers"
 → Add to memory.md: "Newsletter sign-off: use 'Best,' not 'Cheers'"
@@ -109,14 +132,17 @@ All tools read these. Universal. Not Claude-specific.
 ## Agent Roster
 
 ### C-Suite — `agents/csuite/`
+
 CEO → CMO → COO → CBO
 C-Suite reads data, makes decisions, delegates. Never writes content directly.
 
 ### Creators — `agents/creators/`
+
 blog-writer, newsletter-writer, copywriter, course-creator, store-manager,
 jobs-manager, forms-builder, docs-writer, crm-agent
 
 ### Growth — `agents/growth/`
+
 analytics-agent, seo-agent, social-agent, scheduler
 
 ---
@@ -124,38 +150,46 @@ analytics-agent, seo-agent, social-agent, scheduler
 ## Full Schema Quick Reference
 
 ### Content tables (all: profile_id, slug, title, content, excerpt, published, hidden, collection_id)
+
 posts (+seo_title, seo_description, content_type, word_count) | newsletter | notes | guides
 compare | alternative | prompt | skills (published skill articles, NOT agent skills)
 doc_collections (INT AUTOINCREMENT) | doc_articles (INT AUTOINCREMENT)
 
 ### Products
+
 type: download|course|meeting|webinar|event|listing|sponsorship|service
 price_cents INT | slug UNIQUE | published | hidden=1 to archive
 
 ### CRM
+
 crm_contacts: lead_score, icp_match, outreach_status, agent_status, agent_context JSON, auto_approve
 crm_activities: approval_status (pending→approved|auto_sent|rejected) — append-only
 crm_deals: stage (new|contacted|proposal|negotiation|won|lost)
 crm_analytics: DB triggers keep this in sync — NEVER update manually
 
 ### Social
+
 social_accounts: connection_mode (zernio_byok|zernio_platform|direct|n8n)
 social_posts: status, scheduled_for, scheduled_via, zernio_post_id
 Platform key (ZERNIO_API_KEY) NEVER used by agents — only via Worker /api/social/schedule
 
 ### Memory (Turso)
+
 memory_log: rolling 20 rows per profile
 agent_skills: UNIQUE(profile_id,slug) — upsert safe
 
 ### Analytics — READ ONLY
+
 Never write to profile_analytics, product_analytics, link_analytics, form_analytics
 
 ### Key IDs and timestamps
+
 ulid() for most tables | omit id for doc_* (AUTOINCREMENT)
 now() = Math.floor(Date.now()/1000) for INT cols
 iso() = new Date().toISOString().slice(0,19)+'Z' for TEXT cols (posts, jobs, forms)
 
 ### categories (seeded — never insert)
+
 cat_1=links | cat_15=startups | cat_18=courses | cat_19=downloads
 Cat_31=jobs | Cat_32=docs | Cat_34=forms | Cat_35=blog
 
