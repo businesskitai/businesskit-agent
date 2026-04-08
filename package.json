@@ -1,21 +1,37 @@
 {
-  "name": "businesskit-agent",
+  "name": "@businesskit/agent",
   "version": "1.0.0",
-  "description": "Autonomous business agent team for BusinessKit — powered by your own Turso DB",
+  "description": "Autonomous business agent team — CEO, CRM, Social, SEO, Blog Writer and more. Powered by your own Turso database. Works with Claude Code, Claude Cowork, Gemini CLI, and Codex.",
   "type": "module",
   "bin": {
+    "bk": "./bin/businesskit.js",
     "businesskit": "./bin/businesskit.js"
   },
   "scripts": {
     "setup": "npx tsx setup.ts",
-    "ceo": "npx tsx -e \"import('./agents/csuite/ceo.ts').then(m => m.ceo.weeklyBriefing()).then(b => console.log(JSON.stringify(b,null,2)))\"",
-    "cron:hourly": "npx tsx agents/growth/scheduler.ts hourly",
-    "cron:daily": "npx tsx agents/growth/scheduler.ts daily",
-    "cron:weekly": "npx tsx agents/growth/scheduler.ts weekly"
+    "cli": "npx tsx cli.ts",
+    "ceo": "npx tsx cli.ts ceo",
+    "cmo": "npx tsx cli.ts cmo",
+    "coo": "npx tsx cli.ts coo",
+    "cbo": "npx tsx cli.ts cbo",
+    "analytics": "npx tsx cli.ts analytics",
+    "seo": "npx tsx cli.ts seo",
+    "scheduler:hourly": "npx tsx cli.ts scheduler hourly",
+    "scheduler:daily": "npx tsx cli.ts scheduler daily",
+    "scheduler:weekly": "npx tsx cli.ts scheduler weekly"
   },
+  "keywords": [
+    "claude-code",
+    "claude-cowork",
+    "ai-agent",
+    "business-agent",
+    "turso",
+    "crm",
+    "social-media",
+    "businesskit"
+  ],
   "dependencies": {
-    "@libsql/client": "^0.15.15",
-    "dotenv": "^17.4.1"
+    "@libsql/client": "^0.15.15"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
@@ -24,5 +40,11 @@
   },
   "engines": {
     "node": ">=18.17.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/businesskit-io/businesskit-agent"
+  },
+  "homepage": "https://github.com/businesskit-io/businesskit-agent",
+  "license": "MIT"
 }
