@@ -8,19 +8,24 @@ System prompt: see `SYSTEM.md` — loaded automatically by pi / agent tools.
 
 ---
 
-## The Five-File System
+## File System — Load On Demand
 
 | File | What it is | When to read |
 |---|---|---|
-| `CLAUDE.md` | This file — routing rules, schema, never-do list | Every session start (auto) |
-| `SYSTEM.md` | System prompt — cost, efficiency, how to work | Every session start (auto) |
-| `memory.md` | User preferences (never/always do X) | Every session start (auto) |
-| `context/brand.md` | Brand voice, audience, tone | Only when writing content |
-| `context/business.md` | Goals, revenue model, schedule | CEO briefings only |
+| `CLAUDE.md` | This file — routing, schema, rules | Every session (auto) |
+| `SYSTEM.md` | How to work — cost, efficiency | Every session (auto) |
+| `SOUL.md` | Non-negotiables — never break these | Every session (auto) |
+| `HEARTBEAT.md` | Live business pulse — CEO writes this | Session start, CEO only |
+| `memory.md` | User preferences (auto-written by agents) | Every session (auto) |
+| `context/about-me.md` | Who the user is — background, credibility | CRM, SEO, Social agents |
+| `context/brand-voice.md` | Voice bible — examples, rules, audience | Any content writing |
+| `context/working-style.md` | How they work — approvals, schedule | Scheduler, any publishing |
+| `context/brand.md` | Brand overview + live DB loading code | Content agents |
+| `context/business.md` | Goals, revenue model, 90-day targets | CEO briefings only |
 
-From Turso (live, synced across all machines):
+From Turso (live, always fresh):
 
-- `agent_memory` — last 20 agent actions
+- `agent_memory` — last 20 agent actions across all sessions
 - `agent_skills` — live skill instructions, editable from dashboard
 
 ---

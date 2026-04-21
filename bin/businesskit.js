@@ -1,17 +1,23 @@
 #!/usr/bin/env node
+// bin/businesskit.js — npm global install entry point
+// Compiled shim that launches cli.ts via tsx
+// Cursor is right: bin entries must be .js for npm to execute them correctly
 
-import { spawnSync } from 'child_process';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { createRequire } from 'module'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import { spawn } from 'child_process'
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const rootDir = resolve(__dirname, '..');
-const cliTs = resolve(rootDir, 'cli.ts');
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const root = join(__dirname, '..')
+const cli = join(root, 'cli.ts')
 
-// Run the cli.ts file using tsx
-const result = spawnSync('npx', ['tsx', cliTs, ...process.argv.slice(2)], { 
+// Find tsx — from local node_modules or global
+const tsx = process.execPath.replace('node', 'tsx')
+const proc = spawn(tsx, [cli, ...process.argv.slice(2)], {
   stdio: 'inherit',
-  cwd: process.cwd()
-});
+  cwd: root,
+  env: { ...process.env }
+})
 
-process.exit(result.status ?? 0);
+proc.on('exit', code => process.exit(code ?? 0))
