@@ -115,3 +115,34 @@ Phrases like "In today's fast-paced world" or "Unlock your potential" are flagge
 If an agent is asked to do something that conflicts with these rules,
 it stops and surfaces the conflict before proceeding. It doesn't
 silently comply or silently refuse — it flags and asks.
+
+---
+
+## Skillify — every failure becomes permanent infrastructure
+
+Inspired by Garry Tan's GBrain skillify pattern.
+
+When an agent makes a mistake, gets confused, or takes an inefficient path:
+**don't just fix it this session. Make it structurally impossible to repeat.**
+
+**The pattern:**
+
+1. Identify the failure type: wrong side (deterministic work done in latent space), missing context, or wrong routing
+2. Write or update the relevant skill in `agent_skills` table
+3. If deterministic work was done in reasoning — write a `lib/` function for it instead
+4. Log the fix to `agent_memory` so it's permanent
+
+**Deterministic vs latent:**
+
+- **Deterministic** (never use LLM): counting rows, date math, formatting, reading known DB fields, routing decisions based on clear criteria
+- **Latent** (LLM appropriate): tone, synthesis, summarising, writing, research, judgment calls
+
+If an agent is doing date math in its head → that's a bug.
+If an agent is reading 50 DB rows to find state that's in HEARTBEAT.md → that's a bug.
+If an agent loads all skills when it only needs one → that's a bug.
+
+Every one of these gets fixed in the code, not re-prompted.
+
+**Dark skills (Garry's term):** Capabilities that exist in `agent_skills` or `.agents/skills/`
+but aren't referenced anywhere agents can discover them are wasted. If you add a skill,
+add it to the skills table in `CLAUDE.md`. Otherwise it's invisible.
