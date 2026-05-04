@@ -57,78 +57,135 @@ These all live in the `products` table under different `type` values.
 ## Current Repository Structure
 
 ```
-businesskit-agent/
+businesskit-agent/                        ← repo root
 │
-├── CLAUDE.md                        ← brain: full schema + rules + brand context
-├── PLAN.md                          ← this file
-├── README.md                        ← setup in 3 commands
-├── .env.example                     ← TURSO_URL, TURSO_TOKEN
-├── cli.ts                           ← universal CLI entry point (npx / bun / tsx)
-├── setup.ts                         ← validates Turso connection on first run
-├── package.json
-├── tsconfig.json
+├── .agents/
+│   └── skills/
+│       ├── README.md
+│       ├── agents.md
+│       ├── analytics.md
+│       ├── brand.md
+│       ├── schema.md
+│       └── store.md
 │
-├── lib/
-│   ├── db.ts                        ← Turso client singleton (Phase 1: process.env)
-│   ├── db.adapter.ts                ← Phase 2 bridge: injects sharedMap["userClient"]
-│   ├── id.ts                        ← ulid() + now() + iso()
-│   ├── slug.ts                      ← toSlug() + uniqueSlug()
-│   ├── profile.ts                   ← getBrandContext() — profile + settings + credentials
-│   └── analytics.ts                 ← read-only analytics helpers
-│
-├── agents/
-│   ├── _base.ts                     ← BaseAgent: profile isolation, archive(), publish(), count()
-│   │
-│   ├── csuite/
-│   │   ├── ceo.ts
-│   │   ├── cmo.ts
-│   │   ├── coo.ts
-│   │   └── cbo.ts
-│   │
-│   ├── creators/
-│   │   ├── blog-writer.ts
-│   │   ├── newsletter-writer.ts
-│   │   ├── copywriter.ts
-│   │   ├── course-creator.ts
-│   │   ├── store-manager.ts
-│   │   ├── jobs-manager.ts
-│   │   ├── forms-builder.ts
-│   │   └── docs-writer.ts
-│   │
-│   └── growth/
-│       ├── analytics-agent.ts
-│       ├── seo-agent.ts
-│       ├── social-agent.ts
-│       └── scheduler.ts
+├── .claude-plugin/
+│   ├── plugin.json
+│   └── marketplace.json
 │
 ├── .claude/
-│   ├── skills/                      ← auto-loaded context (passive, always present)
-│   │   ├── schema.md
-│   │   ├── brand.md
-│   │   ├── store.md
+│   ├── commands/
 │   │   ├── analytics.md
-│   │   └── agents.md
-│   │
-│   └── commands/                    ← slash commands (active, triggered by /name)
-│       ├── ceo.md
-│       ├── cmo.md
-│       ├── coo.md
-│       ├── cbo.md
-│       ├── blog-writer.md
-│       ├── newsletter-writer.md
-│       ├── copywriter.md
-│       ├── course-creator.md
-│       ├── store-manager.md
-│       ├── jobs-manager.md
-│       ├── forms-builder.md
-│       ├── docs-writer.md
+│   │   ├── blog-writer.md
+│   │   ├── cbo.md
+│   │   ├── ceo.md
+│   │   ├── cmo.md
+│   │   ├── compress.md
+│   │   ├── coo.md
+│   │   ├── copywriter.md
+│   │   ├── course-creator.md
+│   │   ├── crm.md
+│   │   ├── deep.md
+│   │   ├── docs-writer.md
+│   │   ├── forms-builder.md
+│   │   ├── ingest.md
+│   │   ├── jobs-manager.md
+│   │   ├── kb.md
+│   │   ├── newsletter-writer.md
+│   │   ├── preserve.md
+│   │   ├── resume.md
+│   │   ├── scheduler.md
+│   │   ├── seo.md
+│   │   ├── social.md
+│   │   └── store-manager.md
+│   └── skills/
+│       ├── README.md
+│       ├── agents.md
 │       ├── analytics.md
-│       ├── seo.md
-│       ├── social.md
-│       └── scheduler.md
+│       ├── brand.md
+│       ├── schema.md
+│       └── store.md
 │
-└── .claude-plugin/
-    └── plugin.json                  ← Cowork + Claude Code plugin manifest
+├── agents/
+│   ├── _base.ts
+│   ├── creators/
+│   │   ├── blog-writer.ts
+│   │   ├── copywriter.ts
+│   │   ├── course-creator.ts
+│   │   ├── crm-agent.ts
+│   │   ├── docs-writer.ts
+│   │   ├── forms-builder.ts
+│   │   ├── jobs-manager.ts
+│   │   ├── newsletter-writer.ts
+│   │   └── store-manager.ts
+│   ├── csuite/
+│   │   ├── cbo.ts
+│   │   ├── ceo.ts
+│   │   ├── cmo.ts
+│   │   └── coo.ts
+│   └── growth/
+│       ├── analytics-agent.ts
+│       ├── scheduler.ts
+│       ├── seo-agent.ts
+│       └── social-agent.ts
+│
+├── bin/
+│   └── businesskit.js
+│
+├── CC-Session-Logs/
+│   └── .gitkeep
+│
+├── context/
+│   ├── about-me.md
+│   ├── brand-voice.md
+│   ├── brand.md
+│   ├── business.md
+│   └── working-style.md
+│
+├── lib/
+│   ├── analytics.ts
+│   ├── db.adapter.ts
+│   ├── db.ts
+│   ├── id.ts
+│   ├── kb.ts
+│   ├── memory.ts
+│   ├── pattern-detector.ts
+│   ├── profile.ts
+│   ├── progress.ts
+│   └── slug.ts
+│
+├── skills/                        
+│   ├── brand/SKILL.md       ← load when writing content
+│   ├── analytics/SKILL.md   ← load when reading analytics
+│   ├── store/SKILL.md       ← load for products/pricing
+│   ├── schema/SKILL.md      ← load for DB queries
+│   ├── agents/SKILL.md      ← load for routing decisions
+│   ├── ceo/SKILL.md         ← plugin skill
+│   ├── crm/SKILL.md         ← plugin skill
+│   ├── blog-writer/SKILL.md ← plugin skill
+│   └── ingest/SKILL.md      ← plugin skill
+│
+├── .cursorrules
+├── .env.example
+├── .gitignore
+├── .mcp.json
+├── AGENTS.md
+├── CLAUDE.md
+├── CURSOR-PLAN.md
+├── GEMINI.md
+├── HEARTBEAT.md
+├── PLAN.md
+├── PRD-Agent-Composition.md
+├── PRD-Agent-Harness.md
+├── README.md
+├── SOUL.md
+├── SYSTEM.md
+├── agents.ts
+├── cli.ts
+├── memory.md
+├── package.json
+├── provision-migrations.ts
+├── setup.ts
+└── tsconfig.json
 ```
 
 ---

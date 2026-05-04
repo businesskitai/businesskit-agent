@@ -1,0 +1,36 @@
+{
+    "name": "businesskit",
+    "description": "Autonomous business agent team for creators — CEO, CRM, Social, SEO, Blog Writer and more. Powered by your own Turso database.",
+    "owner": {
+        "name": "BusinessKit",
+        "email": "hello@businesskit.io",
+        "url": "https://businesskit.io"
+    },
+    "plugins": [
+        {
+            "name": "businesskit",
+            "description": "Full business agent team — 17 agents reading and writing directly to your Turso database. CEO briefings, CRM pipeline, social scheduling, SEO audits, blog writing, newsletter, store management and more.",
+            "source": {
+                "source": "github",
+                "repo": "businesskitai/businesskit-agent"
+            },
+            "version": "1.0.0",
+            "category": "productivity",
+            "keywords": [
+                "business",
+                "agent",
+                "crm",
+                "social",
+                "seo",
+                "blog",
+                "newsletter",
+                "analytics",
+                "turso",
+                "creator"
+            ],
+            "homepage": "https://github.com/businesskitai/businesskit-agent",
+            "requires_setup": true,
+            "setup_instructions": "Run: cp .env.example .env — then paste TURSO_URL and TURSO_TOKEN from BusinessKit → Settings → Credentials. Then: npm run setup"
+        }
+    ]
+}

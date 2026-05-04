@@ -18,30 +18,44 @@ Works with Claude Code, Claude Cowork, Gemini CLI, Codex, and any terminal.
 
 ---
 
-## Setup — 3 steps
+## Install — two ways
 
-**1. Clone and install**
+### Option A — Claude Code plugin (recommended)
+
+One command. Works across all projects. Auto-updates.
+
+Open Claude Code terminal (`Ctrl+`` ` ``):
+
+```bash
+/plugin marketplace add businesskitai/businesskit-agent
+/plugin install businesskit@businesskitai
+/reload-plugins
+```
+
+Enter your credentials when prompted — `TURSO_URL` and `TURSO_TOKEN` from BusinessKit → Settings → Credentials.
+
+Commands are namespaced: `/businesskit:ceo`, `/businesskit:crm`, `/businesskit:blog-writer` etc.
+
+---
+
+### Option B — Clone for full access
+
+Source code, all agents, customise everything.
 
 ```bash
 git clone https://github.com/businesskitai/businesskit-agent
 cd businesskit-agent
 npm install
-```
-
-**2. Add credentials**
-
-```bash
 cp .env.example .env
 # Paste TURSO_URL and TURSO_TOKEN from BusinessKit → Settings → Credentials
-```
-
-**3. Verify**
-
-```bash
 npm run setup
 ```
 
-You'll see your business name confirmed. If not, check your `.env`.
+Commands are direct: `/ceo`, `/crm`, `/blog-writer` etc.
+
+---
+
+**Get credentials:** BusinessKit → Settings → Credentials → copy Turso URL and Token.
 
 ---
 

@@ -1,3 +1,10 @@
+---
+name: brand
+version: 1.0.0
+type: brand
+load_when: see table in CLAUDE.md
+---
+
 # Brand Context + Voice
 
 ## Load brand context before writing ANY content
@@ -18,7 +25,9 @@ const { profile, settings } = await getBrandContext()
 | `settings.site_title` | Override brand name if set |
 
 ### Tone consistency check
+
 Before writing a blog post, check the last 3 published posts and match the reading level and style:
+
 ```ts
 const recent = await blogWriter.listPublished('posts', 3)
 // Read titles + excerpts — match that voice
@@ -35,6 +44,7 @@ const recent = await blogWriter.listPublished('posts', 3)
 **Never** write content that contradicts `profile.bio`. Don't switch voice between pieces.
 
 **Always**:
+
 - Include a clear CTA
 - Write excerpt/meta description separately from the body — it's for search engines + previews
 - Keep titles under 60 characters for SEO
@@ -61,6 +71,7 @@ const recent = await blogWriter.listPublished('posts', 3)
 ---
 
 ## What good writing looks like
+
 - First sentence: lead with the outcome or the surprise — never wind up to it
 - Short sentences. Vary the rhythm.
 - One idea per paragraph
@@ -70,6 +81,7 @@ const recent = await blogWriter.listPublished('posts', 3)
 - Scannable: bullet points, bold key phrases, clear H2s
 
 ## What bad writing looks like — delete on sight
+
 - "Delve into" / "dive deep" — never
 - "In today's fast-paced world" — delete the whole sentence
 - "It's important to note that" — delete it
@@ -80,6 +92,7 @@ const recent = await blogWriter.listPublished('posts', 3)
 - Generic opener: "In this article, we will..." — start with the point
 
 ## Channel-specific tone
+
 - Blog → authoritative but approachable
 - Newsletter → warmest voice, most personal
 - Social → punchy, direct, no filler
