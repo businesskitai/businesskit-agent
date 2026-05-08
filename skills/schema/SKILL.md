@@ -65,8 +65,9 @@ lead_score, probability: 0-100 integer
 *_cents: non-negative integer
 hot_score: non-negative
 
-## Append-only (never UPDATE/DELETE — insert correcting row instead)
-crm_activities, agent_reports, email_events, clicks_analytics
+## Append-only — never DELETE
+crm_activities (DB blocks DELETE), agent_reports, email_events, clicks_analytics
+crm_activities UPDATEs are allowed only on: approval_status (pending_approval→approved|rejected|auto_sent) and read_at. Never change body/type/direction — insert a correcting row instead.
 
 ## Soft-delete only — never hard DELETE
 hidden=1 | archived=1 | status='archived'

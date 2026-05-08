@@ -60,17 +60,53 @@ export interface BrandContext {
 
 let _ctx: BrandContext | null = null
 
+/**
+ * Load the brand context (profile + settings + credentials) from UserDB.
+ *
+ * Profile selection:
+ *   1. If PROFILE_ID env var is set → SELECT by that id (multi-profile DBs)
+ *   2. Otherwise → SELECT the only profile in the DB (single-profile default)
+ *   3. If DB has >1 profile and PROFILE_ID unset → throw with guidance
+ */
 export async function getBrandContext(client?: Client): Promise<BrandContext> {
   if (!client && _ctx) return _ctx
 
-  const db = client ?? _defaultDB
-  const [[p], [s], [c]] = await Promise.all([
-    db.execute('SELECT * FROM profiles LIMIT 1').then(r => r.rows),
-    db.execute('SELECT * FROM settings LIMIT 1').then(r => r.rows),
-    db.execute('SELECT * FROM credentials LIMIT 1').then(r => r.rows),
-  ])
+  // libSQL Client's `execute` has a strict `InStatement` type; our `db` wrapper
+  // accepts the looser `Stmt`. When an external Client is injected (phase 2),
+  // we cast through `any` to share call shapes.
+  const exec = (sql: string, args?: unknown[]) =>
+    (client
+      ? (client.execute as any)(args ? { sql, args } : sql)
+      : _defaultDB.execute(args ? { sql, args } : sql))
 
-  if (!p) throw new Error('No profile found — is your Turso DB provisioned?')
+  const pid = process.env.PROFILE_ID?.trim()
+
+  const profileRow = pid
+    ? await exec('SELECT * FROM profiles WHERE id=? LIMIT 1', [pid]).then((r: any) => r.rows[0])
+    : await (async () => {
+        const { rows } = await exec('SELECT * FROM profiles LIMIT 2')
+        if (rows.length > 1) {
+          throw new Error(
+            `UserDB has ${rows.length}+ profiles. Set PROFILE_ID in .env ` +
+            `to pick one (see .env.example).`,
+          )
+        }
+        return rows[0]
+      })()
+
+  if (!profileRow) {
+    throw new Error(
+      pid
+        ? `No profile found with id=${pid}. Check PROFILE_ID in .env.`
+        : 'No profile found — is your Turso DB provisioned? Run BusinessKit onboarding first.',
+    )
+  }
+  const p = profileRow
+
+  const [[s], [c]] = await Promise.all([
+    exec('SELECT * FROM settings    WHERE profile_id=? LIMIT 1', [p.id]).then((r: any) => r.rows),
+    exec('SELECT * FROM credentials WHERE profile_id=? LIMIT 1', [p.id]).then((r: any) => r.rows),
+  ])
 
   const parse = (v: unknown, fb: unknown) => { try { return JSON.parse(v as string) } catch { return fb } }
   const str = (v: unknown) => (v as string | null) ?? null

@@ -71,15 +71,29 @@ try {
 
 // ── Step 3: Profile exists ────────────────────────────────────────────────────
 console.log('\n3. Loading your profile...')
+const PROFILE_ID = env.PROFILE_ID || process.env.PROFILE_ID || ''
 try {
-  const { rows } = await db.execute('SELECT id, slug, title FROM profiles LIMIT 1')
+  const { rows } = await db.execute('SELECT id, slug, title FROM profiles')
   if (!rows.length) {
     err('No profile found in your database')
     dim('Complete BusinessKit onboarding at businesskit.io first')
     dim('Then come back and run: npm run setup')
     process.exit(1)
   }
-  const p = rows[0]
+  if (rows.length > 1 && !PROFILE_ID) {
+    err(`Found ${rows.length} profiles — set PROFILE_ID in .env to pick one:`)
+    for (const r of rows) dim(`  ${r.id}  (${r.title} @${r.slug})`)
+    process.exit(1)
+  }
+  const p = PROFILE_ID
+    ? rows.find(r => r.id === PROFILE_ID)
+    : rows[0]
+  if (!p) {
+    err(`PROFILE_ID=${PROFILE_ID} not found in your database`)
+    dim('Available:')
+    for (const r of rows) dim(`  ${r.id}  (${r.title} @${r.slug})`)
+    process.exit(1)
+  }
   ok(`Profile: ${p.title} (@${p.slug})`)
   dim(`Profile ID: ${p.id}`)
 } catch (e: any) {

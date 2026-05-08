@@ -19,4 +19,4 @@ memory.md
 # agent_skills table in Turso = live skills (not in repo)
 
 # CPR session logs — local context, not for GitHub
-CC-Session-Logs/
+CC-Session-Logs/.DS_Store

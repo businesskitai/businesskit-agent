@@ -58,8 +58,9 @@ export abstract class BaseAgent {
   protected get profileId(): string { return this.ctx.profile.id }
   protected get userId(): string    { return this.ctx.profile.user_id }
 
-  // P1-7: factory — validates exactly 1 profile exists before constructing.
-  // Prefer this over `new Cls()` when you need a hard guarantee.
+  // P1-7: factory — asserts a profile will resolve before constructing.
+  // Single-profile UserDBs (the normal case) auto-pick. Multi-profile DBs
+  // must set PROFILE_ID in .env; that check lives in lib/profile.ts.
   static async create<T extends BaseAgent>(
     Cls: new (agentType?: string) => T,
     agentType?: string,
@@ -67,9 +68,8 @@ export abstract class BaseAgent {
     const { rows } = await db.execute(`SELECT COUNT(*) as n FROM profiles`)
     const n = Number(rows[0]?.n ?? 0)
     if (n === 0) throw new Error('No profile in this UserDB — complete BusinessKit onboarding first')
-    if (n > 1)  throw new Error(`Found ${n} profiles — agents are single-profile only`)
     const instance = new Cls(agentType)
-    await (instance as any).init()
+    await (instance as any).init() // throws with guidance if PROFILE_ID needed
     return instance
   }
 
@@ -132,9 +132,16 @@ export abstract class BaseAgent {
   }
 
   // ── P0-7: append-only guard — throws before the DB trigger does ────────────
+  // Matches the app-side schema: these tables block DELETE, not UPDATE.
+  // crm_activities in particular legitimately UPDATEs approval_status
+  // (pending_approval → approved|rejected|auto_sent) and read_at — the
+  // schema comment (crm.ts) explicitly calls this out.
+  // We only guard against UPDATEs on tables the app fully locks: agent_reports,
+  // email_events, clicks_analytics. crm_activities is excluded.
   private static APPEND_ONLY = new Set([
-    'crm_activities', 'agent_reports',
-    'email_events', 'clicks_analytics',
+    'agent_reports',
+    'email_events',
+    'clicks_analytics',
   ])
 
   // ── P0-2 + P0-6: UPDATE with audit in one txn ──────────────────────────────
@@ -217,16 +224,19 @@ export abstract class BaseAgent {
   }
 
   // ── P1-2: logMemory — write then trim to last 20 rows per agent ────────────
+  // agent_memory.id is INTEGER AUTOINCREMENT — let SQLite assign it.
+  // idempotency_key has a unique partial index; retries dedupe automatically.
   protected async logMemory(action: string, meta: Record<string, unknown> = {}): Promise<void> {
     await this.init()
     try {
+      const ikey = generateIdempotencyKey()
       await db.write({
-        sql: `INSERT INTO agent_memory
-               (id, profile_id, session_date, agent, action, metadata, created_at)
-               VALUES (?,?,?,?,?,?,?)`,
+        sql: `INSERT OR IGNORE INTO agent_memory
+               (profile_id, session_date, agent, action, metadata, idempotency_key)
+               VALUES (?,?,?,?,?,?)`,
         args: [
-          ulid(), this.profileId, iso().slice(0, 10),
-          this.agentType, action, JSON.stringify(meta), iso(),
+          this.profileId, iso().slice(0, 10),
+          this.agentType, action, JSON.stringify(meta), ikey,
         ],
       })
       await db.write({
@@ -242,7 +252,96 @@ export abstract class BaseAgent {
     } catch { /* memory is best-effort — never block the agent */ }
   }
 
-  // ── Agent reports — append-only, routed through insert() ──────────────────
+  // ── Agent tasks (kanban board — app-side dashboard renders these) ──────────
+  // Tables in `agent_tasks` (see businesskit-files/agent.ts). Each task has:
+  //   status = 'pending' | 'active' | 'running' | 'done' | 'paused' | 'failed' | 'cancelled'
+  //   source = 'user' | 'agent'
+  //   schedule = optional cron string (NULL = on-demand)
+
+  /** Create a kanban task for an agent. Shows up in /dashboard/agents/tasks. */
+  protected async createAgentTask(opts: {
+    agent?: string              // default: this agent
+    title: string
+    description?: string
+    command: string             // e.g. 'weeklyBriefing', 'hotLeads', 'runPublishQueue'
+    params?: Record<string, unknown>
+    source?: 'user' | 'agent'
+    schedule?: string           // cron; NULL = on-demand
+    timezone?: string
+    run_once?: boolean
+    next_run_at?: number
+    idempotency_key?: string
+  }): Promise<string> {
+    await this.init()
+    const id = ulid()
+    const ts = now()
+    const ikey = opts.idempotency_key ?? generateIdempotencyKey()
+    await db.write({
+      sql: `INSERT OR IGNORE INTO agent_tasks
+             (id, profile_id, agent, title, description, command, params, source,
+              schedule, timezone, run_once, status, next_run_at, idempotency_key,
+              created_at, updated_at)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,'pending',?,?,?,?)`,
+      args: [
+        id, this.profileId, opts.agent ?? this.agentType,
+        opts.title, opts.description ?? null, opts.command,
+        JSON.stringify(opts.params ?? {}),
+        opts.source ?? 'agent',
+        opts.schedule ?? null, opts.timezone ?? 'UTC',
+        opts.run_once ? 1 : 0,
+        opts.next_run_at ?? null, ikey, ts, ts,
+      ],
+    })
+    return id
+  }
+
+  /** Move a task across the kanban: pending → active → running → done. */
+  protected async updateTaskStatus(
+    taskId: string,
+    status: 'pending' | 'active' | 'running' | 'done' | 'paused' | 'failed' | 'cancelled',
+    lastRunStatus?: string,
+  ): Promise<void> {
+    await this.init()
+    const ts = now()
+    const isTerminal = status === 'done' || status === 'failed' || status === 'cancelled'
+    await db.write({
+      sql: `UPDATE agent_tasks
+             SET status=?, last_run_status=?, last_run_at=?,
+                 run_count=run_count+CASE WHEN ?=1 THEN 1 ELSE 0 END,
+                 updated_at=?
+             WHERE id=? AND profile_id=?`,
+      args: [status, lastRunStatus ?? null, isTerminal ? ts : null,
+             isTerminal ? 1 : 0, ts, taskId, this.profileId],
+    })
+  }
+
+  /** List tasks for the kanban view. */
+  protected async listAgentTasks(opts: {
+    agent?: string
+    status?: 'pending' | 'active' | 'running' | 'done' | 'paused' | 'failed' | 'cancelled'
+    limit?: number
+  } = {}): Promise<unknown[]> {
+    await this.init()
+    let where = 'WHERE profile_id=? AND hidden=0'
+    const args: unknown[] = [this.profileId]
+    if (opts.agent)  { where += ' AND agent=?';  args.push(opts.agent) }
+    if (opts.status) { where += ' AND status=?'; args.push(opts.status) }
+    const { rows } = await db.execute({
+      sql: `SELECT id, agent, title, description, command, status,
+                   schedule, next_run_at, last_run_at, last_run_status,
+                   run_count, created_at
+            FROM agent_tasks ${where}
+            ORDER BY CASE status
+              WHEN 'running' THEN 0 WHEN 'active' THEN 1 WHEN 'pending' THEN 2
+              WHEN 'paused' THEN 3 WHEN 'done' THEN 4 ELSE 5 END,
+            created_at DESC LIMIT ?`,
+      args: [...args, opts.limit ?? 100],
+    })
+    return rows
+  }
+
+  // ── Agent reports — append-only, idempotent, mid-session safe ─────────────
+  // agent_reports has a unique partial index on idempotency_key — retries dedupe.
   protected async pushReport(opts: {
     title: string
     type: string
@@ -250,20 +349,22 @@ export abstract class BaseAgent {
     summary?: string
     html?: string
     meta?: Record<string, unknown>
+    idempotency_key?: string
   }): Promise<string> {
-    const { id } = await this.insert({
-      table: 'agent_reports',
-      cols: {
-        agent:      this.agentType,
-        title:      opts.title,
-        type:       opts.type,
-        content:    opts.content,
-        summary:    opts.summary ?? null,
-        html:       opts.html ?? null,
-        metadata:   JSON.stringify(opts.meta ?? {}),
-        hidden:     0,
-        created_at: iso(),
-      },
+    await this.init()
+    const id = ulid()
+    const ikey = opts.idempotency_key ?? generateIdempotencyKey()
+    await db.write({
+      sql: `INSERT OR IGNORE INTO agent_reports
+             (id, profile_id, agent, title, type, content, summary, html,
+              metadata, hidden, idempotency_key)
+             VALUES (?,?,?,?,?,?,?,?,?,0,?)`,
+      args: [
+        id, this.profileId, this.agentType,
+        opts.title, opts.type, opts.content,
+        opts.summary ?? null, opts.html ?? null,
+        JSON.stringify(opts.meta ?? {}), ikey,
+      ],
     })
     return id
   }

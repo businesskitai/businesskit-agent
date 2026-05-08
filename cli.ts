@@ -94,13 +94,15 @@ try {
 
 function defaultCommand(name: string): string {
   const defaults: Record<string, string> = {
-    'ceo': 'weeklyBriefing',
-    'cmo': 'contentCalendar',
-    'coo': 'draftPipeline',
-    'cbo': 'revenueReport',
-    'analytics-agent': 'snapshot',
-    'seo-agent': 'audit',
-    'scheduler': 'daily',
+    ceo: 'weeklyBriefing',
+    marketing: 'contentCalendar',   cmo: 'contentCalendar',
+    operations: 'draftPipeline',    coo: 'draftPipeline',
+    business: 'revenueReport',      cbo: 'revenueReport',
+    sales: 'pipelineSummary',       crm: 'pipelineSummary',
+    'crm-agent': 'pipelineSummary',
+    analytics: 'snapshot',          'analytics-agent': 'snapshot',
+    seo: 'audit',                   'seo-agent': 'audit',
+    scheduler: 'daily',
   }
   return defaults[name] ?? 'list'
 }
