@@ -9,8 +9,8 @@
  * ARIA (weekly briefing), NOVA (content calendar drafts), PEARL (newsletter).
  */
 
-import { coo } from '../csuite/coo.ts'
-import { ceo } from '../csuite/ceo.ts'
+import { coo } from '../operations/operations.ts'
+import { ceo } from '../ceo/ceo.ts'
 
 export class Scheduler {
   readonly name  = 'CRON'

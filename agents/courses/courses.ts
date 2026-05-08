@@ -6,7 +6,7 @@
  */
 
 import { BaseAgent, db, now }   from '../_base.ts'
-import { storeManager }                  from './store-manager.ts'
+import { storeManager }                  from '../store/store.ts'
 
 export interface Lesson {
   id: string

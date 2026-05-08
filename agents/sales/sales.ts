@@ -16,6 +16,9 @@
  */
 
 import { BaseAgent, db, ulid, now } from '../_base.ts'
+import { CRM_DEAL_STAGE, type CRMDealStage } from '../../lib/enums.ts'
+import { leadScore as vLeadScore, probability as vProbability, cents as vCents } from '../../lib/validate.ts'
+import { addContactToGroup, getContactsByGroup, getGroupsForContact, removeContactFromGroup, hasGroupsJunction } from '../../lib/groups.ts'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -135,15 +138,16 @@ export class CRMAgent extends BaseAgent {
   // ── Lead scoring + enrichment ─────────────────────────────────────────────
 
   async scoreContact(id: string, score: number, reason: string, icpMatch: 'strong' | 'moderate' | 'weak') {
+    const bounded = vLeadScore(score) // P0-8: catches out-of-range before DB trigger does
     const ts = now()
     await db.execute({
       sql: `UPDATE crm_contacts SET
             lead_score=?,lead_score_reason=?,icp_match=?,
             agent_status='enriched',updated_at=? WHERE id=?`,
-      args: [score, reason, icpMatch, ts, id],
+      args: [bounded, reason, icpMatch, ts, id],
     })
     await this.logActivity(id, 'agent_action', 'outbound', 'agent',
-      `Scored: ${score}/100 (${icpMatch} ICP) — ${reason}`)
+      `Scored: ${bounded}/100 (${icpMatch} ICP) — ${reason}`)
     return this.getContact(id)
   }
 
@@ -194,7 +198,7 @@ export class CRMAgent extends BaseAgent {
       args: [message, ts, id],
     })
 
-    const approvalStatus = contact.auto_approve ? 'auto_sent' : 'pending'
+    const approvalStatus = contact.auto_approve ? 'auto_sent' : 'pending_approval'
     await this.logActivity(id, 'dm', 'outbound', 'agent', message, {
       approval_status: approvalStatus,
       channel: contact.platform ?? 'dm',
@@ -213,7 +217,7 @@ export class CRMAgent extends BaseAgent {
       args: [subject, body, ts, id],
     })
 
-    const approvalStatus = contact.auto_approve ? 'auto_sent' : 'pending'
+    const approvalStatus = contact.auto_approve ? 'auto_sent' : 'pending_approval'
     await this.logActivity(id, 'email', 'outbound', 'agent', body, {
       subject,
       approval_status: approvalStatus,
@@ -259,7 +263,7 @@ export class CRMAgent extends BaseAgent {
   async createDeal(contactId: string, input: {
     title: string
     value_cents: number
-    stage?: string
+    stage?: CRMDealStage
     probability?: number
     product_id?: string
     expected_close_at?: number
@@ -267,6 +271,11 @@ export class CRMAgent extends BaseAgent {
     await this.init()
     const id = ulid()
     const ts = now()
+    // P0-5 + P0-8: validate enum + numeric bounds before hitting DB triggers
+    const stage = input.stage ?? 'new'
+    if (!CRM_DEAL_STAGE.includes(stage)) throw new Error(`Invalid deal stage: ${stage}`)
+    const value = vCents(input.value_cents)
+    const prob = vProbability(input.probability ?? 10)
 
     await db.execute({
       sql: `INSERT INTO crm_deals
@@ -275,8 +284,7 @@ export class CRMAgent extends BaseAgent {
             VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
       args: [
         id, this.profileId, contactId,
-        input.title, input.value_cents,
-        input.stage ?? 'new', input.probability ?? 10,
+        input.title, value, stage, prob,
         input.product_id ?? null, input.expected_close_at ?? null,
         ts, ts,
       ],
@@ -284,12 +292,13 @@ export class CRMAgent extends BaseAgent {
     return id
   }
 
-  async updateDealStage(dealId: string, stage: string, lostReason?: string) {
+  async updateDealStage(dealId: string, stage: CRMDealStage, lostReason?: string) {
+    if (!CRM_DEAL_STAGE.includes(stage)) throw new Error(`Invalid deal stage: ${stage}`)
     const ts = now()
-    const closedAt = ['won', 'lost'].includes(stage) ? ts : null
+    const closedAt = stage === 'won' || stage === 'lost' ? ts : null
     await db.execute({
-      sql: `UPDATE crm_deals SET stage=?,lost_reason=?,closed_at=?,updated_at=? WHERE id=?`,
-      args: [stage, lostReason ?? null, closedAt, ts, dealId],
+      sql: `UPDATE crm_deals SET stage=?,lost_reason=?,closed_at=?,updated_at=? WHERE id=? AND profile_id=?`,
+      args: [stage, lostReason ?? null, closedAt, ts, dealId, this.profileId],
     })
   }
 
@@ -379,7 +388,7 @@ export class CRMAgent extends BaseAgent {
       sql: `SELECT a.id,a.type,a.body,c.first_name,c.last_name,c.platform
             FROM crm_activities a
             JOIN crm_contacts c ON c.id=a.contact_id
-            WHERE a.profile_id=? AND a.approval_status='pending'
+            WHERE a.profile_id=? AND a.approval_status='pending_approval'
             ORDER BY a.occurred_at ASC LIMIT 10`,
       args: [this.profileId],
     })
@@ -408,6 +417,40 @@ export class CRMAgent extends BaseAgent {
       args: [this.profileId, limit],
     })
     return rows
+  }
+
+  // ── Groups (P0-4: junction table, never LIKE '%grp_x%') ───────────────────
+
+  /** Contacts in a group — indexed, no substring collision. */
+  async listContactsInGroup(groupId: string, limit = 50, offset = 0): Promise<unknown[]> {
+    await this.init()
+    if (!(await hasGroupsJunction())) {
+      throw new Error('crm_contact_groups table not present — upgrade BusinessKit to enable groups')
+    }
+    return getContactsByGroup(this.profileId, groupId, limit, offset)
+  }
+
+  /** Add contact to group — idempotent. */
+  async addToGroup(contactId: string, groupId: string): Promise<void> {
+    await this.init()
+    if (!(await hasGroupsJunction())) {
+      throw new Error('crm_contact_groups table not present — upgrade BusinessKit to enable groups')
+    }
+    await addContactToGroup(this.profileId, contactId, groupId)
+  }
+
+  /** Remove contact from group. */
+  async removeFromGroup(contactId: string, groupId: string): Promise<void> {
+    await this.init()
+    if (!(await hasGroupsJunction())) return
+    await removeContactFromGroup(this.profileId, contactId, groupId)
+  }
+
+  /** All groups for a contact. */
+  async groupsFor(contactId: string): Promise<unknown[]> {
+    await this.init()
+    if (!(await hasGroupsJunction())) return []
+    return getGroupsForContact(this.profileId, contactId)
   }
 
   // ── Agent context (scratchpad per contact) ───────────────────────────────

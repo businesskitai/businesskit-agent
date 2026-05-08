@@ -7,8 +7,8 @@
  */
 
 import { BaseAgent, db }  from '../_base.ts'
-import { analyticsAgent }          from '../growth/analytics-agent.ts'
-import { blogWriter }     from '../creators/blog-writer.ts'
+import { analyticsAgent }          from '../analytics/analytics.ts'
+import { blogWriter }     from '../content/content.ts'
 
 export class CMO extends BaseAgent {
   readonly name  = 'NOVA'
@@ -56,7 +56,7 @@ export class CMO extends BaseAgent {
   async growthAudit() {
     await this.init()
     const snap   = await analyticsAgent.snapshot()
-    const drafts = await blogWriter.list({ published: false })
+    const drafts = await blogWriter.listDrafts()
 
     const totalTraffic  = snap.profile?.total_clicks ?? 0
     const totalRevenue  = snap.products.reduce((a, p) => a + p.revenue, 0)

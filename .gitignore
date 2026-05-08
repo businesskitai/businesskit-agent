@@ -9,6 +9,8 @@ node_modules/
 dist/
 .wrangler/
 *.js.map
+memory/
+businesskit-files/
 
 # Personal preferences — local only, not for GitHub
 memory.md

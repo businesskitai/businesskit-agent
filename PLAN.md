@@ -23,118 +23,89 @@ These all live in the `products` table under different `type` values.
 
 ### C-Suite (Intelligence + Strategy)
 
-| Title | File | Role |
+| Title | Folder / File | Role |
 |---|---|---|
-| CEO | `agents/csuite/ceo.ts` | Weekly briefing, cross-agent orchestration, priority setting |
-| CMO | `agents/csuite/cmo.ts` | Campaign strategy, content calendar, growth recommendations |
-| COO | `agents/csuite/coo.ts` | Content pipeline, publish queue, scheduling oversight |
-| CBO | `agents/csuite/cbo.ts` | Revenue analysis, product strategy, pricing recommendations |
+| CEO | `agents/ceo/ceo.ts` | Weekly briefing, cross-agent orchestration, priority setting |
+| Marketing (CMO) | `agents/marketing/marketing.ts` | Campaign strategy, content calendar, growth recommendations |
+| Operations (COO) | `agents/operations/operations.ts` | Content pipeline, publish queue, scheduling oversight |
+| Business (CBO) | `agents/business/business.ts` | Revenue analysis, product strategy, pricing recommendations |
 
 ### Content Creators
 
-| Title | File | Writes to |
+| Title | Folder / File | Writes to |
 |---|---|---|
-| Blog Writer | `agents/creators/blog-writer.ts` | `posts` |
-| Newsletter Writer | `agents/creators/newsletter-writer.ts` | `subscribers` + email via SES/Resend |
-| Copywriter | `agents/creators/copywriter.ts` | `pages`, `products.description`, `links` |
-| Course Creator | `agents/creators/course-creator.ts` | `products` (type=course) + lessons JSON |
-| Store Manager | `agents/creators/store-manager.ts` | `products` (downloads, services, webinars, events, listings, sponsorships, meetings) |
-| Jobs Manager | `agents/creators/jobs-manager.ts` | `job_listings` + `job_applications` |
-| Forms Builder | `agents/creators/forms-builder.ts` | `forms` + `questions` |
-| Docs Writer | `agents/creators/docs-writer.ts` | `doc_collections` + `doc_articles` |
+| Sales (CRM) | `agents/sales/sales.ts` | `crm_*` — contacts, deals, activities, proposals, invoices |
+| Content (Blog Writer) | `agents/content/content.ts` | `posts`, `compare`, `alternative`, `prompt`, `notes`, `guides` |
+| Newsletter | `agents/newsletter/newsletter.ts` | `subscribers` + email via SES/Resend |
+| Copywriting | `agents/copywriting/copywriting.ts` | `pages`, `products.description`, `links` |
+| Courses | `agents/courses/courses.ts` | `products` (type=course) + lessons JSON |
+| Store | `agents/store/store.ts` | `products` (downloads, services, webinars, events, listings, sponsorships, meetings) |
+| Hiring | `agents/hiring/hiring.ts` | `job_listings` + `job_applications` |
+| Forms | `agents/forms/forms.ts` | `forms` + `questions` |
+| Docs | `agents/docs/docs.ts` | `doc_collections` + `doc_articles` |
 
 ### Growth & Intelligence
 
-| Title | File | Role |
+| Title | Folder / File | Role |
 |---|---|---|
-| SEO Agent | `agents/growth/seo-agent.ts` | `collections`, slugs, meta, OG tags |
-| Analytics Agent | `agents/growth/analytics-agent.ts` | All analytics tables — reads only, never writes |
-| Social Agent | `agents/growth/social-agent.ts` | `credentials.n8n_webhook_url` → social platforms |
-| Scheduler | `agents/growth/scheduler.ts` | `published=0 + date <= now()` → flips published=1 |
+| SEO | `agents/seo/seo.ts` | `collections`, slugs, meta, OG tags |
+| Analytics | `agents/analytics/analytics.ts` | All analytics tables — reads only, never writes |
+| Social | `agents/social/social.ts` | `credentials.n8n_webhook_url` → social platforms |
+| Scheduler | `agents/scheduler/scheduler.ts` | `published=0 + date <= now()` → flips published=1 |
 
 ---
 
 ## Current Repository Structure
 
+One folder per agent. Each folder has `SOUL.md` (identity + rules) + `<agent>.ts` (implementation).
+
 ```
 businesskit-agent/                        ← repo root
-│
-├── .agents/
-│   └── skills/
-│       ├── README.md
-│       ├── agents.md
-│       ├── analytics.md
-│       ├── brand.md
-│       ├── schema.md
-│       └── store.md
 │
 ├── .claude-plugin/
 │   ├── plugin.json
 │   └── marketplace.json
 │
 ├── .claude/
-│   ├── commands/
-│   │   ├── analytics.md
-│   │   ├── blog-writer.md
-│   │   ├── cbo.md
-│   │   ├── ceo.md
-│   │   ├── cmo.md
-│   │   ├── compress.md
-│   │   ├── coo.md
-│   │   ├── copywriter.md
-│   │   ├── course-creator.md
-│   │   ├── crm.md
-│   │   ├── deep.md
-│   │   ├── docs-writer.md
-│   │   ├── forms-builder.md
-│   │   ├── ingest.md
-│   │   ├── jobs-manager.md
-│   │   ├── kb.md
-│   │   ├── newsletter-writer.md
-│   │   ├── preserve.md
-│   │   ├── resume.md
-│   │   ├── scheduler.md
-│   │   ├── seo.md
-│   │   ├── social.md
-│   │   └── store-manager.md
-│   └── skills/
-│       ├── README.md
-│       ├── agents.md
-│       ├── analytics.md
-│       ├── brand.md
-│       ├── schema.md
-│       └── store.md
+│   ├── commands/                   ← slash-command bodies (user-facing names kept stable)
+│   │   ├── analytics.md            blog-writer.md     cbo.md
+│   │   ├── ceo.md                  cmo.md             compress.md
+│   │   ├── coo.md                  copywriter.md      course-creator.md
+│   │   ├── crm.md                  deep.md            docs-writer.md
+│   │   ├── forms-builder.md        ingest.md          jobs-manager.md
+│   │   ├── kb.md                   newsletter-writer.md
+│   │   ├── preserve.md             resume.md          scheduler.md
+│   │   ├── seo.md                  social.md          store-manager.md
+│   │   └── settings.json
+│   └── skills/                     ← auto-loaded skills (see also top-level skills/)
 │
-├── agents/
-│   ├── _base.ts
-│   ├── creators/
-│   │   ├── blog-writer.ts
-│   │   ├── copywriter.ts
-│   │   ├── course-creator.ts
-│   │   ├── crm-agent.ts
-│   │   ├── docs-writer.ts
-│   │   ├── forms-builder.ts
-│   │   ├── jobs-manager.ts
-│   │   ├── newsletter-writer.ts
-│   │   └── store-manager.ts
-│   ├── csuite/
-│   │   ├── cbo.ts
-│   │   ├── ceo.ts
-│   │   ├── cmo.ts
-│   │   └── coo.ts
-│   └── growth/
-│       ├── analytics-agent.ts
-│       ├── scheduler.ts
-│       ├── seo-agent.ts
-│       └── social-agent.ts
+├── agents/                         ← one folder per agent, SOUL.md + <agent>.ts
+│   ├── _base.ts                    ← BaseAgent — profile iso, idempotency, txn, audit
+│   │
+│   ├── ceo/            SOUL.md + ceo.ts
+│   ├── marketing/      SOUL.md + marketing.ts     (CMO role)
+│   ├── operations/     SOUL.md + operations.ts    (COO role)
+│   ├── business/       SOUL.md + business.ts      (CBO role)
+│   ├── sales/          SOUL.md + sales.ts         (CRM pipeline)
+│   │
+│   ├── content/        SOUL.md + content.ts       (blog writer)
+│   ├── newsletter/     SOUL.md + newsletter.ts
+│   ├── copywriting/    SOUL.md + copywriting.ts
+│   ├── courses/        SOUL.md + courses.ts
+│   ├── store/          SOUL.md + store.ts
+│   ├── hiring/         SOUL.md + hiring.ts        (job listings)
+│   ├── forms/          SOUL.md + forms.ts
+│   ├── docs/           SOUL.md + docs.ts
+│   │
+│   ├── analytics/      SOUL.md + analytics.ts
+│   ├── seo/            SOUL.md + seo.ts
+│   ├── social/         SOUL.md + social.ts
+│   └── scheduler/      SOUL.md + scheduler.ts
 │
 ├── bin/
 │   └── businesskit.js
 │
-├── CC-Session-Logs/
-│   └── .gitkeep
-│
-├── context/
+├── context/                        ← Brand Foundation — fill in once
 │   ├── about-me.md
 │   ├── brand-voice.md
 │   ├── brand.md
@@ -142,50 +113,40 @@ businesskit-agent/                        ← repo root
 │   └── working-style.md
 │
 ├── lib/
-│   ├── analytics.ts
-│   ├── db.adapter.ts
-│   ├── db.ts
-│   ├── id.ts
-│   ├── kb.ts
-│   ├── memory.ts
-│   ├── pattern-detector.ts
-│   ├── profile.ts
-│   ├── progress.ts
-│   └── slug.ts
+│   ├── analytics.ts                ← analytics summaries
+│   ├── db.adapter.ts               ← Phase 1↔2 swap point
+│   ├── db.ts                       ← Turso client, withRetry, txn, reader/writer split (P0-2, P0-3, P1-4)
+│   ├── enums.ts                    ← single source of truth for status strings (P0-5)
+│   ├── groups.ts                   ← crm_contact_groups junction helpers (P0-4)
+│   ├── id.ts                       ← ulid, iso, now, generateIdempotencyKey (P0-1)
+│   ├── kb.ts                       ← KB query helpers
+│   ├── memory.ts                   ← dual-write agent_memory + memory.md
+│   ├── pattern-detector.ts         ← Hermes skill-detection
+│   ├── profile.ts                  ← BrandContext loader
+│   ├── slug.ts                     ← slug utilities
+│   └── validate.ts                 ← numeric bounds guards (P0-8)
 │
-├── skills/                        
-│   ├── brand/SKILL.md       ← load when writing content
-│   ├── analytics/SKILL.md   ← load when reading analytics
-│   ├── store/SKILL.md       ← load for products/pricing
-│   ├── schema/SKILL.md      ← load for DB queries
-│   ├── agents/SKILL.md      ← load for routing decisions
-│   ├── ceo/SKILL.md         ← plugin skill
-│   ├── crm/SKILL.md         ← plugin skill
-│   ├── blog-writer/SKILL.md ← plugin skill
-│   └── ingest/SKILL.md      ← plugin skill
+├── skills/                         ← on-demand domain skills
+│   ├── agents/SKILL.md             ← load for routing decisions
+│   ├── analytics/SKILL.md          ← load when reading analytics
+│   ├── blog-writer/SKILL.md
+│   ├── brand/SKILL.md              ← load when writing content
+│   ├── ceo/SKILL.md
+│   ├── cmo/SKILL.md
+│   ├── copywriting/SKILL.md
+│   ├── humanizer/SKILL.md
+│   ├── sales/                      ← reserved (empty)
+│   ├── schema/SKILL.md             ← load for DB queries
+│   ├── social/{SKILL.md, content-seo.md}
+│   └── store/SKILL.md
 │
-├── .cursorrules
-├── .env.example
-├── .gitignore
-├── .mcp.json
-├── AGENTS.md
-├── CLAUDE.md
-├── CURSOR-PLAN.md
-├── GEMINI.md
-├── HEARTBEAT.md
-├── PLAN.md
-├── PRD-Agent-Composition.md
-├── PRD-Agent-Harness.md
-├── README.md
-├── SOUL.md
-├── SYSTEM.md
-├── agents.ts
-├── cli.ts
-├── memory.md
-├── package.json
-├── provision-migrations.ts
-├── setup.ts
-└── tsconfig.json
+├── memory/                         ← per-session state (gitignored)
+├── .cursorrules .env.example .gitignore .mcp.json
+├── AGENTS.md CLAUDE.md GEMINI.md HEARTBEAT.md
+├── PLAN.md PRD-Agent-Composition.md PRD-Agent-Harness.md
+├── README.md REFERENCE.md SOUL.md SYSTEM.md
+├── cli.ts setup.ts memory.md
+├── package.json package-lock.json tsconfig.json
 ```
 
 ---
@@ -225,14 +186,14 @@ npx tsx cli.ts scheduler hourly   # run publish queue
 **Delivered**:
 
 - [x] `CLAUDE.md` — full schema, brand rules, agent roster
-- [x] `lib/` — 6 files: db, db.adapter, id, slug, profile, analytics
-- [x] `agents/_base.ts` — BaseAgent with profile isolation
-- [x] 16 agents: 4 C-Suite + 8 Creators + 4 Growth
-- [x] 16 slash commands in `.claude/commands/`
-- [x] 5 skill files in `.claude/skills/`
-- [x] `cli.ts` — universal terminal entry point
+- [x] `lib/` — db (withRetry + txn + reader/writer), id (+ idempotency key), enums, groups junction, validate, memory, profile, kb, analytics, slug
+- [x] `agents/_base.ts` — BaseAgent: profile iso, idempotency (P0-1), txn (P0-2), audit (P0-6), APPEND_ONLY guard (P0-7), logMemory retention (P1-2), single-profile factory (P1-7)
+- [x] 17 agents, one folder each, SOUL.md + `<agent>.ts`
+- [x] 22 slash commands in `.claude/commands/` (+ `settings.json`)
+- [x] Skills in `skills/<domain>/SKILL.md` — loaded on demand
+- [x] `cli.ts` — universal terminal entry point with legacy-name aliases
 - [x] `.claude-plugin/plugin.json`
-- [x] `README.md` + `.env.example` + `setup.ts`
+- [x] `README.md` + `.env.example` (+ optional `TURSO_REPLICA_URL`) + `setup.ts`
 
 ---
 

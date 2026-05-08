@@ -142,7 +142,7 @@ export class SocialAgent extends BaseAgent {
 
   private async postViaZernio(
     input: PostInput,
-    accounts: typeof Object[],
+    accounts: Record<string, unknown>[],
     apiKey: string,
     scheduledVia: 'byok' | 'platform'
   ): Promise<PostResult> {
@@ -236,7 +236,7 @@ export class SocialAgent extends BaseAgent {
 
   // ── n8n fallback ────────────────────────────────────────────────────────────
 
-  private async postViaN8n(input: PostInput, accounts: typeof Object[]): Promise<PostResult> {
+  private async postViaN8n(input: PostInput, accounts: Record<string, unknown>[]): Promise<PostResult> {
     const { n8n_webhook_url } = this.ctx.credentials
     if (!n8n_webhook_url) {
       return { ok: false, platforms: [], status: 'no_n8n', error: 'No n8n webhook URL in credentials.' }

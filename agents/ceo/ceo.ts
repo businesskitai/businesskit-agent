@@ -7,7 +7,7 @@
  */
 
 import { BaseAgent, db } from '../_base.ts'
-import { analyticsAgent }         from '../growth/analytics-agent.ts'
+import { analyticsAgent }         from '../analytics/analytics.ts'
 
 export class CEO extends BaseAgent {
   readonly name  = 'ARIA'
@@ -40,7 +40,7 @@ export class CEO extends BaseAgent {
     return Object.fromEntries(tables.map((t, i) => [t, results[i]]))
   }
 
-  toMarkdown(briefing: Awaited<ReturnType<Aria['weeklyBriefing']>>): string {
+  toMarkdown(briefing: Awaited<ReturnType<CEO['weeklyBriefing']>>): string {
     const { business, generated, revenue, traffic, top_products, inventory, recommendations } = briefing
     return `# Weekly Briefing — ${business}
 _${new Date(generated).toDateString()}_

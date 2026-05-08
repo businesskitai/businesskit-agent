@@ -168,7 +168,7 @@ export class SEOAgent extends BaseAgent {
       sql: `UPDATE profiles SET llm_visibility=? WHERE id=?`,
       args: [JSON.stringify(updated), this.profileId],
     })
-    await logMemory('seo', 'Updated LLM visibility', updated)
+    await logMemory('seo', 'Updated LLM visibility', updated as unknown as Record<string, unknown>)
     return updated
   }
 

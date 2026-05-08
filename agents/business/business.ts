@@ -6,8 +6,8 @@
  */
 
 import { BaseAgent, db }          from '../_base.ts'
-import { analyticsAgent }                  from '../growth/analytics-agent.ts'
-import { storeManager }           from '../creators/store-manager.ts'
+import { analyticsAgent }                  from '../analytics/analytics.ts'
+import { storeManager }           from '../store/store.ts'
 
 export class CBO extends BaseAgent {
   readonly name  = 'REX'
