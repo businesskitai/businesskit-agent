@@ -1,19 +1,26 @@
 # Schema — Table Reference
 
-## Content tables (all share: id, profile_id, user_id, slug, title, content, excerpt, published, hidden, collection_id, created_at, updated_at)
+## Content — ONE unified table
 
-| Table | Route | Use |
+All user-facing content (blog, notes, guides, newsletter, compare, alternative, prompt, skills) lives in a single `content` table. The "type" is encoded via `cms_id` → `cms.category_id`:
+
+| Kind | Route | cms.category_id |
 |---|---|---|
-| `posts` | /blog | Blog: listicle, how-to, checklist, qa, versus, roundup, news, ultimate-guide |
-| `newsletter` | /newsletter | Email newsletter issues |
-| `notes` | /notes | Short-form notes |
-| `guides` | /guides | Long-form step-by-step guides |
-| `compare` | /compare | "X vs Y" programmatic SEO |
-| `alternative` | /alternative | "Best alternatives to X" |
-| `prompt` | /prompt | Prompt library articles |
-| `skills` | /skills | Published skill articles |
+| blog | /blog | cat_35 |
+| notes | /notes | cat_37 |
+| guides | /guides | cat_36 |
+| newsletter | /n | cat_20 |
+| compare | /compare | cat_40 |
+| alternative | /alternative | cat_41 |
+| prompt | /prompt | cat_39 |
+| skills | /skills | cat_38 |
 
-posts extras: seo_title (≤60), seo_description (≤160), seo_keywords, content_type, word_count, reading_time_mins, internal_links JSON, sources JSON
+`content` shared cols: id, cms_id, category_id, profile_id, user_id, slug, title, content, excerpt, published, hidden, collection_id, seo_title (≤60), seo_description (≤160), seo_keywords, word_count, reading_time_mins, internal_links (int), sources JSON, created_at, updated_at.
+
+Use `getCmsId(profileId, kind)` from `agents/content/content.ts` to resolve cms_id. Writes are unique per `(profile_id, category_id, slug)`.
+
+## Docs — separate, AUTOINCREMENT ids
+`doc_collections` + `doc_articles` — knowledge base. `id INTEGER PRIMARY KEY AUTOINCREMENT`, so omit id on INSERT.
 
 ## Products
 type: download|course|meeting|webinar|event|listing|sponsorship|service
@@ -37,8 +44,14 @@ memory_log: rolling 20 rows per profile — auto-trimmed
 agent_skills: UNIQUE(profile_id,slug) — upsert safe
 
 ## Analytics — READ ONLY, never write
-profile_analytics: total_clicks, analytics_7d/30d/12m/lifetime JSON, revenue_30d/12m/lifetime JSON
-product_analytics: total_sales, total_revenue_cents, sales_30d JSON
+Maintained by DB triggers (scalar counters) + app-side lazy aggregation (JSON breakdowns). JSON rebuilt on dashboard page visit with `last_aggregated_at` throttle — agents MUST NOT rebuild. If stale, surface a note to the user.
+
+- profile_analytics: total_clicks, total_views, bot_views, analytics_7d/30d/12m/lifetime JSON, revenue_* JSON
+- content_analytics (1/row): bot_views, total_views, total_reactions, total_comments, views_7d/30d/12m/lifetime, *_breakdown JSON
+- cms_analytics (1/cms-page): total_posts, total_draft, total_published, total_views, … (maintained by trg_content_insert/update/delete + trg_content_view_insert)
+- doc_analytics (1/doc): views, sad/neutral/happy votes, *_breakdown
+- product_analytics: total_sales, total_revenue_cents, sales_30d JSON
+- crm_analytics (1/profile): scalar counters by 13 triggers; JSON breakdowns aggregated on CRM dashboard visit
 
 ## ID and timestamp rules
 IDs: ulid() for most | omit id for doc_collections, doc_articles (AUTOINCREMENT)

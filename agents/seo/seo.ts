@@ -39,39 +39,49 @@ export class SEOAgent extends BaseAgent {
   async audit(): Promise<{ issues: SEOIssue[]; score: number; summary: string }> {
     await this.init()
 
-    const tables = ['posts', 'compare', 'alternative', 'guides'] as const
+    // All content lives in the unified `content` table; filter by the cms
+    // kinds we care about. See businesskit-files/content.ts for the schema.
+    const kinds = ['blog', 'compare', 'alternative', 'guides'] as const
     const allIssues: SEOIssue[] = []
 
-    for (const table of tables) {
-      try {
-        const { rows } = await db.execute({
-          sql: `SELECT id,title,slug,excerpt,seo_title,seo_description,word_count
-                FROM ${table} WHERE profile_id=? AND published=1 AND hidden=0`,
-          args: [this.profileId],
-        })
+    try {
+      const { rows } = await db.execute({
+        sql: `SELECT c.id, c.title, c.slug, c.excerpt, c.seo_title,
+                     c.seo_description, c.word_count, cms.slug AS kind
+              FROM content c
+              JOIN cms ON cms.id = c.cms_id
+              WHERE c.profile_id=? AND c.published=1 AND c.hidden=0
+                AND cms.slug IN ('blog','compare','alternative','guides')`,
+        args: [this.profileId],
+      })
 
-        for (const r of rows) {
-          const problems: string[] = []
-          if (!r.excerpt)                                              problems.push('missing excerpt')
-          if (!r.seo_title)                                            problems.push('missing seo_title')
-          if (!r.seo_description)                                      problems.push('missing seo_description')
-          if (r.seo_title && String(r.seo_title).length > 60)         problems.push('seo_title >60 chars')
-          if (r.seo_description && String(r.seo_description).length > 160) problems.push('seo_description >160 chars')
-          if (Number(r.word_count ?? 0) < 300)                        problems.push('thin content <300 words')
-          if (!r.slug || String(r.slug).includes(' '))                 problems.push('slug has spaces')
-          if (String(r.slug ?? '').length > 80)                        problems.push('slug too long >80 chars')
+      for (const r of rows) {
+        const problems: string[] = []
+        if (!r.excerpt)                                                     problems.push('missing excerpt')
+        if (!r.seo_title)                                                   problems.push('missing seo_title')
+        if (!r.seo_description)                                             problems.push('missing seo_description')
+        if (r.seo_title && String(r.seo_title).length > 60)                problems.push('seo_title >60 chars')
+        if (r.seo_description && String(r.seo_description).length > 160)   problems.push('seo_description >160 chars')
+        if (Number(r.word_count ?? 0) < 300)                                problems.push('thin content <300 words')
+        if (!r.slug || String(r.slug).includes(' '))                        problems.push('slug has spaces')
+        if (String(r.slug ?? '').length > 80)                               problems.push('slug too long >80 chars')
 
-          if (problems.length) {
-            allIssues.push({ table, id: r.id as string, title: r.title as string, slug: r.slug as string, problems })
-          }
+        if (problems.length) {
+          allIssues.push({
+            table: String(r.kind ?? 'content'),
+            id: r.id as string,
+            title: r.title as string,
+            slug: r.slug as string,
+            problems,
+          })
         }
-      } catch { /* table may not exist on older DBs */ }
-    }
+      }
+    } catch { /* content table may not exist on pre-migration DBs */ }
 
     const score = allIssues.length === 0 ? 100 : Math.max(0, 100 - allIssues.length * 5)
     const summary = allIssues.length === 0
       ? 'All content passes SEO checks.'
-      : `${allIssues.length} issues found across ${tables.join(', ')}.`
+      : `${allIssues.length} issues found across ${kinds.join(', ')}.`
 
     await logMemory('seo', `SEO audit: score ${score}/100, ${allIssues.length} issues`, { issues: allIssues.length, score })
 
@@ -80,13 +90,15 @@ export class SEOAgent extends BaseAgent {
 
   // ── Fix a specific post's SEO fields ─────────────────────────────────────
 
+  /** Fix SEO fields on any content row (blog, guides, compare, …). */
   async fixPost(id: string, fixes: {
     seo_title?: string
     seo_description?: string
     seo_keywords?: string[]
     excerpt?: string
     slug?: string
-  }, table = 'posts') {
+  }) {
+    await this.init()
     const sets: string[] = ['updated_at=?']
     const args: unknown[] = [iso()]
 
@@ -96,10 +108,9 @@ export class SEOAgent extends BaseAgent {
     if (fixes.excerpt)         { sets.push('excerpt=?');         args.push(fixes.excerpt) }
     if (fixes.slug)            { sets.push('slug=?');            args.push(this.toSlug(fixes.slug)) }
 
-    args.push(id)
-    await db.execute({
-      sql: `UPDATE ${table} SET ${sets.join(',')} WHERE id=? AND profile_id=?`,
-      args: [...args, this.profileId],
+    await db.write({
+      sql: `UPDATE content SET ${sets.join(',')} WHERE id=? AND profile_id=?`,
+      args: [...args, id, this.profileId],
     })
   }
 
@@ -200,38 +211,33 @@ export class SEOAgent extends BaseAgent {
     advice: string[]
   }> {
     await this.init()
-    const [
-      { rows: typeCounts },
-      { rows: [compareCount] },
-      { rows: [altCount] },
-    ] = await Promise.all([
+    // content_type is no longer a column on the new `content` schema —
+    // without it we can only detect missing kinds, not missing styles.
+    // We infer style presence from titles as a heuristic.
+    const [{ rows: kindCounts }, { rows: [thin] }] = await Promise.all([
       db.execute({
-        sql: `SELECT content_type, COUNT(*) as cnt FROM posts
-              WHERE profile_id=? AND published=1 AND hidden=0
-              GROUP BY content_type`,
+        sql: `SELECT cms.slug AS kind, COUNT(*) cnt, MAX(c.title) title_sample
+              FROM content c
+              JOIN cms ON cms.id = c.cms_id
+              WHERE c.profile_id=? AND c.published=1 AND c.hidden=0
+              GROUP BY cms.slug`,
         args: [this.profileId],
       }),
       db.execute({
-        sql: `SELECT COUNT(*) cnt FROM compare WHERE profile_id=? AND published=1`,
-        args: [this.profileId],
-      }),
-      db.execute({
-        sql: `SELECT COUNT(*) cnt FROM alternative WHERE profile_id=? AND published=1`,
+        sql: `SELECT COUNT(*) cnt FROM content
+              WHERE profile_id=? AND published=1 AND word_count < 500`,
         args: [this.profileId],
       }),
     ])
 
-    const publishedTypes = new Set(typeCounts.map(r => r.content_type as string))
+    const byKind = new Map(kindCounts.map(r => [String(r.kind), Number(r.cnt ?? 0)]))
     const highValueTypes = ['listicle', 'how-to', 'ultimate-guide', 'qa']
-    const missingTypes   = highValueTypes.filter(t => !publishedTypes.has(t))
+    // Best-effort: if there's no blog content at all, assume nothing of that
+    // style exists yet. Otherwise leave format-specific gaps to the content agent.
+    const missingTypes = (byKind.get('blog') ?? 0) === 0 ? highValueTypes : []
 
-    const { rows: [thin] } = await db.execute({
-      sql: `SELECT COUNT(*) cnt FROM posts WHERE profile_id=? AND published=1 AND word_count < 500`,
-      args: [this.profileId],
-    })
-
-    const noCompare     = Number(compareCount?.cnt ?? 0) === 0
-    const noAlternative = Number(altCount?.cnt ?? 0) === 0
+    const noCompare     = (byKind.get('compare')     ?? 0) === 0
+    const noAlternative = (byKind.get('alternative') ?? 0) === 0
     const thinPosts     = Number(thin?.cnt ?? 0)
 
     const advice: string[] = []

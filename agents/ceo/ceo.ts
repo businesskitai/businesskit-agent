@@ -35,9 +35,34 @@ export class CEO extends BaseAgent {
 
   async fullInventory() {
     await this.init()
-    const tables = ['posts', 'products', 'job_listings', 'forms', 'pages']
-    const results = await Promise.all(tables.map(t => this.count(t)))
-    return Object.fromEntries(tables.map((t, i) => [t, results[i]]))
+
+    // Content lives in unified `content` table — read trigger-maintained
+    // cms_analytics counts (free; no per-row COUNT). Everything else uses
+    // the live tables directly.
+    const [contentRows, products, jobs, forms, pages] = await Promise.all([
+      db.execute({
+        sql: `SELECT cms.slug AS kind, a.total_posts, a.total_published, a.total_draft
+              FROM cms
+              LEFT JOIN cms_analytics a ON a.cms_id = cms.id
+              WHERE cms.profile_id=?`,
+        args: [this.profileId],
+      }).then(r => r.rows),
+      this.count('products'),
+      this.count('job_listings'),
+      this.count('forms'),
+      this.count('pages'),
+    ])
+
+    const inv: Record<string, { total: number; live: number; drafts: number }> = {
+      products: products, job_listings: jobs, forms: forms, pages: pages,
+    }
+    for (const r of contentRows) {
+      const total = Number(r.total_posts ?? 0)
+      const live  = Number(r.total_published ?? 0)
+      const draft = Number(r.total_draft ?? 0)
+      if (total > 0) inv[String(r.kind)] = { total, live, drafts: draft }
+    }
+    return inv
   }
 
   toMarkdown(briefing: Awaited<ReturnType<CEO['weeklyBriefing']>>): string {
@@ -100,10 +125,10 @@ ${recommendations.map((r, i) => `${i + 1}. ${r}`).join('\n')}
     const recs: string[] = []
 
     if (!snap.profile) recs.push('Connect ATLAS — no analytics data yet.')
-    if ((inventory.posts?.live ?? 0) < 3)
+    if ((inventory.blog?.live ?? 0) < 3)
       recs.push('Publish at least 3 blog posts. Consistency drives organic traffic.')
-    if ((inventory.posts?.drafts ?? 0) > 0)
-      recs.push(`${inventory.posts.drafts} draft post(s) ready. Ask BLAKE to review and publish.`)
+    if ((inventory.blog?.drafts ?? 0) > 0)
+      recs.push(`${inventory.blog.drafts} draft post(s) ready. Ask BLAKE to review and publish.`)
 
     const hasNoProduct = !snap.products.some(p => p.type === 'course')
     if (hasNoProduct) recs.push('No courses yet. Ask SAGE to create one — courses drive 3–10x revenue per customer.')

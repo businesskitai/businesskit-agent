@@ -33,18 +33,17 @@
 
 ## Schema Quick Reference
 
-### Content tables
+### Content — unified `content` table
 
-All have: `profile_id, slug, title, content, excerpt, published, hidden, collection_id`
+All blog/notes/guides/newsletter/compare/alternative/prompt/skills content lives in the single `content` table, keyed by `cms_id` (one row per section in `cms`, which has a `category_id`). There is no `posts`/`newsletter`/`notes`/... table.
 
-| Table | Extra columns |
-|---|---|
-| `posts` | seo_title, seo_description, content_type, word_count |
-| `newsletter` | word_count, sent_count |
-| `notes`, `guides` | word_count |
-| `compare`, `alternative`, `prompt` | sources |
-| `doc_collections` | INT AUTOINCREMENT id |
-| `doc_articles` | INT AUTOINCREMENT id, collection_id |
+Shared columns: `id, cms_id, category_id, profile_id, user_id, slug, title, content, excerpt, published, hidden, collection_id, seo_title (≤60), seo_description (≤160), seo_keywords, word_count, reading_time_mins, internal_links (int), sources JSON, created_at, updated_at`.
+
+Resolve cms_id for a kind via `getCmsId(profileId, kind)` in `agents/content/content.ts`. The unique index is `(profile_id, category_id, slug)`.
+
+Kind → category_id: blog=cat_35, notes=cat_37, guides=cat_36, newsletter=cat_20, compare=cat_40, alternative=cat_41, prompt=cat_39, skills=cat_38.
+
+Docs are separate (INT AUTOINCREMENT ids): `doc_collections`, `doc_articles`.
 
 ### Products
 
