@@ -15,6 +15,13 @@ businesskit-files/
 # Personal preferences — local only, not for GitHub
 memory.md
 
+# Repo-local reference docs — for working with Claude, not for GitHub
+PROJECT.md
+ARCHITECTURE.md
+CODEBASE.md
+DOMAINS.md
+CONVENTIONS.md
+
 # context/ IS committed — it's your brand docs (no secrets)
 # agent_skills table in Turso = live skills (not in repo)
 
