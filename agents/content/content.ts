@@ -26,6 +26,7 @@
 
 import { BaseAgent, db, ulid, iso } from '../_base.ts'
 import { logMemory }                from '../../lib/memory.ts'
+import { ensureCmsRow }             from '../../lib/cms.ts'
 
 // ── Content "kinds" — the logical content type. Maps to cms_id at write. ────
 // Kept as a stable public API so other agents (seo, operations, ceo, marketing)
@@ -119,31 +120,10 @@ const TYPE_KIND: Partial<Record<ContentType, ContentKind>> = {
 
 /** Resolve a cms_id for a logical content kind — creates missing rows on demand. */
 export async function getCmsId(profileId: string, kind: ContentKind): Promise<string> {
-  const category = KIND_CATEGORY[kind]
-
-  const { rows: [existing] } = await db.execute({
-    sql: `SELECT id FROM cms WHERE profile_id=? AND category_id=? LIMIT 1`,
-    args: [profileId, category],
+  return ensureCmsRow(profileId, KIND_CATEGORY[kind], {
+    slug: KIND_ROUTE[kind],
+    title: kind.charAt(0).toUpperCase() + kind.slice(1),
   })
-  if (existing?.id) return existing.id as string
-
-  // Seed: cms row is idempotent via unique (profile_id, category_id).
-  const id = ulid()
-  await db.write({
-    sql: `INSERT OR IGNORE INTO cms (id, profile_id, slug, title, category_id)
-          VALUES (?, ?, ?, ?, ?)`,
-    args: [id, profileId, KIND_ROUTE[kind], capitalize(kind), category],
-  })
-  // Re-select in case a parallel insert won the race.
-  const { rows: [row] } = await db.execute({
-    sql: `SELECT id FROM cms WHERE profile_id=? AND category_id=? LIMIT 1`,
-    args: [profileId, category],
-  })
-  return (row?.id as string) ?? id
-}
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 export class BlogWriter extends BaseAgent {
