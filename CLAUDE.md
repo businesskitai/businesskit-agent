@@ -75,4 +75,13 @@ User states a preference → add to `memory.md` → apply immediately.
 
 ---
 
-Full schema, agent roster, routing rules: `REFERENCE.md`
+## Deeper context — read on demand
+
+| Need | File |
+|---|---|
+| How the repo wires to UserDB, BaseAgent contract, invariants | `ARCHITECTURE.md` |
+| Per-file inventory: agents/, lib/, skills/, commands | `CODEBASE.md` |
+| Which agent writes to which tables + trigger map | `DOMAINS.md` |
+| Code patterns — profile_id, idempotency, enums, soft-delete | `CONVENTIONS.md` |
+| Full schema + agent roster + Phase 2 swap | `REFERENCE.md` |
+| Roadmap, folder map, Phase 1/2/3 | `PLAN.md` |
