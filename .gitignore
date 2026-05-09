@@ -21,6 +21,7 @@ ARCHITECTURE.md
 CODEBASE.md
 DOMAINS.md
 CONVENTIONS.md
+review-by-*.md
 
 # context/ IS committed — it's your brand docs (no secrets)
 # agent_skills table in Turso = live skills (not in repo)
