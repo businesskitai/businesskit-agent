@@ -7,6 +7,7 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+build-error.md
 
 # Generated MCP configs (local machine paths & user profile IDs)
 .mcp.json

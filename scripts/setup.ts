@@ -41,10 +41,17 @@ console.log(`✓ Found binary: ${bkBin}`);
 
 // 2. Locate Profile
 const credsDir = path.join(process.env.HOME || '', '.businesskit/creds');
-const defaultProfile = '4628a5b1-ac05-4156-9d76-04bbd71119a1';
-let selectedProfile = process.argv[2] || defaultProfile;
+let selectedProfile = process.argv[2] || process.env.BUSINESSKIT_PROFILE || '';
 
-console.log(`✓ Target profile: ${selectedProfile}`);
+if (!selectedProfile && fs.existsSync(credsDir)) {
+  const files = fs.readdirSync(credsDir).filter((f) => f.startsWith('userdb_') && f.endsWith('.dat'));
+  if (files.length > 0) {
+    selectedProfile = files[0].replace(/^userdb_/, '').replace(/\.dat$/, '');
+  }
+}
+
+const mcpArgs = selectedProfile ? ['--mcp', '--profile', selectedProfile] : ['--mcp'];
+console.log(selectedProfile ? `✓ Target profile: ${selectedProfile}` : '✓ Using active BusinessKit profile');
 
 // 3. Output directory
 const outputDir = path.join(ROOT_DIR, 'output');
@@ -55,7 +62,7 @@ const claudeConfig = {
   mcpServers: {
     businesskit: {
       command: bkBin,
-      args: ['--mcp', '--profile', selectedProfile],
+      args: mcpArgs,
     },
   },
 };
@@ -76,7 +83,7 @@ const vscodeConfig = {
     businesskit: {
       type: 'stdio',
       command: bkBin,
-      args: ['--mcp', '--profile', selectedProfile],
+      args: mcpArgs,
     },
   },
 };

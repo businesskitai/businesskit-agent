@@ -32,7 +32,6 @@ echo "✓ Found binary: $BK_BIN"
 # 2. Discover available profiles
 CREDS_DIR="${HOME}/.businesskit/creds"
 PROFILES=()
-DEFAULT_PROFILE="4628a5b1-ac05-4156-9d76-04bbd71119a1" # BusinessKit profile
 
 if [ -d "$CREDS_DIR" ]; then
   for f in "${CREDS_DIR}"/userdb_*.dat; do
@@ -46,19 +45,19 @@ fi
 SELECTED_PROFILE=""
 if [ -n "$1" ]; then
   SELECTED_PROFILE="$1"
-elif [ "${#PROFILES[@]}" -eq 1 ]; then
-  SELECTED_PROFILE="${PROFILES[0]}"
-elif [ -f "${CREDS_DIR}/userdb_${DEFAULT_PROFILE}.dat" ]; then
-  SELECTED_PROFILE="$DEFAULT_PROFILE"
+elif [ -n "$BUSINESSKIT_PROFILE" ]; then
+  SELECTED_PROFILE="$BUSINESSKIT_PROFILE"
 elif [ "${#PROFILES[@]}" -gt 0 ]; then
   SELECTED_PROFILE="${PROFILES[0]}"
-else
-  echo "Warning: No cached profiles found in ~/.businesskit/creds/."
-  echo "Defaulting to: $DEFAULT_PROFILE"
-  SELECTED_PROFILE="$DEFAULT_PROFILE"
 fi
 
-echo "✓ Selected profile: $SELECTED_PROFILE"
+if [ -n "$SELECTED_PROFILE" ]; then
+  echo "✓ Selected organization profile: $SELECTED_PROFILE"
+  MCP_ARGS='["--mcp", "--profile", "'"${SELECTED_PROFILE}"'"]'
+else
+  echo "✓ Using active BusinessKit profile"
+  MCP_ARGS='["--mcp"]'
+fi
 
 # 3. Create output directory
 mkdir -p "${ROOT_DIR}/output"
@@ -69,7 +68,7 @@ cat <<EOF > "${ROOT_DIR}/.mcp.json"
   "mcpServers": {
     "businesskit": {
       "command": "${BK_BIN}",
-      "args": ["--mcp", "--profile", "${SELECTED_PROFILE}"]
+      "args": ${MCP_ARGS}
     }
   }
 }
@@ -83,7 +82,7 @@ cat <<EOF > "${ROOT_DIR}/.cursor/mcp.json"
   "mcpServers": {
     "businesskit": {
       "command": "${BK_BIN}",
-      "args": ["--mcp", "--profile", "${SELECTED_PROFILE}"]
+      "args": ${MCP_ARGS}
     }
   }
 }
@@ -98,7 +97,7 @@ cat <<EOF > "${ROOT_DIR}/.vscode/mcp.json"
     "businesskit": {
       "type": "stdio",
       "command": "${BK_BIN}",
-      "args": ["--mcp", "--profile", "${SELECTED_PROFILE}"]
+      "args": ${MCP_ARGS}
     }
   }
 }
@@ -112,7 +111,7 @@ cat <<EOF > "${ROOT_DIR}/.gemini/mcp_config.json"
   "mcpServers": {
     "businesskit": {
       "command": "${BK_BIN}",
-      "args": ["--mcp", "--profile", "${SELECTED_PROFILE}"]
+      "args": ${MCP_ARGS}
     }
   }
 }
