@@ -1,195 +1,114 @@
-# BusinessKit Agent
+# BusinessKit Agent: Universal Agent Workspace
 
-Your agents are useless without a knowledge layer.
-This is the knowledge layer — plus the agents that read from it.
-
-17 agents (CEO, CRM, Social, SEO, Blog Writer, and more) that read and write directly
-to your Turso database. Two layers:
-
-**Brand Foundation (BF)** — static, you write once: `context/brand-voice.md`,
-`context/about-me.md`, `SOUL.md`. Agents read before producing anything.
-
-**Knowledge Base Layer (KBL)** — dynamic, agents maintain: `agent_kb` table grows
-every session. Drop anything into `agent_notes` inbox — links, ideas, tweets, articles.
-Run `/ingest` and the agent compiles structured wiki pages with cross-links.
-Every question you ask gets filed back as a new entry. Knowledge compounds.
-
-Works with Claude Code, Claude Cowork, Gemini CLI, Codex, and any terminal.
+Run and operate your entire business from **any agentic CLI or IDE** (Antigravity, Cursor, Claude Code, VS Code Copilot, Gemini CLI, or Codex) using BusinessKit's native Model Context Protocol (MCP) toolbelt.
 
 ---
 
-## Install — two ways
+## Why Tools Mode via MCP?
 
-### Option A — Claude Code plugin (recommended)
+Unlike prototype agent scripts that attempt raw SQL writes into Turso DB, **BusinessKit Agent** communicates directly with your BusinessKit desktop app via MCP (`businesskit --mcp --profile <id>`):
 
-One command. Works across all projects. Auto-updates.
+- **Double-Entry Guarantees**: Debits and credits are balanced automatically in `fin_journal_entries`.
+- **Append-Only Ledgers**: Physical stock, customer credit (udhar), and loyalty ledgers cannot be corrupted by raw SQL.
+- **Credential Protection**: Database tokens never enter the LLM's context window. Credentials stay secured in the OS Keychain and native Rust binary.
+- **Prompt Injection Defense**: Incoming emails, customer notes, and webhooks are screened before reaching the agent.
 
-Open Claude Code terminal (`Ctrl+`` ` ``):
+---
 
+## Quick Start (1 Command)
+
+### Run Setup
+From inside this directory:
 ```bash
-/plugin marketplace add businesskitai/businesskit-agent
-/plugin install businesskit@businesskitai
-/reload-plugins
+./bin/businesskit.js
+# or: npm run setup
 ```
 
-Enter your credentials when prompted — `TURSO_URL` and `TURSO_TOKEN` from BusinessKit → Settings → Credentials.
-
-Commands are namespaced: `/businesskit:ceo`, `/businesskit:crm`, `/businesskit:blog-writer` etc.
+The setup script automatically:
+1. Detects your installed BusinessKit app (`/Applications/BusinessKit.app` on macOS, or build binary).
+2. Connects to your active organization profile (e.g. `4628a5b1-ac05-4156-9d76-04bbd71119a1`).
+3. Generates the exact configuration for your agent environment:
+   - **Antigravity / Gemini CLI**: registers via `agy mcp add` / `.gemini/mcp_config.json`
+   - **Cursor**: generates `.cursor/mcp.json` and `.cursorrules`
+   - **Claude Code**: generates `.mcp.json` and `.claude/commands`
+   - **VS Code**: generates `.vscode/mcp.json`
 
 ---
 
-### Option B — Clone for full access
+## Using With Your Favorite Agent
 
-Source code, all agents, customise everything.
-
+### 1. Claude Code
+Open your terminal in this repository:
 ```bash
-git clone https://github.com/businesskitai/businesskit-agent
-cd businesskit-agent
-npm install
-cp .env.example .env
-# Paste TURSO_URL and TURSO_TOKEN from BusinessKit → Settings → Credentials
-npm run setup
+claude
 ```
-
-Commands are direct: `/ceo`, `/crm`, `/blog-writer` etc.
-
----
-
-**Get credentials:** BusinessKit → Settings → Credentials → copy Turso URL and Token.
-
----
-
-## Fill in your context (20 minutes, once)
-
-These files make every agent 10x better. Without them, agents guess.
-
-```
-context/about-me.md      → who you are, your background, credibility
-context/brand-voice.md   → voice bible with real writing examples
-context/working-style.md → how you work, approval preferences, schedule
-context/business.md      → goals, revenue model, 90-day targets
-```
-
-**This is the most important step.** Shann Holmberg (Espressio) calls this the Brand Foundation —
-the static layer agents read before producing anything so the output sounds like you, not generic AI.
-
----
-
-## How to use
-
-### Claude Code
-
-Open this folder. Type any slash command:
-
-```
-/ceo          → weekly business briefing, priorities, pending approvals
-/blog-writer  → write posts, listicles, how-tos, comparisons
-/newsletter   → draft and send newsletters
-/social       → post to Twitter, LinkedIn, Instagram, TikTok (13 platforms)
-/crm          → manage contacts, deals, outreach pipeline
-/seo          → audit, fix meta, track LLM visibility
-/analytics    → revenue, traffic, product performance
-/store        → launch products, courses, services
-/ingest       → process agent_notes inbox into knowledge base
-/kb           → query your knowledge base
-/compress     → save session before context runs out
-/resume       → reload context next session
-```
-
-### Claude Cowork
-
-Install the BusinessKit plugin. Same commands, runs in your browser.
-
-### Terminal
-
+Claude Code reads `CLAUDE.md`, `.mcp.json`, and `.claude/commands/`. You can invoke commands directly with `/`:
 ```bash
-npx tsx cli.ts ceo
-npx tsx cli.ts blog-writer
-npx tsx cli.ts crm
+/write-docs "Getting Started"
+/create-page "About Us"
+/create-new-bill 5 Box Tellzy 40 Tab @ ₹1258.83 -15%
 ```
+
+### 2. Antigravity & Gemini CLI
+Antigravity connects via the registered `businesskit` MCP server and reads `AGENTS.md`, `commands/`, and `skills/`.
+> **Note on Commands in Antigravity**: While Claude Code uses `/` for terminal macro commands, Antigravity uses **intent-based chat triggers**. You can type slash commands like `/write-docs "Pages"` or simply ask in natural language (*"Write a docs article for Pages architecture"*). Antigravity matches your intent to the matching command spec in `commands/` and executes the exact MCP tool sequence.
+
+### 3. Cursor
+Open this folder in Cursor (`cursor .`). Cursor detects `.cursorrules` and `.cursor/mcp.json`. Use natural language or slash commands with the agent:
+> "Draft an invoice for Acme Corp with 10 units of consulting"
+> "Publish a new documentation article about Pages under category cat_32"
 
 ---
 
-## The knowledge layer
+## Universal Commands Directory (`commands/`)
 
-Drop anything into your inbox:
+All 23 universal commands match the BusinessKit in-app commands 1:1:
 
-```
-"add to notes: https://twitter.com/karpathy/status/... — useful for SEO strategy"
-"add to notes: idea — launch a free email course as lead magnet"
-"add to notes: competitor just raised prices, opportunity"
-```
-
-Run `/ingest` weekly. The agent reads each note, builds or updates wiki pages,
-cross-references related entries, marks contradictions as stale.
-
-Query anytime:
-
-```
-/kb  →  "what do I know about email deliverability?"
-        "what content formats performed best?"
-        "what's my current positioning vs competitors?"
-```
-
-Every answer gets filed back. The knowledge base gets richer every session.
-
----
-
-## Agents
-
-| Agent | What they do |
-|---|---|
-| **CEO** | Weekly briefing, revenue pulse, priorities, pending approvals |
-| **CMO** | Marketing strategy, content calendar, growth planning |
-| **COO** | Operations, publishing queue, task management |
-| **CBO** | Revenue analysis, pricing strategy, product performance |
-| **Blog Writer** | Posts, listicles, how-tos, comparisons, programmatic content |
-| **Newsletter Writer** | Drafts, subscriber analytics, send management |
-| **Copywriter** | Landing pages, product copy, profile bio |
-| **Course Creator** | Course structure, lessons, pricing, access |
-| **Store Manager** | Products, webinars, services, sponsorships, 1:1 calls |
-| **Jobs Manager** | Job listings, applications |
-| **Forms Builder** | Intake forms, waitlists, surveys |
-| **Docs Writer** | Knowledge base articles, FAQs |
-| **CRM Agent** | Contacts, deals, outreach pipeline with approval gates |
-| **Social Agent** | 13 platforms via Zernio, scheduling, inbox |
-| **Analytics Agent** | Revenue, traffic, product, email stats |
-| **SEO Agent** | Technical audit, meta, LLM visibility tracking |
-| **Scheduler** | Cron tasks, publish queue, Hermes pattern detection |
+| Domain | Command | Description |
+| :--- | :--- | :--- |
+| **Docs & CMS** | `/write-docs` | Write structured documentation or knowledge base article (`cat_32`) |
+| | `/write-blog` | Draft or publish a blog post with clean TipTap HTML (`cat_35`) |
+| | `/write-guide` | Step-by-step how-to guide with prerequisites and FAQs (`cat_36`) |
+| | `/write-newsletter` | Conversational email newsletter issue with sections and CTA (`cat_20`) |
+| | `/list-content` | List published and draft articles across hubs |
+| | `/update-content` | Edit body HTML, metadata, collection, or publish status |
+| | `/seo-audit` | Audit SEO titles, meta descriptions, and keywords |
+| **Pages & Web** | `/create-page` | Assemble a complete landing page using native visual sections |
+| | `/update-page` | Update sections, copy, or settings on an existing page |
+| | `/publish-page` | Toggle page live/published status |
+| | `/list-pages` | List all website pages and publication statuses |
+| | `/create-component` | Generate a bespoke custom component in `user_components` |
+| | `/list-components` | List custom components stored in `user_components` |
+| **Shop & POS** | `/create-new-bill` | Immediate POS billing receipt, natural language or handwritten bill |
+| | `/create-invoice` | Draft a formal itemized B2B customer invoice |
+| | `/send-invoice` | Send customer invoice via email and generate payment link |
+| | `/update-price` | Update retail selling price, cost, or discount floor |
+| **Inventory** | `/add-inventory-from-invoice` | Scan purchase invoice to restock items and post accounting |
+| | `/check-stock` | Query on-hand inventory levels and low-stock alerts |
+| | `/adjust-stock` | Record damage, shrinkage, or audit count variances |
+| **CRM** | `/add-contact` | Register a new client, lead, or supplier in CRM |
+| | `/update-contact` | Update contact information, company, or tags |
+| **System** | `/capabilities` | Discover active modules, profile settings, and tools |
 
 ---
 
-## Cost
+## Declarative Skills (`skills/`)
 
-Every agent is built to minimise token cost:
-
-- Skills loaded on demand — only what the task needs
-- KB index scanned first (slug + summary), content loaded only when needed
-- Reports pushed to Turso mid-conversation — never lost if session ends
-- `SYSTEM.md` enforces: do first, report after. No narrating what's about to happen.
-
-One founder moved from $130/5 days on a heavyweight agent setup to $10 on a lean
-knowledge-layer-first approach. That's the target.
-
----
-
-## Works with
-
-| Tool | How |
-|---|---|
-| Claude Code | Primary runtime — slash commands in `.claude/commands/` |
-| Claude Cowork | Plugin at `.claude-plugin/plugin.json` — 18 commands |
-| Gemini CLI | Reads `GEMINI.md` automatically |
-| Codex | Reads `AGENTS.md` automatically |
-| Cursor | Reads `.cursorrules` automatically |
-| Any terminal | `npx tsx cli.ts <agent>` |
+- [`skills/docs-cms/SKILL.md`](./skills/docs-cms/SKILL.md) — Technical documentation (`cat_32`), guides, and blog articles (with `references/how-to.md`).
+- [`skills/pages/SKILL.md`](./skills/pages/SKILL.md) — Visual site builder, section schemas, and custom HTML/CSS components (with `references/sections-catalog.json`).
+- [`skills/billing/SKILL.md`](./skills/billing/SKILL.md) — POS bills, B2B invoices, and payment tracking.
+- [`skills/inventory/SKILL.md`](./skills/inventory/SKILL.md) — Stock levels, purchase invoices, and price lists.
+- [`skills/crm/SKILL.md`](./skills/crm/SKILL.md) — Contacts, leads, and customer tags.
+- [`skills/inbox/SKILL.md`](./skills/inbox/SKILL.md) — Triage, 2FA code extraction, and reply drafting.
+- [`skills/brand/SKILL.md`](./skills/brand/SKILL.md) — Brand identity, voice guidelines, and store context.
+- [`skills/humanizer/SKILL.md`](./skills/humanizer/SKILL.md) — De-AI patterns and voice polishing.
+- [`skills/copywriting/SKILL.md`](./skills/copywriting/SKILL.md) — High-converting sales page copywriting.
+- [`skills/social/SKILL.md`](./skills/social/SKILL.md) — Multi-platform social copy and threads.
 
 ---
 
-## Requirements
+## Safety Invariants
 
-- Node.js 18+
-- A BusinessKit account with Turso connected
-- Social platform tokens (optional — for `/social`)
-
-MIT License
+1. **Tool-First**: Agents never write raw SQL.
+2. **Drafts First**: External communications, invoices, and emails are saved as drafts. A human confirms and sends.
+3. **Audit Trail**: All generated deliverables and reports are placed in `./output/`.

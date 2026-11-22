@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "businesskit": {
+      "type": "stdio",
+      "command": "{{BUSINESSKIT_BIN}}",
+      "args": ["--mcp", "--profile", "{{PROFILE_ID}}"]
+    }
+  }
+}

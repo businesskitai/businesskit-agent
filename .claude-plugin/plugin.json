@@ -1,6 +1,6 @@
 {
   "name": "businesskit",
-  "description": "Autonomous business agent team — CEO, CRM, Social, SEO, Blog Writer and more. Powered by your own Turso database. Works with Claude Code, Claude Cowork, Gemini CLI, and Codex.",
+  "description": "Universal BusinessKit Agent — operate your business via BusinessKit native MCP tools. Works with Antigravity, Claude Code, Cursor, VS Code, and Gemini CLI.",
   "version": "1.0.0",
   "author": {
     "name": "BusinessKit",

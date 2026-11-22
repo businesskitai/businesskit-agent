@@ -1,38 +1,26 @@
 {
   "name": "@businesskit/agent",
   "version": "1.0.4",
-  "description": "Autonomous business agent team — CEO, CRM, Social, SEO, Blog Writer and more. Powered by your own Turso database. Works with Claude Code, Claude Cowork, Gemini CLI, and Codex.",
+  "description": "Universal BusinessKit Agent Kit — Antigravity, Cursor, Claude Code, VS Code, and Gemini CLI via BusinessKit native MCP tools.",
   "type": "module",
   "bin": {
     "bk": "./bin/businesskit.js",
     "businesskit": "./bin/businesskit.js"
   },
   "scripts": {
-    "setup": "npx tsx setup.ts",
-    "cli": "npx tsx cli.ts",
-    "ceo": "npx tsx cli.ts ceo",
-    "cmo": "npx tsx cli.ts cmo",
-    "coo": "npx tsx cli.ts coo",
-    "cbo": "npx tsx cli.ts cbo",
-    "analytics": "npx tsx cli.ts analytics",
-    "seo": "npx tsx cli.ts seo",
-    "scheduler:hourly": "npx tsx cli.ts scheduler hourly",
-    "scheduler:daily": "npx tsx cli.ts scheduler daily",
-    "scheduler:weekly": "npx tsx cli.ts scheduler weekly"
+    "setup": "bash ./scripts/setup.sh",
+    "setup:ts": "npx tsx scripts/setup.ts"
   },
   "keywords": [
     "claude-code",
     "claude-cowork",
+    "antigravity",
+    "cursor",
+    "mcp",
     "ai-agent",
     "business-agent",
-    "turso",
-    "crm",
-    "social-media",
     "businesskit"
   ],
-  "dependencies": {
-    "@libsql/client": "^0.15.15"
-  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",

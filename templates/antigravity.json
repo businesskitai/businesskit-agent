@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "businesskit": {
+      "command": "{{BUSINESSKIT_BIN}}",
+      "args": ["--mcp", "--profile", "{{PROFILE_ID}}"]
+    }
+  }
+}

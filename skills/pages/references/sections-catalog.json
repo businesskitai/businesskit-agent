@@ -1,0 +1,950 @@
+{
+  "version": "1.0",
+  "description": "Canonical BusinessKit Visual Builder Native Sections Catalog",
+  "themes": [
+    {
+      "id": "superconsole",
+      "name": "SuperConsole",
+      "description": "Terminal/developer-first dark aesthetic with high-contrast typography, code-like accents, and GitHub release detection.",
+      "recommended_for": "Developer tools, AI platforms, technical SaaS, high-performance infra.",
+      "colors": {
+        "background": "#09090b",
+        "surface": "#18181b",
+        "text": "#ffffff",
+        "text_muted": "#a1a1aa",
+        "accent": "#38bdf8",
+        "border": "rgba(255, 255, 255, 0.12)"
+      },
+      "css_variables": {
+        "background": "var(--surface-1, #09090b)",
+        "surface": "var(--surface-2, #18181b)",
+        "text": "var(--text-primary, #ffffff)",
+        "text_muted": "var(--text-secondary, #a1a1aa)",
+        "accent": "var(--accent, #38bdf8)",
+        "border": "var(--border, rgba(255, 255, 255, 0.12))"
+      }
+    },
+    {
+      "id": "classic",
+      "name": "Classic Minimal",
+      "description": "Light, clean, balanced typography with neutral tones and universal versatility.",
+      "recommended_for": "Retail shops, service agencies, portfolios, consulting, general ecommerce.",
+      "colors": {
+        "background": "#ffffff",
+        "surface": "#f4f4f5",
+        "text": "#09090b",
+        "text_muted": "#71717a",
+        "accent": "#18181b",
+        "border": "#e4e4e7"
+      },
+      "css_variables": {
+        "background": "var(--surface-1, #ffffff)",
+        "surface": "var(--surface-2, #f4f4f5)",
+        "text": "var(--text-primary, #09090b)",
+        "text_muted": "var(--text-secondary, #71717a)",
+        "accent": "var(--accent, #18181b)",
+        "border": "var(--border, #e4e4e7)"
+      }
+    },
+    {
+      "id": "nike",
+      "name": "Nike Athletic",
+      "description": "Bold, high-energy aesthetic with large typography, impactful contrast, and action-driven CTAs.",
+      "recommended_for": "Sporting goods, fitness, apparel, active lifestyle, high-energy brand launches.",
+      "colors": {
+        "background": "#000000",
+        "surface": "#111111",
+        "text": "#ffffff",
+        "text_muted": "#a1a1aa",
+        "accent": "#38bdf8",
+        "border": "rgba(255, 255, 255, 0.18)"
+      },
+      "css_variables": {
+        "background": "var(--surface-1, #000000)",
+        "surface": "var(--surface-2, #111111)",
+        "text": "var(--text-primary, #ffffff)",
+        "text_muted": "var(--text-secondary, #a1a1aa)",
+        "accent": "var(--accent, #38bdf8)",
+        "border": "var(--border, rgba(255, 255, 255, 0.18))"
+      }
+    },
+    {
+      "id": "tesla",
+      "name": "Tesla Clean Tech",
+      "description": "Futuristic, ultra-clean luxury minimalism with sleek spacing and subtle high-tech elegance.",
+      "recommended_for": "Hardware, automotive, luxury tech, clean energy, premium modern products.",
+      "colors": {
+        "background": "#000000",
+        "surface": "#171717",
+        "text": "#ffffff",
+        "text_muted": "#737373",
+        "accent": "#3e6ae1",
+        "border": "rgba(255, 255, 255, 0.12)"
+      },
+      "css_variables": {
+        "background": "var(--surface-1, #000000)",
+        "surface": "var(--surface-2, #171717)",
+        "text": "var(--text-primary, #ffffff)",
+        "text_muted": "var(--text-secondary, #737373)",
+        "accent": "var(--accent, #3e6ae1)",
+        "border": "var(--border, rgba(255, 255, 255, 0.12))"
+      }
+    }
+  ],
+  "sections": [
+    {
+      "type": "sc_navbar",
+      "name": "SuperConsole Navbar",
+      "theme": "superconsole",
+      "category": "Navigation",
+      "description": "Header navigation bar with brand, links, login shortcut, sticky option, and CTA button",
+      "ai_summary": "Dark/developer aesthetic top navigation bar with brand logo, links, login link, and download/action CTA.",
+      "when_to_use": "Always place as the very first section (order: 0) on landing pages to establish brand identity and header navigation.",
+      "aliases": [
+        "navbar",
+        "superconsole_navbar",
+        "superconsoleNavbar"
+      ],
+      "schema": [
+        {
+          "name": "brandName",
+          "label": "Brand Name",
+          "type": "text"
+        },
+        {
+          "name": "brandLogoUrl",
+          "label": "Brand Logo Image URL",
+          "type": "text"
+        },
+        {
+          "name": "loginText",
+          "label": "Login Link Text",
+          "type": "text"
+        },
+        {
+          "name": "loginUrl",
+          "label": "Login Link URL",
+          "type": "text"
+        },
+        {
+          "name": "ctaText",
+          "label": "CTA Button Text",
+          "type": "text"
+        },
+        {
+          "name": "ctaUrl",
+          "label": "CTA Button URL",
+          "type": "text"
+        },
+        {
+          "name": "bgColor",
+          "label": "Navbar Background Color",
+          "type": "text"
+        },
+        {
+          "name": "isSticky",
+          "label": "Sticky Navigation",
+          "type": "boolean"
+        },
+        {
+          "name": "links",
+          "label": "Navigation Links",
+          "type": "array"
+        }
+      ],
+      "default_data": {
+        "type": "sc_navbar",
+        "brandName": "BusinessKit",
+        "brandLogoUrl": "",
+        "links": [
+          {
+            "label": "Features",
+            "url": "#features"
+          },
+          {
+            "label": "Pricing",
+            "url": "#pricing"
+          },
+          {
+            "label": "FAQ",
+            "url": "#faq"
+          }
+        ],
+        "ctaText": "Get Started",
+        "ctaUrl": "/signup",
+        "loginText": "Sign In",
+        "loginUrl": "/login",
+        "bgColor": "#09090b",
+        "isSticky": true
+      },
+      "reference_html": "<header class=\"comp-sc-navbar\" data-field=\"bgColor\">\n  <div class=\"nav-container\">\n    <a href=\"/\" class=\"brand\">\n      <span class=\"brand-name\" contenteditable=\"true\" data-field=\"brandName\" data-element-type=\"text\">BusinessKit</span>\n    </a>\n    <nav class=\"nav-links\">\n      <a href=\"#features\">Features</a>\n      <a href=\"#pricing\">Pricing</a>\n      <a href=\"#faq\">FAQ</a>\n    </nav>\n    <div class=\"nav-actions\">\n      <a href=\"/login\" class=\"login-link\" contenteditable=\"true\" data-field=\"loginText\" data-element-type=\"link\">Sign In</a>\n      <a href=\"/signup\" data-field=\"ctaUrl\" data-element-type=\"link\">\n        <button class=\"cta-btn\" contenteditable=\"true\" data-field=\"ctaText\" data-element-type=\"button\">Get Started</button>\n      </a>\n    </div>\n  </div>\n</header>",
+      "reference_css": ".comp-sc-navbar { width: 100%; position: sticky; top: 0; z-index: 50; background: var(--surface-1, #09090b); border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1)); backdrop-filter: blur(12px); } .comp-sc-navbar .nav-container { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; } .comp-sc-navbar .brand { text-decoration: none; } .comp-sc-navbar .brand-name { font-size: 18px; font-weight: 700; color: var(--text-primary, #ffffff); letter-spacing: -0.02em; } .comp-sc-navbar .nav-links { display: flex; gap: 24px; align-items: center; } .comp-sc-navbar .nav-links a { color: var(--text-secondary, #a1a1aa); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.15s; } .comp-sc-navbar .nav-links a:hover { color: var(--text-primary, #ffffff); } .comp-sc-navbar .nav-actions { display: flex; align-items: center; gap: 16px; } .comp-sc-navbar .login-link { color: var(--text-secondary, #a1a1aa); text-decoration: none; font-size: 14px; font-weight: 500; } .comp-sc-navbar .cta-btn { padding: 8px 18px; border-radius: 6px; background: var(--button-primary-bg, var(--accent, #38bdf8)); color: var(--button-primary-text, #09090b); font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: opacity 0.15s; } .comp-sc-navbar .cta-btn:hover { opacity: 0.9; } @media (max-width: 768px) { .comp-sc-navbar .nav-links { display: none; } }"
+    },
+    {
+      "type": "sc_hero",
+      "name": "SuperConsole Hero Banner",
+      "theme": "superconsole",
+      "category": "Hero",
+      "description": "High-impact developer aesthetic hero section with badge pill, title, subtitle, dual CTAs, and preview image",
+      "ai_summary": "High-impact SaaS/tech hero banner with badge pill, accented headline, dual action buttons, and preview image.",
+      "when_to_use": "Primary choice for tech products, developer tools, SaaS, and modern business landing pages.",
+      "aliases": [
+        "superconsole_hero",
+        "superconsoleHero"
+      ],
+      "schema": [
+        {
+          "name": "badgeText",
+          "label": "Badge Pill Text",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "label": "Main Headline",
+          "type": "text"
+        },
+        {
+          "name": "titleAccent",
+          "label": "Highlighted Accent Word",
+          "type": "text"
+        },
+        {
+          "name": "subtitle",
+          "label": "Subtitle Description",
+          "type": "textarea"
+        },
+        {
+          "name": "primaryBtnText",
+          "label": "Primary Button Label",
+          "type": "text"
+        },
+        {
+          "name": "primaryBtnUrl",
+          "label": "Primary Button URL",
+          "type": "text"
+        },
+        {
+          "name": "secondaryBtnText",
+          "label": "Secondary Button Label",
+          "type": "text"
+        },
+        {
+          "name": "secondaryBtnUrl",
+          "label": "Secondary Button URL",
+          "type": "text"
+        },
+        {
+          "name": "previewImageUrl",
+          "label": "Preview Mockup Image URL",
+          "type": "text"
+        },
+        {
+          "name": "bgColor",
+          "label": "Section Background",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "sc_hero",
+        "badgeText": "NEW RELEASE v2.0",
+        "title": "Where Builders Run Agents at Scale",
+        "titleAccent": "Agents at Scale",
+        "subtitle": "Streamline billing, inventory, CRM, and web presence with one integrated platform.",
+        "primaryBtnText": "Start Free Trial",
+        "primaryBtnUrl": "#pricing",
+        "secondaryBtnText": "View Demo",
+        "secondaryBtnUrl": "#features",
+        "previewImageUrl": "",
+        "bgColor": "#09090b"
+      },
+      "reference_html": "<section class=\"comp-sc-hero\" data-field=\"bgColor\">\n  <div class=\"badge\" contenteditable=\"true\" data-field=\"badgeText\" data-element-type=\"text\">NEW RELEASE v2.0</div>\n  <h1 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Where Builders Run <span class=\"accent\" data-field=\"titleAccent\">Agents at Scale</span></h1>\n  <p contenteditable=\"true\" data-field=\"subtitle\" data-element-type=\"text\">Streamline billing, inventory, CRM, and web presence with one integrated platform.</p>\n  <div class=\"actions\">\n    <a href=\"#pricing\" data-field=\"primaryBtnUrl\" data-element-type=\"link\">\n      <button class=\"btn-primary\" contenteditable=\"true\" data-field=\"primaryBtnText\" data-element-type=\"button\">Start Free Trial</button>\n    </a>\n    <a href=\"#features\" data-field=\"secondaryBtnUrl\" data-element-type=\"link\">\n      <button class=\"btn-secondary\" contenteditable=\"true\" data-field=\"secondaryBtnText\" data-element-type=\"button\">View Demo</button>\n    </a>\n  </div>\n</section>",
+      "reference_css": ".comp-sc-hero { position: relative; width: 100%; min-height: 480px; padding: 80px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: var(--surface-1, #09090b); color: var(--text-primary, #ffffff); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .comp-sc-hero .badge { display: inline-flex; align-items: center; padding: 6px 14px; border-radius: 9999px; background: rgba(56, 189, 248, 0.12); color: var(--accent, #38bdf8); font-size: 13px; font-weight: 600; margin-bottom: 24px; border: 1px solid rgba(56, 189, 248, 0.25); } .comp-sc-hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; margin: 0 0 20px; max-width: 840px; } .comp-sc-hero h1 .accent { color: var(--accent, #38bdf8); } .comp-sc-hero p { font-size: 18px; line-height: 1.6; color: var(--text-secondary, #a1a1aa); max-width: 620px; margin: 0 auto 36px; } .comp-sc-hero .actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; } .comp-sc-hero .btn-primary { padding: 14px 28px; border-radius: 8px; background: var(--button-primary-bg, var(--accent, #38bdf8)); color: var(--button-primary-text, #09090b); font-weight: 600; font-size: 15px; border: none; cursor: pointer; transition: transform 0.15s, opacity 0.15s; } .comp-sc-hero .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); } .comp-sc-hero .btn-secondary { padding: 14px 26px; border-radius: 8px; background: rgba(255, 255, 255, 0.06); color: var(--text-primary, #ffffff); font-weight: 600; font-size: 15px; border: 1px solid var(--border, rgba(255, 255, 255, 0.15)); cursor: pointer; transition: background 0.15s; } .comp-sc-hero .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); }"
+    },
+    {
+      "type": "hero_section",
+      "name": "Classic Hero",
+      "theme": "classic",
+      "category": "Hero",
+      "description": "Standard landing page hero with media image and highlight boxes",
+      "ai_summary": "Clean, light-themed standard hero banner with title, heading, media box, and highlight pill.",
+      "when_to_use": "Use for classic business websites, agencies, retail shops, or service businesses where a minimalist light hero is preferred over high-tech dark mode.",
+      "aliases": [
+        "heroSection",
+        "light_hero"
+      ],
+      "schema": [
+        {
+          "name": "text1",
+          "label": "Top Badge Text",
+          "type": "text"
+        },
+        {
+          "name": "heading",
+          "label": "Main Heading",
+          "type": "text"
+        },
+        {
+          "name": "text2",
+          "label": "Subheading Text",
+          "type": "text"
+        },
+        {
+          "name": "mediaUrl",
+          "label": "Media / Hero Image URL",
+          "type": "text"
+        },
+        {
+          "name": "text3",
+          "label": "Action Note",
+          "type": "text"
+        },
+        {
+          "name": "bgColor",
+          "label": "Background Color",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "hero_section",
+        "text1": "Welcome",
+        "heading": "Modern Store Management",
+        "text2": "Designed for retail and digital creators.",
+        "text3": "Get started today with no credit card required.",
+        "mediaUrl": "",
+        "text4": "Trusted by 1,000+ businesses",
+        "bgColor": "#ffffff",
+        "highlightBoxColor": "#f4f4f5"
+      },
+      "reference_html": "<section class=\"comp-classic-hero\" data-field=\"bgColor\">\n  <div class=\"pill\" contenteditable=\"true\" data-field=\"text1\" data-element-type=\"text\">Simple & Modern</div>\n  <h1 contenteditable=\"true\" data-field=\"heading\" data-element-type=\"text\">Everything Your Business Needs In One Place</h1>\n  <p contenteditable=\"true\" data-field=\"text2\" data-element-type=\"text\">Designed for retail and digital creators with clean aesthetic and fast checkout.</p>\n  <div class=\"highlight-box\" data-field=\"highlightBoxColor\">\n    <span contenteditable=\"true\" data-field=\"text3\" data-element-type=\"text\">Get started today with no credit card required.</span>\n  </div>\n</section>",
+      "reference_css": ".comp-classic-hero { width: 100%; min-height: 420px; padding: 72px 24px; text-align: center; background: var(--surface-1, #ffffff); color: var(--text-primary, #09090b); display: flex; flex-direction: column; align-items: center; justify-content: center; } .comp-classic-hero .pill { display: inline-block; padding: 6px 16px; border-radius: 9999px; background: var(--surface-2, #f4f4f5); color: var(--text-secondary, #71717a); font-size: 13px; font-weight: 500; margin-bottom: 20px; border: 1px solid var(--border, #e4e4e7); } .comp-classic-hero h1 { font-size: clamp(2.25rem, 4.5vw, 3.5rem); font-weight: 700; line-height: 1.2; margin: 0 0 16px; max-width: 800px; } .comp-classic-hero p { font-size: 17px; line-height: 1.6; color: var(--text-secondary, #71717a); max-width: 580px; margin: 0 auto 28px; } .comp-classic-hero .highlight-box { padding: 12px 24px; border-radius: 8px; background: var(--surface-2, #f4f4f5); border: 1px solid var(--border, #e4e4e7); font-size: 14px; font-weight: 500; color: var(--text-primary, #09090b); }"
+    },
+    {
+      "type": "sc_use_cases",
+      "name": "SuperConsole Features & Use Cases",
+      "theme": "superconsole",
+      "category": "Features",
+      "description": "Tabbed interactive feature showcase with icons, descriptions, and feature bullet checklists",
+      "ai_summary": "Tabbed interactive feature showcase with icons, descriptions, and bullet checklists.",
+      "when_to_use": "Use directly below the hero to showcase multiple personas, product modules, or major feature categories in an interactive tabbed view.",
+      "aliases": [
+        "use_cases",
+        "superconsole_use_cases",
+        "superconsoleUseCases"
+      ],
+      "schema": [
+        {
+          "name": "badgeText",
+          "label": "Badge Label",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "label": "Section Title",
+          "type": "text"
+        },
+        {
+          "name": "subtitle",
+          "label": "Section Subtitle",
+          "type": "text"
+        },
+        {
+          "name": "tabs",
+          "label": "Feature Tabs",
+          "type": "array"
+        },
+        {
+          "name": "bgColor",
+          "label": "Background Color",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "sc_use_cases",
+        "badgeText": "CAPABILITIES",
+        "title": "Built for Every Workflow",
+        "subtitle": "Discover how our integrated tools accelerate your operations.",
+        "tabs": [
+          {
+            "id": "tab-1",
+            "label": "POS & Billing",
+            "icon": "Zap",
+            "title": "Instant Offline-First Billing",
+            "description": "Issue GST-compliant invoices in under 5 seconds with barcode support.",
+            "features": [
+              "Multi-rate GST handling",
+              "Thermal printer receipt support",
+              "Fast product search"
+            ]
+          },
+          {
+            "id": "tab-2",
+            "label": "Inventory",
+            "icon": "Box",
+            "title": "Smart Stock Management",
+            "description": "Track stock movements, batch expirations, and auto-generate reorder alerts.",
+            "features": [
+              "Batch & expiry tracking",
+              "Low stock alerts",
+              "Vendor purchase invoices"
+            ]
+          }
+        ],
+        "bgColor": "#09090b"
+      },
+      "reference_html": "<section class=\"comp-sc-features\" data-field=\"bgColor\">\n  <div class=\"header\">\n    <div class=\"badge\" contenteditable=\"true\" data-field=\"badgeText\" data-element-type=\"text\">CAPABILITIES</div>\n    <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Built for Every Workflow</h2>\n    <p contenteditable=\"true\" data-field=\"subtitle\" data-element-type=\"text\">Discover how our integrated tools accelerate your operations.</p>\n  </div>\n  <div class=\"grid\">\n    <div class=\"card\">\n      <div class=\"icon\">⚡</div>\n      <h3>POS & Billing</h3>\n      <p>Issue GST-compliant invoices in under 5 seconds with barcode support.</p>\n      <ul class=\"checklist\">\n        <li>Multi-rate GST handling</li>\n        <li>Thermal printer receipt support</li>\n        <li>Fast product search</li>\n      </ul>\n    </div>\n    <div class=\"card\">\n      <div class=\"icon\">📦</div>\n      <h3>Inventory Management</h3>\n      <p>Track stock movements, batch expirations, and auto-generate reorder alerts.</p>\n      <ul class=\"checklist\">\n        <li>Batch & expiry tracking</li>\n        <li>Low stock alerts</li>\n        <li>Vendor purchase invoices</li>\n      </ul>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-sc-features { width: 100%; padding: 80px 24px; background: var(--surface-1, #09090b); color: var(--text-primary, #ffffff); } .comp-sc-features .header { max-width: 720px; margin: 0 auto 56px; text-align: center; } .comp-sc-features .badge { display: inline-flex; padding: 4px 12px; border-radius: 9999px; background: rgba(56, 189, 248, 0.1); color: var(--accent, #38bdf8); font-size: 12px; font-weight: 600; margin-bottom: 16px; border: 1px solid rgba(56, 189, 248, 0.2); } .comp-sc-features h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin: 0 0 16px; letter-spacing: -0.02em; } .comp-sc-features p { font-size: 17px; color: var(--text-secondary, #a1a1aa); line-height: 1.6; margin: 0; } .comp-sc-features .grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; } .comp-sc-features .card { padding: 32px; border-radius: 12px; background: var(--surface-2, #18181b); border: 1px solid var(--border, rgba(255, 255, 255, 0.1)); transition: border-color 0.2s, transform 0.2s; } .comp-sc-features .card:hover { border-color: var(--accent, #38bdf8); transform: translateY(-2px); } .comp-sc-features .icon { font-size: 28px; margin-bottom: 16px; } .comp-sc-features .card h3 { font-size: 20px; font-weight: 600; margin: 0 0 12px; } .comp-sc-features .card p { font-size: 15px; color: var(--text-secondary, #a1a1aa); margin-bottom: 20px; } .comp-sc-features .checklist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; } .comp-sc-features .checklist li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-primary, #ffffff); } .comp-sc-features .checklist li::before { content: '✓'; color: var(--accent, #38bdf8); font-weight: 700; }"
+    },
+    {
+      "type": "sc_workspace",
+      "name": "SuperConsole Split Showcase (Right Image)",
+      "theme": "superconsole",
+      "category": "Showcase",
+      "description": "Two-column split section: feature bullet points on the left, screenshot/mockup on the right",
+      "ai_summary": "Split section with value proposition bullets on left and screenshot/mockup preview on right.",
+      "when_to_use": "Best for demonstrating user workflow, UI dashboard screenshots, or core platform benefits.",
+      "aliases": [
+        "workspace",
+        "superconsole_workspace",
+        "superconsoleWorkspace"
+      ],
+      "schema": [
+        {
+          "name": "badgeText",
+          "label": "Badge Label",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "label": "Headline",
+          "type": "text"
+        },
+        {
+          "name": "subtitle",
+          "label": "Subtitle",
+          "type": "text"
+        },
+        {
+          "name": "bullets",
+          "label": "Bullet Points",
+          "type": "array"
+        },
+        {
+          "name": "imageUrl",
+          "label": "Showcase Image URL",
+          "type": "text"
+        },
+        {
+          "name": "imageAlt",
+          "label": "Image Alt Text",
+          "type": "text"
+        },
+        {
+          "name": "bgColor",
+          "label": "Background Color",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "sc_workspace",
+        "badgeText": "PLATFORM",
+        "title": "Everything in One Place",
+        "subtitle": "Eliminate fragmented SaaS tools and manage your entire business seamlessly.",
+        "bullets": [
+          {
+            "title": "Zero Cloud Latency",
+            "description": "Local-first SQLite architecture with instant Turso cloud sync."
+          },
+          {
+            "title": "Autonomous Copilot",
+            "description": "Execute tasks and analyze data directly through voice or chat."
+          }
+        ],
+        "imageUrl": "",
+        "imageAlt": "Workspace interface showcase",
+        "bgColor": "#09090b"
+      },
+      "reference_html": "<section class=\"comp-sc-workspace\" data-field=\"bgColor\">\n  <div class=\"workspace-header\">\n    <div class=\"badge\" contenteditable=\"true\" data-field=\"badgeText\" data-element-type=\"text\">PLATFORM</div>\n    <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Everything in One Place</h2>\n    <p contenteditable=\"true\" data-field=\"subtitle\" data-element-type=\"text\">Eliminate fragmented SaaS tools and manage your entire business seamlessly.</p>\n  </div>\n  <div class=\"workspace-split\">\n    <div class=\"bullets-col\">\n      <div class=\"bullet-item\">\n        <div class=\"bullet-icon\">⚡</div>\n        <div class=\"bullet-content\">\n          <h4 contenteditable=\"true\" data-field=\"bulletTitle1\">Zero Cloud Latency</h4>\n          <p contenteditable=\"true\" data-field=\"bulletDesc1\">Local-first SQLite architecture with instant Turso cloud sync and zero round-trip delay.</p>\n        </div>\n      </div>\n      <div class=\"bullet-item\">\n        <div class=\"bullet-icon\">🔒</div>\n        <div class=\"bullet-content\">\n          <h4 contenteditable=\"true\" data-field=\"bulletTitle2\">Isolated Scope & Security</h4>\n          <p contenteditable=\"true\" data-field=\"bulletDesc2\">Every credential and API token is scoped per organization and encrypted client-side.</p>\n        </div>\n      </div>\n      <div class=\"bullet-item\">\n        <div class=\"bullet-icon\">🤖</div>\n        <div class=\"bullet-content\">\n          <h4 contenteditable=\"true\" data-field=\"bulletTitle3\">Autonomous Copilot</h4>\n          <p contenteditable=\"true\" data-field=\"bulletDesc3\">Execute routine accounting, inventory tracking, and invoice generation with intelligent agents.</p>\n        </div>\n      </div>\n    </div>\n    <div class=\"preview-col\">\n      <div class=\"terminal-card\">\n        <div class=\"term-bar\">\n          <span class=\"dot\"></span><span class=\"dot\"></span><span class=\"dot\"></span>\n          <span class=\"term-title\">workspace — terminal</span>\n        </div>\n        <div class=\"term-content\">\n          <p class=\"term-line prompt\"><span class=\"cmd-symbol\">$</span> businesskit sync --active-profile</p>\n          <p class=\"term-line success\">✓ Local SQLite loaded: 1,420 products, 842 orders</p>\n          <p class=\"term-line info\">● Cloud Turso replica synced in 14ms</p>\n          <p class=\"term-line muted\">Ready for offline POS billing and background automation.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-sc-workspace { width: 100%; padding: 88px 24px; background: var(--surface-1, #09090b); color: var(--text-primary, #ffffff); } .comp-sc-workspace .workspace-header { max-width: 720px; margin: 0 auto 56px; text-align: center; } .comp-sc-workspace .badge { display: inline-flex; padding: 4px 12px; border-radius: 9999px; background: rgba(56, 189, 248, 0.1); color: var(--accent, #38bdf8); font-size: 12px; font-weight: 600; margin-bottom: 16px; border: 1px solid rgba(56, 189, 248, 0.2); } .comp-sc-workspace h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin: 0 0 16px; letter-spacing: -0.02em; } .comp-sc-workspace p { font-size: 17px; color: var(--text-secondary, #a1a1aa); line-height: 1.6; margin: 0; } .comp-sc-workspace .workspace-split { max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: center; } .comp-sc-workspace .bullets-col { display: flex; flex-direction: column; gap: 24px; } .comp-sc-workspace .bullet-item { display: flex; gap: 16px; padding: 20px; border-radius: 10px; background: var(--surface-2, #18181b); border: 1px solid var(--border, rgba(255, 255, 255, 0.08)); transition: border-color 0.2s; } .comp-sc-workspace .bullet-item:hover { border-color: var(--accent, #38bdf8); } .comp-sc-workspace .bullet-icon { font-size: 22px; line-height: 1; flex-shrink: 0; } .comp-sc-workspace .bullet-content h4 { margin: 0 0 6px; font-size: 17px; font-weight: 600; color: var(--text-primary, #ffffff); } .comp-sc-workspace .bullet-content p { font-size: 14px; line-height: 1.5; color: var(--text-secondary, #a1a1aa); margin: 0; } .comp-sc-workspace .preview-col { width: 100%; } .comp-sc-workspace .terminal-card { border-radius: 12px; background: #0c0d0e; border: 1px solid var(--border, rgba(255, 255, 255, 0.12)); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); overflow: hidden; } .comp-sc-workspace .term-bar { display: flex; align-items: center; gap: 6px; padding: 12px 16px; background: #141517; border-bottom: 1px solid rgba(255, 255, 255, 0.08); } .comp-sc-workspace .term-bar .dot { width: 10px; height: 10px; border-radius: 50%; background: #3f3f46; } .comp-sc-workspace .term-title { margin-left: 10px; font-size: 12px; font-family: monospace; color: #a1a1aa; } .comp-sc-workspace .term-content { padding: 20px 24px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 13px; line-height: 1.7; } .comp-sc-workspace .term-line { margin: 0 0 8px; } .comp-sc-workspace .term-line.prompt { color: #f4f4f5; font-weight: 600; } .comp-sc-workspace .term-line .cmd-symbol { color: var(--accent, #38bdf8); margin-right: 6px; } .comp-sc-workspace .term-line.success { color: #34d399; } .comp-sc-workspace .term-line.info { color: #38bdf8; } .comp-sc-workspace .term-line.muted { color: #71717a; margin-top: 12px; } @media (max-width: 860px) { .comp-sc-workspace .workspace-split { grid-template-columns: 1fr; } }"
+    },
+    {
+      "type": "sc_under_the_hood",
+      "name": "SuperConsole Split Showcase (Left Image)",
+      "theme": "superconsole",
+      "category": "Showcase",
+      "description": "Two-column split section: diagram/mockup on the left, architecture and performance bullets on the right",
+      "ai_summary": "Split section with technical architecture image on left and performance highlights on right.",
+      "when_to_use": "Best for technical details, speed metrics, security, encryption, or backend reliability points.",
+      "aliases": [
+        "under_the_hood",
+        "superconsole_under_the_hood",
+        "superconsoleUnderTheHood"
+      ],
+      "schema": [
+        {
+          "name": "badgeText",
+          "label": "Badge Label",
+          "type": "text"
+        },
+        {
+          "name": "title",
+          "label": "Headline",
+          "type": "text"
+        },
+        {
+          "name": "subtitle",
+          "label": "Subtitle",
+          "type": "text"
+        },
+        {
+          "name": "bullets",
+          "label": "Bullet Points",
+          "type": "array"
+        },
+        {
+          "name": "imageUrl",
+          "label": "Showcase Image URL",
+          "type": "text"
+        },
+        {
+          "name": "imageAlt",
+          "label": "Image Alt Text",
+          "type": "text"
+        },
+        {
+          "name": "bgColor",
+          "label": "Background Color",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "sc_under_the_hood",
+        "badgeText": "ARCHITECTURE",
+        "title": "Engineered for Extreme Speed",
+        "subtitle": "Built on Rust and modern web standards for maximum reliability.",
+        "bullets": [
+          {
+            "title": "Native Rust Engine",
+            "description": "Instant execution with minimal memory footprint."
+          },
+          {
+            "title": "Rock-Solid Encryption",
+            "description": "Client-side encrypted local storage."
+          }
+        ],
+        "imageUrl": "",
+        "imageAlt": "Architecture diagram",
+        "bgColor": "#09090b"
+      },
+      "reference_html": "<section class=\"comp-sc-under-the-hood\" data-field=\"bgColor\">\n  <div class=\"hood-header\">\n    <div class=\"badge\" contenteditable=\"true\" data-field=\"badgeText\" data-element-type=\"text\">ARCHITECTURE</div>\n    <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Engineered for Extreme Speed</h2>\n    <p contenteditable=\"true\" data-field=\"subtitle\" data-element-type=\"text\">Built on Rust and modern web standards for maximum reliability.</p>\n  </div>\n  <div class=\"hood-split\">\n    <div class=\"preview-col\">\n      <div class=\"terminal-card\">\n        <div class=\"term-bar\">\n          <span class=\"dot\"></span><span class=\"dot\"></span><span class=\"dot\"></span>\n          <span class=\"term-title\">arch — security & benchmark</span>\n        </div>\n        <div class=\"term-content\">\n          <div class=\"metric-row\">\n            <span class=\"metric-name\">App Memory Footprint</span>\n            <span class=\"metric-val\">&lt; 28 MB</span>\n          </div>\n          <div class=\"metric-row\">\n            <span class=\"metric-name\">Credential Storage</span>\n            <span class=\"metric-val\">AES-256-GCM</span>\n          </div>\n          <div class=\"metric-row\">\n            <span class=\"metric-name\">SQLite Read Latency</span>\n            <span class=\"metric-val\">0.12 ms</span>\n          </div>\n          <div class=\"metric-row\">\n            <span class=\"metric-name\">Engine Runtime</span>\n            <span class=\"metric-val\">Native Rust + Tauri</span>\n          </div>\n        </div>\n      </div>\n    </div>\n    <div class=\"bullets-col\">\n      <div class=\"bullet-card\">\n        <h3 contenteditable=\"true\" data-field=\"bulletTitle1\">Native Rust Core</h3>\n        <p contenteditable=\"true\" data-field=\"bulletDesc1\">Zero Electron bloat. Starts up instantaneously with a lean memory footprint and native OS integration.</p>\n      </div>\n      <div class=\"bullet-card\">\n        <h3 contenteditable=\"true\" data-field=\"bulletTitle2\">Client-Side Encryption</h3>\n        <p contenteditable=\"true\" data-field=\"bulletDesc2\">All API keys, customer databases, and tokens are encrypted locally with hardware-accelerated AES-256.</p>\n      </div>\n      <div class=\"bullet-card\">\n        <h3 contenteditable=\"true\" data-field=\"bulletTitle3\">Offline First Resilience</h3>\n        <p contenteditable=\"true\" data-field=\"bulletDesc3\">Keep ringing up sales and scanning inventory during internet dropouts. Auto-syncs silently when online.</p>\n      </div>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-sc-under-the-hood { width: 100%; padding: 88px 24px; background: var(--surface-1, #09090b); color: var(--text-primary, #ffffff); } .comp-sc-under-the-hood .hood-header { max-width: 720px; margin: 0 auto 56px; text-align: center; } .comp-sc-under-the-hood .badge { display: inline-flex; padding: 4px 12px; border-radius: 9999px; background: rgba(56, 189, 248, 0.1); color: var(--accent, #38bdf8); font-size: 12px; font-weight: 600; margin-bottom: 16px; border: 1px solid rgba(56, 189, 248, 0.2); } .comp-sc-under-the-hood h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin: 0 0 16px; letter-spacing: -0.02em; } .comp-sc-under-the-hood p { font-size: 17px; color: var(--text-secondary, #a1a1aa); line-height: 1.6; margin: 0; } .comp-sc-under-the-hood .hood-split { max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; } .comp-sc-under-the-hood .preview-col { width: 100%; } .comp-sc-under-the-hood .terminal-card { border-radius: 12px; background: #0c0d0e; border: 1px solid var(--border, rgba(255, 255, 255, 0.12)); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); overflow: hidden; } .comp-sc-under-the-hood .term-bar { display: flex; align-items: center; gap: 6px; padding: 12px 16px; background: #141517; border-bottom: 1px solid rgba(255, 255, 255, 0.08); } .comp-sc-under-the-hood .term-bar .dot { width: 10px; height: 10px; border-radius: 50%; background: #3f3f46; } .comp-sc-under-the-hood .term-title { margin-left: 10px; font-size: 12px; font-family: monospace; color: #a1a1aa; } .comp-sc-under-the-hood .term-content { padding: 24px; display: flex; flex-direction: column; gap: 14px; } .comp-sc-under-the-hood .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 6px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); font-family: monospace; font-size: 13px; } .comp-sc-under-the-hood .metric-name { color: #a1a1aa; } .comp-sc-under-the-hood .metric-val { color: var(--accent, #38bdf8); font-weight: 700; } .comp-sc-under-the-hood .bullets-col { display: flex; flex-direction: column; gap: 20px; } .comp-sc-under-the-hood .bullet-card { padding: 24px; border-radius: 10px; background: var(--surface-2, #18181b); border: 1px solid var(--border, rgba(255, 255, 255, 0.08)); } .comp-sc-under-the-hood .bullet-card h3 { font-size: 18px; font-weight: 600; margin: 0 0 8px; color: var(--text-primary, #ffffff); } .comp-sc-under-the-hood .bullet-card p { font-size: 14px; color: var(--text-secondary, #a1a1aa); line-height: 1.5; margin: 0; } @media (max-width: 860px) { .comp-sc-under-the-hood .hood-split { grid-template-columns: 1fr; } }"
+    },
+    {
+      "type": "pricing",
+      "name": "Pricing Cards Table",
+      "theme": "classic",
+      "category": "Conversion",
+      "description": "Multi-tier pricing cards with intervals, feature checklists, and action buttons",
+      "ai_summary": "Multi-tier pricing cards with intervals, feature lists, popular badges, and CTA action buttons.",
+      "when_to_use": "Essential for commercial SaaS, subscriptions, or service tiers. Place near bottom before FAQ.",
+      "aliases": [
+        "pricing_section",
+        "pricingTable",
+        "pricing_table",
+        "commercial"
+      ],
+      "schema": [
+        {
+          "name": "title",
+          "label": "Section Title",
+          "type": "text"
+        },
+        {
+          "name": "description",
+          "label": "Section Description",
+          "type": "text"
+        },
+        {
+          "name": "plans",
+          "label": "Pricing Plans",
+          "type": "array"
+        },
+        {
+          "name": "bgColor",
+          "label": "Background Color",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "pricing",
+        "title": "Simple, Transparent Pricing",
+        "description": "Choose the plan that fits your business scale.",
+        "plans": [
+          {
+            "title": "Starter",
+            "price": "$29",
+            "interval": "/mo",
+            "description": "Essential tools for solo operators.",
+            "features": [
+              "1 Store Location",
+              "Up to 1,000 Products",
+              "Standard Analytics"
+            ],
+            "isPopular": false,
+            "buttonText": "Start Free Trial",
+            "buttonUrl": "#"
+          },
+          {
+            "title": "Pro",
+            "price": "$79",
+            "interval": "/mo",
+            "description": "Advanced automation for growing teams.",
+            "features": [
+              "Unlimited Locations",
+              "Unlimited Products",
+              "AI Business Copilot",
+              "Priority 24/7 Support"
+            ],
+            "isPopular": true,
+            "buttonText": "Get Pro Access",
+            "buttonUrl": "#"
+          }
+        ]
+      },
+      "reference_html": "<section class=\"comp-pricing\" data-field=\"bgColor\">\n  <div class=\"header\">\n    <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Simple, Transparent Pricing</h2>\n    <p contenteditable=\"true\" data-field=\"description\" data-element-type=\"text\">Choose the plan that fits your business scale.</p>\n  </div>\n  <div class=\"plans-grid\">\n    <div class=\"plan-card\">\n      <h3 contenteditable=\"true\" data-field=\"planTitle1\">Starter</h3>\n      <div class=\"price-block\">\n        <span class=\"amount\" contenteditable=\"true\" data-field=\"price1\">$29</span>\n        <span class=\"interval\">/month</span>\n      </div>\n      <p class=\"desc\">Essential tools for solo operators and small shops.</p>\n      <ul class=\"features\">\n        <li>✓ 1 Store Location</li>\n        <li>✓ Up to 1,000 Products</li>\n        <li>✓ Standard Analytics</li>\n      </ul>\n      <a href=\"#\" data-field=\"primaryBtnUrl\" data-element-type=\"link\">\n        <button class=\"plan-btn\" contenteditable=\"true\" data-field=\"primaryBtnText\" data-element-type=\"button\">Start Free Trial</button>\n      </a>\n    </div>\n    <div class=\"plan-card popular\">\n      <div class=\"popular-badge\">MOST POPULAR</div>\n      <h3 contenteditable=\"true\" data-field=\"planTitle2\">Pro</h3>\n      <div class=\"price-block\">\n        <span class=\"amount\" contenteditable=\"true\" data-field=\"price2\">$79</span>\n        <span class=\"interval\">/month</span>\n      </div>\n      <p class=\"desc\">Advanced automation for high-volume growing businesses.</p>\n      <ul class=\"features\">\n        <li>✓ Unlimited Locations</li>\n        <li>✓ Unlimited Products</li>\n        <li>✓ AI Business Copilot</li>\n        <li>✓ Priority 24/7 Support</li>\n      </ul>\n      <a href=\"#\" data-field=\"secondaryBtnUrl\" data-element-type=\"link\">\n        <button class=\"plan-btn primary\" contenteditable=\"true\" data-field=\"secondaryBtnText\" data-element-type=\"button\">Get Pro Access</button>\n      </a>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-pricing { width: 100%; padding: 80px 24px; background: var(--surface-1, #09090b); color: var(--text-primary, #ffffff); } .comp-pricing .header { text-align: center; max-width: 640px; margin: 0 auto 56px; } .comp-pricing h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin: 0 0 16px; } .comp-pricing p { font-size: 17px; color: var(--text-secondary, #a1a1aa); margin: 0; } .comp-pricing .plans-grid { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; align-items: stretch; } .comp-pricing .plan-card { position: relative; padding: 40px 32px; border-radius: 12px; background: var(--surface-2, #18181b); border: 1px solid var(--border, rgba(255, 255, 255, 0.1)); display: flex; flex-direction: column; } .comp-pricing .plan-card.popular { border-color: var(--accent, #38bdf8); box-shadow: 0 0 24px rgba(56, 189, 248, 0.15); } .comp-pricing .popular-badge { position: absolute; top: -12px; right: 24px; padding: 4px 12px; border-radius: 9999px; background: var(--accent, #38bdf8); color: #09090b; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; } .comp-pricing h3 { font-size: 22px; font-weight: 600; margin: 0 0 16px; } .comp-pricing .price-block { display: flex; align-items: baseline; gap: 4px; margin-bottom: 16px; } .comp-pricing .amount { font-size: 44px; font-weight: 800; } .comp-pricing .interval { font-size: 16px; color: var(--text-secondary, #a1a1aa); } .comp-pricing .desc { font-size: 14px; color: var(--text-secondary, #a1a1aa); margin-bottom: 24px; } .comp-pricing .features { list-style: none; padding: 0; margin: 0 0 32px; flex: 1; display: flex; flex-direction: column; gap: 12px; } .comp-pricing .features li { font-size: 14px; color: var(--text-primary, #ffffff); } .comp-pricing .plan-btn { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border, rgba(255, 255, 255, 0.2)); background: transparent; color: var(--text-primary, #ffffff); font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; } .comp-pricing .plan-btn.primary { background: var(--button-primary-bg, var(--accent, #38bdf8)); color: var(--button-primary-text, #09090b); border: none; }"
+    },
+    {
+      "type": "faq",
+      "name": "FAQ Accordion",
+      "theme": "classic",
+      "category": "Content",
+      "description": "Collapsible question and answer accordion for objections and support info",
+      "ai_summary": "Collapsible accordion addressing common buyer objections, support questions, and guarantees.",
+      "when_to_use": "Place near the bottom of landing pages to resolve customer hesitation before final CTA.",
+      "aliases": [
+        "faq_section",
+        "faqSection"
+      ],
+      "schema": [
+        {
+          "name": "title",
+          "label": "Section Title",
+          "type": "text"
+        },
+        {
+          "name": "items",
+          "label": "FAQ Questions & Answers",
+          "type": "array"
+        }
+      ],
+      "default_data": {
+        "type": "faq",
+        "title": "Frequently Asked Questions",
+        "items": [
+          {
+            "question": "Can I use BusinessKit offline?",
+            "answer": "Yes! All data is stored locally first and syncs automatically when online."
+          },
+          {
+            "question": "How do I import existing customer and product data?",
+            "answer": "You can import CSV files or have the AI Copilot parse your vendor invoices automatically."
+          }
+        ]
+      },
+      "reference_html": "<section class=\"comp-faq\" data-field=\"bgColor\">\n  <div class=\"header\">\n    <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Frequently Asked Questions</h2>\n  </div>\n  <div class=\"faq-list\">\n    <div class=\"faq-item\">\n      <h3 contenteditable=\"true\" data-field=\"q1\">Can I use BusinessKit offline?</h3>\n      <p contenteditable=\"true\" data-field=\"a1\">Yes! All data is stored locally first in SQLite and automatically syncs to Turso cloud when connected.</p>\n    </div>\n    <div class=\"faq-item\">\n      <h3 contenteditable=\"true\" data-field=\"q2\">How do I import existing product & customer data?</h3>\n      <p contenteditable=\"true\" data-field=\"a2\">You can import CSV files directly, or have the AI Copilot parse your vendor purchase invoices automatically.</p>\n    </div>\n    <div class=\"faq-item\">\n      <h3 contenteditable=\"true\" data-field=\"q3\">Is my financial data secure?</h3>\n      <p contenteditable=\"true\" data-field=\"a3\">All sensitive credentials and database tokens are encrypted locally with AES-256-GCM.</p>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-faq { width: 100%; padding: 80px 24px; background: var(--surface-1, #09090b); color: var(--text-primary, #ffffff); } .comp-faq .header { text-align: center; max-width: 640px; margin: 0 auto 48px; } .comp-faq h2 { font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700; margin: 0; } .comp-faq .faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; } .comp-faq .faq-item { padding: 24px 28px; border-radius: 10px; background: var(--surface-2, #18181b); border: 1px solid var(--border, rgba(255, 255, 255, 0.08)); } .comp-faq .faq-item h3 { font-size: 17px; font-weight: 600; margin: 0 0 10px; color: var(--text-primary, #ffffff); } .comp-faq .faq-item p { font-size: 15px; line-height: 1.6; color: var(--text-secondary, #a1a1aa); margin: 0; }"
+    },
+    {
+      "type": "testimonials",
+      "name": "Customer Testimonials",
+      "theme": "classic",
+      "category": "Social Proof",
+      "description": "Customer quotes with avatars, names, and company roles",
+      "ai_summary": "Customer proof quotes with author avatars, names, and company roles.",
+      "when_to_use": "Use after features or before pricing to establish trust and social proof with real user quotes.",
+      "aliases": [
+        "reviews"
+      ],
+      "schema": [
+        {
+          "name": "title",
+          "label": "Section Title",
+          "type": "text"
+        },
+        {
+          "name": "items",
+          "label": "Testimonial Items",
+          "type": "array"
+        }
+      ],
+      "default_data": {
+        "type": "testimonials",
+        "title": "Loved by Founders Everywhere",
+        "items": [
+          {
+            "quote": "BusinessKit cut our checkout times in half and automated our inventory restocking.",
+            "author": "Sarah Jenkins",
+            "role": "Founder, Apex Retail",
+            "avatar": ""
+          }
+        ]
+      },
+      "reference_html": "<section class=\"comp-testimonials\" data-field=\"bgColor\">\n  <div class=\"header\">\n    <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Loved by Founders Everywhere</h2>\n  </div>\n  <div class=\"testimonials-grid\">\n    <div class=\"testimonial-card\">\n      <div class=\"stars\">★★★★★</div>\n      <p class=\"quote\" contenteditable=\"true\" data-field=\"quote1\">\"BusinessKit cut our checkout times in half and automated our inventory restocking across 3 store locations.\"</p>\n      <div class=\"author-block\">\n        <div class=\"avatar\">SJ</div>\n        <div>\n          <h4 contenteditable=\"true\" data-field=\"author1\">Sarah Jenkins</h4>\n          <span contenteditable=\"true\" data-field=\"role1\">Founder, Apex Retail</span>\n        </div>\n      </div>\n    </div>\n    <div class=\"testimonial-card\">\n      <div class=\"stars\">★★★★★</div>\n      <p class=\"quote\" contenteditable=\"true\" data-field=\"quote2\">\"The AI copilot handles invoices, bookings, and customer balance reminders effortlessly. Game changer.\"</p>\n      <div class=\"author-block\">\n        <div class=\"avatar\">ML</div>\n        <div>\n          <h4 contenteditable=\"true\" data-field=\"author2\">Marcus Lee</h4>\n          <span contenteditable=\"true\" data-field=\"role2\">Operations Lead, CoreTech</span>\n        </div>\n      </div>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-testimonials { width: 100%; padding: 80px 24px; background: var(--surface-1, #09090b); color: var(--text-primary, #ffffff); } .comp-testimonials .header { text-align: center; max-width: 640px; margin: 0 auto 56px; } .comp-testimonials h2 { font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700; margin: 0; } .comp-testimonials .testimonials-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; } .comp-testimonials .testimonial-card { padding: 32px; border-radius: 12px; background: var(--surface-2, #18181b); border: 1px solid var(--border, rgba(255, 255, 255, 0.08)); display: flex; flex-direction: column; justify-content: space-between; } .comp-testimonials .stars { color: #f59e0b; font-size: 18px; margin-bottom: 16px; letter-spacing: 2px; } .comp-testimonials .quote { font-size: 16px; line-height: 1.6; color: var(--text-secondary, #d4d4d8); margin: 0 0 24px; font-style: italic; } .comp-testimonials .author-block { display: flex; align-items: center; gap: 14px; } .comp-testimonials .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent, #38bdf8); color: #09090b; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 14px; } .comp-testimonials h4 { margin: 0 0 2px; font-size: 15px; font-weight: 600; color: var(--text-primary, #ffffff); } .comp-testimonials span { font-size: 13px; color: var(--text-secondary, #a1a1aa); }"
+    },
+    {
+      "type": "cta_section",
+      "name": "Call to Action Banner",
+      "theme": "classic",
+      "category": "Conversion",
+      "description": "Full-width call to action banner with headline, description, and button",
+      "ai_summary": "High-converting action block with heading, descriptive text, and button.",
+      "when_to_use": "Place just above the footer or after pricing as a final push to get visitors to sign up or buy.",
+      "aliases": [
+        "ctaSection"
+      ],
+      "schema": [
+        {
+          "name": "heading",
+          "label": "Heading",
+          "type": "text"
+        },
+        {
+          "name": "subheading",
+          "label": "Subheading",
+          "type": "text"
+        },
+        {
+          "name": "buttonText",
+          "label": "Button Text",
+          "type": "text"
+        },
+        {
+          "name": "buttonUrl",
+          "label": "Button URL",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "cta_section",
+        "heading": "Ready to Transform Your Business?",
+        "subheading": "Join thousands of businesses managing billing and websites in one unified tool.",
+        "buttonText": "Get Started Now",
+        "buttonUrl": "/signup"
+      },
+      "reference_html": "<section class=\"comp-cta-banner\" data-field=\"bgColor\">\n  <div class=\"cta-container\">\n    <h2 contenteditable=\"true\" data-field=\"heading\" data-element-type=\"text\">Ready to Transform Your Business?</h2>\n    <p contenteditable=\"true\" data-field=\"subheading\" data-element-type=\"text\">Join thousands of modern businesses streamlining billing and web presence today.</p>\n    <a href=\"/signup\" data-field=\"buttonUrl\" data-element-type=\"link\">\n      <button class=\"cta-btn\" contenteditable=\"true\" data-field=\"buttonText\" data-element-type=\"button\">Get Started Now</button>\n    </a>\n  </div>\n</section>",
+      "reference_css": ".comp-cta-banner { width: 100%; padding: 96px 24px; background: linear-gradient(135deg, var(--surface-2, #18181b) 0%, var(--surface-1, #09090b) 100%); color: var(--text-primary, #ffffff); text-align: center; border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08)); border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08)); } .comp-cta-banner .cta-container { max-width: 720px; margin: 0 auto; } .comp-cta-banner h2 { font-size: clamp(2.25rem, 4.5vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; margin: 0 0 20px; } .comp-cta-banner p { font-size: 18px; color: var(--text-secondary, #a1a1aa); line-height: 1.6; margin: 0 auto 36px; max-width: 580px; } .comp-cta-banner .cta-btn { padding: 16px 36px; border-radius: 8px; background: var(--button-primary-bg, var(--accent, #38bdf8)); color: var(--button-primary-text, #09090b); font-size: 16px; font-weight: 700; border: none; cursor: pointer; transition: transform 0.15s, opacity 0.15s; } .comp-cta-banner .cta-btn:hover { opacity: 0.92; transform: translateY(-1px); }"
+    },
+    {
+      "type": "about_section",
+      "name": "About Business",
+      "theme": "classic",
+      "category": "Content",
+      "description": "Company story, mission, and background section",
+      "ai_summary": "Company story, founding mission, and vision text.",
+      "when_to_use": "Use on dedicated 'About Us' pages or company overview pages.",
+      "aliases": [
+        "aboutSection"
+      ],
+      "schema": [
+        {
+          "name": "title",
+          "label": "Section Title",
+          "type": "text"
+        },
+        {
+          "name": "description",
+          "label": "Mission Statement",
+          "type": "textarea"
+        }
+      ],
+      "default_data": {
+        "type": "about_section",
+        "title": "About Our Company",
+        "description": "We are dedicated to building simple, powerful tools for everyday entrepreneurs."
+      },
+      "reference_html": "<section class=\"comp-about-section\" data-field=\"bgColor\">\n  <div class=\"about-container\">\n    <div class=\"about-header\">\n      <span class=\"badge\">OUR MISSION</span>\n      <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">About Our Company</h2>\n      <p class=\"lead\" contenteditable=\"true\" data-field=\"description\" data-element-type=\"text\">We are dedicated to building simple, powerful tools for everyday entrepreneurs and independent businesses.</p>\n    </div>\n    <div class=\"about-body\">\n      <p>Founded with the conviction that enterprise-grade billing, inventory management, and digital commerce shouldn't require enterprise budgets or complex IT departments.</p>\n      <div class=\"values-grid\">\n        <div class=\"value-item\">\n          <h4>Privacy by Default</h4>\n          <p>Your business data belongs exclusively to you. Local-first architecture guarantees your records remain private.</p>\n        </div>\n        <div class=\"value-item\">\n          <h4>Uncompromising Speed</h4>\n          <p>Instant checkout and sub-millisecond lookups keep your queues moving and your customers smiling.</p>\n        </div>\n      </div>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-about-section { width: 100%; padding: 80px 24px; background: var(--surface-1, #ffffff); color: var(--text-primary, #09090b); } .comp-about-section .about-container { max-width: 760px; margin: 0 auto; } .comp-about-section .about-header { text-align: center; margin-bottom: 48px; } .comp-about-section .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; background: var(--surface-2, #f4f4f5); color: var(--text-secondary, #71717a); font-size: 12px; font-weight: 600; margin-bottom: 16px; border: 1px solid var(--border, #e4e4e7); } .comp-about-section h2 { font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700; margin: 0 0 16px; } .comp-about-section .lead { font-size: 18px; line-height: 1.6; color: var(--text-secondary, #71717a); margin: 0; } .comp-about-section .about-body { font-size: 16px; line-height: 1.7; color: var(--text-primary, #27272a); } .comp-about-section .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 36px; } .comp-about-section .value-item { padding: 24px; border-radius: 8px; background: var(--surface-2, #f4f4f5); border: 1px solid var(--border, #e4e4e7); } .comp-about-section .value-item h4 { margin: 0 0 8px; font-size: 16px; font-weight: 600; color: var(--text-primary, #09090b); } .comp-about-section .value-item p { margin: 0; font-size: 14px; color: var(--text-secondary, #71717a); line-height: 1.5; }"
+    },
+    {
+      "type": "curriculum",
+      "name": "Curriculum / Syllabus",
+      "theme": "classic",
+      "category": "Education",
+      "description": "Chapter and module breakdown for courses or training programs",
+      "ai_summary": "Course module and chapter syllabus breakdown.",
+      "when_to_use": "Use for educational platforms, workshops, training courses, or masterclasses.",
+      "aliases": [],
+      "schema": [
+        {
+          "name": "title",
+          "label": "Title",
+          "type": "text"
+        },
+        {
+          "name": "modules",
+          "label": "Course Modules",
+          "type": "array"
+        }
+      ],
+      "default_data": {
+        "type": "curriculum",
+        "title": "Course Curriculum",
+        "modules": [
+          {
+            "title": "Module 1: Foundations",
+            "lessons": [
+              "Overview",
+              "Initial Setup"
+            ]
+          }
+        ]
+      },
+      "reference_html": "<section class=\"comp-curriculum-section\" data-field=\"bgColor\">\n  <div class=\"curriculum-container\">\n    <div class=\"curriculum-header\">\n      <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Course Curriculum</h2>\n      <p contenteditable=\"true\" data-field=\"description\" data-element-type=\"text\">Comprehensive module breakdown and hands-on lessons designed to take you from fundamentals to mastery.</p>\n    </div>\n    <div class=\"modules-list\">\n      <div class=\"module-card\">\n        <div class=\"module-badge\">Module 1</div>\n        <div class=\"module-details\">\n          <h3>Foundations & Setup</h3>\n          <ul class=\"lesson-items\">\n            <li><span>01</span> Environment Setup & Core Architecture</li>\n            <li><span>02</span> Local Database Schema Initialization</li>\n            <li><span>03</span> Point of Sale Workflows & Receipt Customization</li>\n          </ul>\n        </div>\n      </div>\n      <div class=\"module-card\">\n        <div class=\"module-badge\">Module 2</div>\n        <div class=\"module-details\">\n          <h3>Automation & Autonomous Copilots</h3>\n          <ul class=\"lesson-items\">\n            <li><span>04</span> Integrating LLM Agents via BusinessKit MCP</li>\n            <li><span>05</span> Automated Stock Reordering & Vendor Invoicing</li>\n            <li><span>06</span> Multi-Branch Sync & Reporting</li>\n          </ul>\n        </div>\n      </div>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-curriculum-section { width: 100%; padding: 80px 24px; background: var(--surface-1, #ffffff); color: var(--text-primary, #09090b); } .comp-curriculum-section .curriculum-container { max-width: 800px; margin: 0 auto; } .comp-curriculum-section .curriculum-header { text-align: center; margin-bottom: 56px; } .comp-curriculum-section h2 { font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700; margin: 0 0 16px; } .comp-curriculum-section p { font-size: 17px; color: var(--text-secondary, #71717a); margin: 0; } .comp-curriculum-section .modules-list { display: flex; flex-direction: column; gap: 24px; } .comp-curriculum-section .module-card { display: flex; gap: 24px; padding: 28px; border-radius: 12px; background: var(--surface-2, #f4f4f5); border: 1px solid var(--border, #e4e4e7); } .comp-curriculum-section .module-badge { flex-shrink: 0; height: fit-content; padding: 6px 14px; border-radius: 6px; background: var(--accent, #047EEC); color: #ffffff; font-size: 13px; font-weight: 600; } .comp-curriculum-section .module-details { flex: 1; } .comp-curriculum-section .module-details h3 { margin: 0 0 16px; font-size: 20px; font-weight: 600; color: var(--text-primary, #09090b); } .comp-curriculum-section .lesson-items { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; } .comp-curriculum-section .lesson-items li { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--text-secondary, #3f3f46); } .comp-curriculum-section .lesson-items span { font-size: 12px; font-family: monospace; font-weight: 700; color: var(--text-secondary, #71717a); width: 20px; } @media (max-width: 640px) { .comp-curriculum-section .module-card { flex-direction: column; gap: 16px; } }"
+    },
+    {
+      "type": "text",
+      "name": "Rich Text / Markdown Block",
+      "theme": "classic",
+      "category": "Content",
+      "description": "Flexible markdown or HTML text block",
+      "ai_summary": "Freeform Markdown or HTML text section block.",
+      "when_to_use": "Use for terms of service, privacy policies, documentation, or long-form prose.",
+      "aliases": [
+        "textField"
+      ],
+      "schema": [
+        {
+          "name": "text",
+          "label": "Content Text / Markdown",
+          "type": "textarea"
+        }
+      ],
+      "default_data": {
+        "type": "text",
+        "text": "## Section Heading\n\nWrite your markdown or text content here."
+      },
+      "reference_html": "<section class=\"comp-text-section\" data-field=\"bgColor\">\n  <div class=\"text-container\">\n    <h2 contenteditable=\"true\" data-field=\"title\" data-element-type=\"text\">Section Heading</h2>\n    <div class=\"text-content\" contenteditable=\"true\" data-field=\"text\" data-element-type=\"text\">\n      <p>BusinessKit brings full-stack local commerce and autonomous intelligence together into a single, unified workspace. Write your long-form story, documentation, or legal disclosure here.</p>\n      <blockquote>Reliability is not a feature; it is the fundamental prerequisite of commerce.</blockquote>\n      <p>Whether you operate an offline storefront, an online studio, or a hybrid venture, enjoy complete privacy and speed.</p>\n    </div>\n  </div>\n</section>",
+      "reference_css": ".comp-text-section { width: 100%; padding: 72px 24px; background: var(--surface-1, #ffffff); color: var(--text-primary, #09090b); } .comp-text-section .text-container { max-width: 720px; margin: 0 auto; } .comp-text-section h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 700; margin: 0 0 24px; letter-spacing: -0.01em; } .comp-text-section .text-content { font-size: 17px; line-height: 1.7; color: var(--text-secondary, #3f3f46); } .comp-text-section .text-content p { margin: 0 0 20px; } .comp-text-section .text-content blockquote { margin: 24px 0; padding-left: 20px; border-left: 3px solid var(--accent, #047EEC); font-style: italic; color: var(--text-primary, #09090b); }"
+    },
+    {
+      "type": "sc_footer",
+      "name": "SuperConsole Footer",
+      "theme": "superconsole",
+      "category": "Footer",
+      "description": "Footer with brand tagline, live status pill, multi-column navigation links, and copyright",
+      "ai_summary": "Comprehensive footer with brand, online status indicator, multi-column links, and copyright.",
+      "when_to_use": "Always place as the final section at the bottom of the page.",
+      "aliases": [
+        "superconsole_footer",
+        "superconsoleFooter"
+      ],
+      "schema": [
+        {
+          "name": "brandName",
+          "label": "Brand Name",
+          "type": "text"
+        },
+        {
+          "name": "tagline",
+          "label": "Brand Tagline",
+          "type": "text"
+        },
+        {
+          "name": "statusText",
+          "label": "System Status Text",
+          "type": "text"
+        },
+        {
+          "name": "statusOnline",
+          "label": "Status Online Indicator",
+          "type": "boolean"
+        },
+        {
+          "name": "columns",
+          "label": "Footer Link Columns",
+          "type": "array"
+        },
+        {
+          "name": "copyrightText",
+          "label": "Copyright Text",
+          "type": "text"
+        },
+        {
+          "name": "bgColor",
+          "label": "Background Color",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "sc_footer",
+        "brandName": "BusinessKit",
+        "brandLogoUrl": "",
+        "tagline": "Empowering local commerce and digital businesses worldwide.",
+        "statusText": "All systems operational",
+        "statusOnline": true,
+        "columns": [
+          {
+            "title": "Product",
+            "links": [
+              {
+                "label": "Features",
+                "url": "#features"
+              },
+              {
+                "label": "Pricing",
+                "url": "#pricing"
+              }
+            ]
+          },
+          {
+            "title": "Company",
+            "links": [
+              {
+                "label": "About Us",
+                "url": "/about"
+              },
+              {
+                "label": "Contact",
+                "url": "/contact"
+              }
+            ]
+          }
+        ],
+        "copyrightText": "© 2026 BusinessKit Inc. All rights reserved.",
+        "bgColor": "#09090b"
+      },
+      "reference_html": "<footer class=\"comp-sc-footer\" data-field=\"bgColor\">\n  <div class=\"footer-container\">\n    <div class=\"footer-grid\">\n      <div class=\"brand-col\">\n        <div class=\"brand-row\">\n          <span class=\"logo-symbol\">&gt;_</span>\n          <span class=\"brand-name\" contenteditable=\"true\" data-field=\"brandName\" data-element-type=\"text\">BusinessKit</span>\n        </div>\n        <p class=\"tagline\" contenteditable=\"true\" data-field=\"tagline\" data-element-type=\"text\">Empowering local commerce and digital businesses worldwide with local-first speed and autonomous agents.</p>\n        <div class=\"status-pill\">\n          <span class=\"status-dot\"></span>\n          <span contenteditable=\"true\" data-field=\"statusText\" data-element-type=\"text\">All systems operational</span>\n        </div>\n      </div>\n      <div class=\"links-col\">\n        <h4>Product</h4>\n        <ul>\n          <li><a href=\"#features\">Features</a></li>\n          <li><a href=\"#pricing\">Pricing</a></li>\n          <li><a href=\"#faq\">FAQ</a></li>\n          <li><a href=\"/docs\">Documentation</a></li>\n        </ul>\n      </div>\n      <div class=\"links-col\">\n        <h4>Company</h4>\n        <ul>\n          <li><a href=\"/about\">About Us</a></li>\n          <li><a href=\"/blog\">Blog</a></li>\n          <li><a href=\"/contact\">Contact</a></li>\n          <li><a href=\"/privacy\">Privacy Policy</a></li>\n        </ul>\n      </div>\n    </div>\n    <div class=\"footer-bottom\">\n      <p contenteditable=\"true\" data-field=\"copyrightText\" data-element-type=\"text\">© 2026 BusinessKit Inc. All rights reserved.</p>\n    </div>\n  </div>\n</footer>",
+      "reference_css": ".comp-sc-footer { width: 100%; padding: 72px 24px 40px; background: var(--surface-1, #09090b); color: var(--text-primary, #ffffff); border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08)); } .comp-sc-footer .footer-container { max-width: 1140px; margin: 0 auto; } .comp-sc-footer .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 56px; } .comp-sc-footer .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; } .comp-sc-footer .logo-symbol { font-family: monospace; font-size: 18px; font-weight: 700; color: var(--accent, #38bdf8); } .comp-sc-footer .brand-name { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; } .comp-sc-footer .tagline { font-size: 14px; line-height: 1.6; color: var(--text-secondary, #a1a1aa); max-width: 360px; margin: 0 0 20px; } .comp-sc-footer .status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 9999px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); font-size: 12px; font-weight: 500; color: #34d399; } .comp-sc-footer .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; } .comp-sc-footer .links-col h4 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-primary, #ffffff); margin: 0 0 20px; } .comp-sc-footer .links-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; } .comp-sc-footer .links-col a { color: var(--text-secondary, #a1a1aa); text-decoration: none; font-size: 14px; transition: color 0.15s; } .comp-sc-footer .links-col a:hover { color: var(--text-primary, #ffffff); } .comp-sc-footer .footer-bottom { padding-top: 32px; border-top: 1px solid var(--border, rgba(255, 255, 255, 0.06)); font-size: 13px; color: var(--text-secondary, #71717a); } @media (max-width: 768px) { .comp-sc-footer .footer-grid { grid-template-columns: 1fr; gap: 32px; } }"
+    },
+    {
+      "type": "custom",
+      "name": "Custom User Component",
+      "theme": "custom",
+      "category": "Custom",
+      "description": "Bespoke HTML/CSS widget in user_components referenced via component_id",
+      "ai_summary": "Bespoke HTML/CSS widget stored in user_components and referenced via component_id.",
+      "when_to_use": "Use ONLY when native sections cannot fulfill a specialized requirement (e.g. interactive ROI calculator, booking calendar, custom chart). Call component_create first.",
+      "aliases": [
+        "user_component"
+      ],
+      "schema": [
+        {
+          "name": "component_id",
+          "label": "Component ID",
+          "type": "text"
+        }
+      ],
+      "default_data": {
+        "type": "custom",
+        "component_id": "comp_example"
+      },
+      "rules": [
+        "Call component_create first with html, css, and name.",
+        "HTML elements must include contenteditable=\"true\" and data-field=\"...\" for inline Visual Builder editing.",
+        "CSS must be scoped under a container class (e.g. .comp-roi { ... })."
+      ]
+    }
+  ]
+}

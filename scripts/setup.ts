@@ -1,0 +1,92 @@
+// scripts/setup.ts — Node/TypeScript BusinessKit MCP Setup Wizard
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT_DIR = path.resolve(__dirname, '..');
+
+console.log('=== BusinessKit Universal Agent Setup (TypeScript) ===');
+
+// 1. Locate binary
+let bkBin = process.env.BUSINESSKIT_BIN || '';
+const candidates = [
+  '/Applications/BusinessKit.app/Contents/MacOS/businesskit',
+  path.resolve(ROOT_DIR, '../src-tauri/target/release/businesskit'),
+  path.resolve(ROOT_DIR, '../src-tauri/target/debug/businesskit'),
+];
+
+if (!bkBin) {
+  for (const c of candidates) {
+    if (fs.existsSync(c)) {
+      bkBin = c;
+      break;
+    }
+  }
+}
+
+if (!bkBin) {
+  try {
+    bkBin = execSync('which businesskit', { encoding: 'utf8' }).trim();
+  } catch {}
+}
+
+if (!bkBin || !fs.existsSync(bkBin)) {
+  console.error('Error: BusinessKit binary not found. Set BUSINESSKIT_BIN=/path/to/binary');
+  process.exit(1);
+}
+console.log(`✓ Found binary: ${bkBin}`);
+
+// 2. Locate Profile
+const credsDir = path.join(process.env.HOME || '', '.businesskit/creds');
+const defaultProfile = '4628a5b1-ac05-4156-9d76-04bbd71119a1';
+let selectedProfile = process.argv[2] || defaultProfile;
+
+console.log(`✓ Target profile: ${selectedProfile}`);
+
+// 3. Output directory
+const outputDir = path.join(ROOT_DIR, 'output');
+if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+
+// 4. Claude Code (.mcp.json)
+const claudeConfig = {
+  mcpServers: {
+    businesskit: {
+      command: bkBin,
+      args: ['--mcp', '--profile', selectedProfile],
+    },
+  },
+};
+fs.writeFileSync(path.join(ROOT_DIR, '.mcp.json'), JSON.stringify(claudeConfig, null, 2));
+console.log('✓ Wrote .mcp.json (Claude Code)');
+
+// 5. Cursor (.cursor/mcp.json)
+const cursorDir = path.join(ROOT_DIR, '.cursor');
+if (!fs.existsSync(cursorDir)) fs.mkdirSync(cursorDir, { recursive: true });
+fs.writeFileSync(path.join(cursorDir, 'mcp.json'), JSON.stringify(claudeConfig, null, 2));
+console.log('✓ Wrote .cursor/mcp.json (Cursor)');
+
+// 6. VS Code (.vscode/mcp.json)
+const vscodeDir = path.join(ROOT_DIR, '.vscode');
+if (!fs.existsSync(vscodeDir)) fs.mkdirSync(vscodeDir, { recursive: true });
+const vscodeConfig = {
+  servers: {
+    businesskit: {
+      type: 'stdio',
+      command: bkBin,
+      args: ['--mcp', '--profile', selectedProfile],
+    },
+  },
+};
+fs.writeFileSync(path.join(vscodeDir, 'mcp.json'), JSON.stringify(vscodeConfig, null, 2));
+console.log('✓ Wrote .vscode/mcp.json (VS Code)');
+
+// 7. Antigravity (.gemini/mcp_config.json)
+const geminiDir = path.join(ROOT_DIR, '.gemini');
+if (!fs.existsSync(geminiDir)) fs.mkdirSync(geminiDir, { recursive: true });
+fs.writeFileSync(path.join(geminiDir, 'mcp_config.json'), JSON.stringify(claudeConfig, null, 2));
+console.log('✓ Wrote .gemini/mcp_config.json (Antigravity / Gemini)');
+
+console.log('\n=== Ready! Launch any agentic CLI to interact with BusinessKit ===');

@@ -1,33 +1,25 @@
-# Skills — Load On Demand
+# BusinessKit Agent Skills
 
-Skills live in `.agents/skills/` (universal) and `.claude/skills/` (Claude Code).
+Declarative workflow skills that guide agents in using BusinessKit's native Model Context Protocol (MCP) server.
 
-**Do NOT load all skills at session start.** Load only what the current task needs.
-Each skill costs tokens. Unused skills waste money and bust the prompt cache.
+Skills load on demand based on task context—never load all skills simultaneously.
 
-## Load pattern
+## Domain Workflow Skills (MCP Tools)
 
-```
-Writing content (blog, newsletter, copy)  → load brand.md
-SEO work (audit, meta, LLM visibility)   → load brand.md + schema.md (posts section)
-Store/products/pricing                   → load store.md
-Reading analytics JSON                   → load analytics.md
-Routing to correct agent                 → load agents.md
-DB queries / table structure             → load schema.md
-```
+| Skill | Directory | Core MCP Tools | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Docs & CMS** | `docs-cms/` | `blog_post_create`, `content_list`, `content_get`, `content_update` | Technical docs, knowledge base articles, guides, and blog posts with TipTap semantic HTML. |
+| **Visual Pages** | `pages/` | `page_create`, `page_update`, `page_publish`, `component_create`, `page_get_section_schema` | Storefront and landing pages using native modular sections and custom components. |
+| **Billing & POS** | `billing/` | `shop_create_new_bill`, `invoice_create`, `invoice_send` | Rapid POS sales receipts, handwritten bill parsing, and B2B invoices. |
+| **Inventory** | `inventory/` | `inventory_receive_purchase_invoice`, `inventory_add_stock`, `inventory_get_levels` | Supplier purchase bills, automated restocking, stock adjustments, and moving average cost. |
+| **CRM** | `crm/` | `contact_create`, `contact_update` | Customer, client, and vendor directory management and tagging. |
+| **Inbox** | `inbox/` | `inbox_tool_set_category`, `inbox_tool_draft_reply`, `inbox_tool_schedule_send` | Email/DM triage, prompt-injection screening, draft replies, and approval gates. |
 
-## Available skills
+## Content Craft & Brand Skills
 
-| File | Load when |
-|---|---|
-| `brand.md` | Any content writing task |
-| `store.md` | Product creation, pricing, commerce |
-| `analytics.md` | Reading analytics columns |
-| `agents.md` | Routing requests, dependency direction |
-| `schema.md` | DB queries, table structure questions |
-
-## Never load
-
-- All skills at once
-- A skill "just in case"
-- Skills for tasks the user didn't ask for
+| Skill | Directory | Purpose |
+| :--- | :--- | :--- |
+| **Brand Identity** | `brand/` | Calibrate brand voice, tone compass, and store context via `system_get_capabilities`. |
+| **Humanizer** | `humanizer/` | De-AI patterns, remove repetitive AI writing signatures, and restore genuine human voice. |
+| **Copywriting** | `copywriting/` | High-converting sales page copywriting with internal hostile validation. |
+| **Social Content** | `social/` | Multi-platform social copy, thread creation, and engagement optimization. |

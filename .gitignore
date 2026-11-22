@@ -1,30 +1,38 @@
-# Environment — never commit real credentials
+# OS Files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# Environment & Credentials — never commit real secrets
 .env
-.env.local
+.env.*
+!.env.example
+
+# Generated MCP configs (local machine paths & user profile IDs)
+.mcp.json
+.cursor/
+.vscode/
+.gemini/
+
+# Deliverables & output artifacts
+output/*
+!output/.gitkeep
 
 # Dependencies
 node_modules/
+.npm/
 
-# Build output
+# Build artifacts & logs
 dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 .wrangler/
 *.js.map
+
+# Local cache & session logs
 memory/
-businesskit-files/
-
-# Personal preferences — local only, not for GitHub
-memory.md
-
-# Repo-local reference docs — for working with Claude, not for GitHub
-PROJECT.md
-ARCHITECTURE.md
-CODEBASE.md
-DOMAINS.md
-CONVENTIONS.md
-review-by-*.md
-
-# context/ IS committed — it's your brand docs (no secrets)
-# agent_skills table in Turso = live skills (not in repo)
-
-# CPR session logs — local context, not for GitHub
-CC-Session-Logs/.DS_Store
+.cache/
+CC-Session-Logs/
