@@ -86,3 +86,4 @@ call_tool("content_update", {
 ## 4. Reference Catalogs
 
 - [`references/html-blocks.md`](./references/html-blocks.md) — Exact markup snippets for every supported TipTap block and widget.
+- [`references/cms-hubs.md`](./references/cms-hubs.md) — Full catalog of all 30 canonical CMS hubs with their `category_id`, `cms_id`, and `slug`.
