@@ -1,23 +1,48 @@
-# BusinessKit Agent: Universal Agent Workspace
+# BusinessKit Agent
 
-Run and operate your entire business from **any agentic CLI or IDE** (Antigravity, Cursor, Claude Code, VS Code Copilot, Gemini CLI, or Codex) using BusinessKit's native Model Context Protocol (MCP) toolbelt.
+The universal autonomous agent workspace for **BusinessKit**. Operate, manage, and automate your entire business from any AI assistant or coding agent—including **Claude Code**, **Cursor**, **Antigravity**, **VS Code Copilot**, and **Gemini CLI**.
 
 ---
 
-## Why Tools Mode via MCP?
+## What is BusinessKit Agent?
 
-Unlike prototype agent scripts that attempt raw SQL writes into Turso DB, **BusinessKit Agent** communicates directly with your BusinessKit desktop app via MCP (`businesskit --mcp --profile <id>`):
+BusinessKit Agent connects your favorite AI agent directly to your local BusinessKit desktop app through the **Model Context Protocol (MCP)**. 
 
-- **Double-Entry Guarantees**: Debits and credits are balanced automatically in `fin_journal_entries`.
-- **Append-Only Ledgers**: Physical stock, customer credit (udhar), and loyalty ledgers cannot be corrupted by raw SQL.
-- **Credential Protection**: Database tokens never enter the LLM's context window. Credentials stay secured in the OS Keychain and native Rust binary.
-- **Prompt Injection Defense**: Incoming emails, customer notes, and webhooks are screened before reaching the agent.
+Instead of switching back and forth between apps and forms, your AI assistant can execute real business operations on your behalf:
+- **Billing & POS**: Create walk-in POS receipts, parse handwritten bills, and draft formal customer invoices.
+- **Inventory & Purchasing**: Scan supplier purchase invoices, automatically restock items, update moving average cost, and adjust inventory.
+- **Website & Landing Pages**: Assemble responsive landing pages with native modular sections or create bespoke custom components.
+- **Docs & Publishing**: Write and publish technical documentation, guides, newsletters, and SEO-optimized blog posts.
+- **CRM & Contacts**: Register and organize clients, suppliers, and leads with tags and contact info.
+- **Support Inbox**: Triage customer threads, extract 2FA verification codes, and draft email replies.
+
+---
+
+## How It Works
+
+```
+AI Assistant / IDE
+(Claude Code / Cursor / Antigravity / VS Code)
+  │
+  ├─ Reads Universal Commands & Skills (`commands/` & `skills/`)
+  │    └─ Editorial rules, page layouts, accounting workflows
+  │
+  └─ Calls BusinessKit MCP Server (`businesskit --mcp --profile <id>`)
+       │
+       └─ Native BusinessKit Engine
+            ├─ Automatic double-entry ledger balancing (`fin_journal_entries`)
+            ├─ Append-only stock & customer credit ledgers
+            ├─ Isolated local profile database
+            └─ Zero credential exposure (keys stay in OS Keychain)
+```
+
+All business logic, financial ledger balancing, inventory calculations, and database operations are executed safely inside the native BusinessKit engine. Your database credentials never leak into LLM prompts.
 
 ---
 
 ## Quick Start (1 Command)
 
-### Run Setup
+### 1. Run Setup
 From inside this directory:
 ```bash
 ./bin/businesskit.js
@@ -26,47 +51,50 @@ From inside this directory:
 
 The setup script automatically:
 1. Detects your installed BusinessKit app (`/Applications/BusinessKit.app` on macOS, or build binary).
-2. Connects to your active organization profile (e.g. `4628a5b1-ac05-4156-9d76-04bbd71119a1`).
-3. Generates the exact configuration for your agent environment:
-   - **Antigravity / Gemini CLI**: registers via `agy mcp add` / `.gemini/mcp_config.json`
-   - **Cursor**: generates `.cursor/mcp.json` and `.cursorrules`
+2. Connects to your active organization profile.
+3. Configures your agent environment:
    - **Claude Code**: generates `.mcp.json` and `.claude/commands`
+   - **Cursor**: generates `.cursor/mcp.json` and `.cursorrules`
+   - **Antigravity / Gemini CLI**: registers via `agy mcp add` / `.gemini/mcp_config.json`
    - **VS Code**: generates `.vscode/mcp.json`
 
 ---
 
-## Using With Your Favorite Agent
+## Using With Your Agent
 
-### 1. Claude Code
-Open your terminal in this repository:
+### Claude Code
+Open your terminal in this repository and start Claude:
 ```bash
 claude
 ```
-Claude Code reads `CLAUDE.md`, `.mcp.json`, and `.claude/commands/`. You can invoke commands directly with `/`:
+Type any slash command directly:
 ```bash
 /write-docs "Getting Started"
 /create-page "About Us"
 /create-new-bill 5 Box Tellzy 40 Tab @ ₹1258.83 -15%
 ```
 
-### 2. Antigravity & Gemini CLI
+### Antigravity & Gemini CLI
 Antigravity connects via the registered `businesskit` MCP server and reads `AGENTS.md`, `commands/`, and `skills/`.
-> **Note on Commands in Antigravity**: While Claude Code uses `/` for terminal macro commands, Antigravity uses **intent-based chat triggers**. You can type slash commands like `/write-docs "Pages"` or simply ask in natural language (*"Write a docs article for Pages architecture"*). Antigravity matches your intent to the matching command spec in `commands/` and executes the exact MCP tool sequence.
+You can use natural language or slash triggers:
+- *"Draft a customer invoice for Acme Corp with 10 units of consulting"*
+- `/write-docs "Pages Architecture"`
+- *"Restock items from this supplier bill"*
 
-### 3. Cursor
+### Cursor
 Open this folder in Cursor (`cursor .`). Cursor detects `.cursorrules` and `.cursor/mcp.json`. Use natural language or slash commands with the agent:
-> "Draft an invoice for Acme Corp with 10 units of consulting"
-> "Publish a new documentation article about Pages under category cat_32"
+- *"Create a landing page for our Black Friday Sale with hero, features, and pricing"*
+- *"Check stock levels for Tellzy 40"*
 
 ---
 
-## Universal Commands Directory (`commands/`)
+## Universal Commands (`commands/`)
 
 All 23 universal commands match the BusinessKit in-app commands 1:1:
 
 | Domain | Command | Description |
 | :--- | :--- | :--- |
-| **Docs & CMS** | `/write-docs` | Write structured documentation or knowledge base article (`cat_32`) |
+| **Docs & CMS** | `/write-docs` | Write structured documentation or knowledge base articles (`cat_32`) |
 | | `/write-blog` | Draft or publish a blog post with clean TipTap HTML (`cat_35`) |
 | | `/write-guide` | Step-by-step how-to guide with prerequisites and FAQs (`cat_36`) |
 | | `/write-newsletter` | Conversational email newsletter issue with sections and CTA (`cat_20`) |
@@ -92,7 +120,7 @@ All 23 universal commands match the BusinessKit in-app commands 1:1:
 
 ---
 
-## Declarative Skills (`skills/`)
+## Workflow Skills (`skills/`)
 
 - [`skills/docs-cms/SKILL.md`](./skills/docs-cms/SKILL.md) — Technical documentation (`cat_32`), guides, and blog articles (with `references/how-to.md`).
 - [`skills/pages/SKILL.md`](./skills/pages/SKILL.md) — Visual site builder, section schemas, and custom HTML/CSS components (with `references/sections-catalog.json`).
@@ -101,14 +129,14 @@ All 23 universal commands match the BusinessKit in-app commands 1:1:
 - [`skills/crm/SKILL.md`](./skills/crm/SKILL.md) — Contacts, leads, and customer tags.
 - [`skills/inbox/SKILL.md`](./skills/inbox/SKILL.md) — Triage, 2FA code extraction, and reply drafting.
 - [`skills/brand/SKILL.md`](./skills/brand/SKILL.md) — Brand identity, voice guidelines, and store context.
-- [`skills/humanizer/SKILL.md`](./skills/humanizer/SKILL.md) — De-AI patterns and voice polishing.
+- [`skills/humanizer/SKILL.md`](./skills/humanizer/SKILL.md) — De-AI writing patterns and voice polishing.
 - [`skills/copywriting/SKILL.md`](./skills/copywriting/SKILL.md) — High-converting sales page copywriting.
 - [`skills/social/SKILL.md`](./skills/social/SKILL.md) — Multi-platform social copy and threads.
 
 ---
 
-## Safety Invariants
+## Operating Principles
 
-1. **Tool-First**: Agents never write raw SQL.
-2. **Drafts First**: External communications, invoices, and emails are saved as drafts. A human confirms and sends.
-3. **Audit Trail**: All generated deliverables and reports are placed in `./output/`.
+1. **Native Engine Execution**: All operations run through verified BusinessKit tools with atomic database transactions.
+2. **Drafts First**: External communications, customer invoices, and emails are prepared as drafts for human review before transmission.
+3. **Structured Outputs**: All deliverables, exports, and generated files are organized in `./output/`.
