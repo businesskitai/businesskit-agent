@@ -58,13 +58,35 @@ When the user creates a custom CMS hub (e.g. "Case Studies", "Changelog", "Recip
 
 ---
 
-## 3. Tool Workflows
+## 3. Collections & Cross-Hub UI Interconnection
+
+Collections serve two vital architectural roles in BusinessKit:
+
+1. **Sidebar Navigation**:
+   - For **Docs** (`category_id = "cat_32"`) and **Guides** (`category_id = "cat_36"`), the frontend filters `collections` by `category_id` to build the hierarchical sidebar navigation tree using `parent_id` and `order_index`.
+   - **Mandatory Rule**: When creating or seeding a new collection row, **ALWAYS** include `category_id`. Collections without `category_id` become orphaned from sidebar rendering.
+
+2. **Cross-Hub Interconnection on the UI**:
+   - The same `collection_id` can be shared across multiple different CMS hubs and content types.
+   - For example, a single topic collection `col_inventory_setup` can link:
+     - Technical Reference (`category_id = "cat_32"`, `content_type = "docs"`)
+     - Step-by-Step Tutorial (`category_id = "cat_36"`, `content_type = "guides"`)
+     - Announcement Post (`category_id = "cat_35"`, `content_type = "blog"`)
+     - Companion Video (`category_id = "cat_21"`, `content_type = "videos"`)
+   - On the frontend UI, viewing any article in that collection queries:
+     `SELECT * FROM content WHERE collection_id = :id AND id != :current_id`
+   - This powers a rich cross-format **"Related in this collection"** widget on the UI, seamlessly connecting companion guides, videos, and articles across hubs without duplicate taxonomies.
+
+---
+
+## 4. Tool Workflows
 
 ### Create Content
 ```json
 call_tool("blog_post_create", {
   "content_type": "blog",
   "category_id": "cat_35",
+  "collection_id": "col_billing",
   "title": "5 Ways to Automate Invoicing",
   "excerpt": "Discover how automated billing saves hours every week.",
   "seo_title": "5 Ways to Automate Invoicing | BusinessKit",
@@ -83,7 +105,7 @@ call_tool("content_update", {
 
 ---
 
-## 4. Reference Catalogs
+## 5. Reference Catalogs
 
 - [`references/html-blocks.md`](./references/html-blocks.md) — Exact markup snippets for every supported TipTap block and widget.
 - [`references/cms-hubs.md`](./references/cms-hubs.md) — Full catalog of all 30 canonical CMS hubs with their `category_id`, `cms_id`, and `slug`.

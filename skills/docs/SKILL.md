@@ -15,7 +15,8 @@ Use this skill when the user asks to write, edit, organize, or publish technical
 - **Title Length**: Strictly **$\le$ 3 words** (e.g. `What Are Pages`, `Visual Page Editor`, `Install BusinessKit`).
 - **SEO Title**: Always prefixed with Domain (e.g. `Pages: Visual Site Architecture`).
 - **Collections**: Every doc article belongs to a collection (e.g. `col_docs_1` Getting Started, `col_website` Website & Pages). See [`references/how-to.md`](./references/how-to.md) for full collection hierarchy.
-- **Collection Creation**: When creating or seeding a new `collections` row, **ALWAYS** include `category_id = "cat_32"` (for guides, use `category_id = "cat_36"`). Collections without `category_id` will be orphaned from the navigation.
+- **Collection Creation**: When creating or seeding a new `collections` row, **ALWAYS** include `category_id = "cat_32"` (for guides, use `category_id = "cat_36"`). Collections without `category_id` will be orphaned from the sidebar navigation.
+- **Cross-Hub Interconnection**: The same `collection_id` can connect articles across multiple CMS hubs (e.g. Docs in `cat_32`, Guides in `cat_36`, Videos in `cat_21`, Blog in `cat_35`). On the UI, this links companion guides and videos under "Related in this collection".
 - **HTML Contract**:
   - Pure semantic HTML — never Markdown syntax (`##`, `*`, ` ``` `).
   - Never emit `<h1>` (article `title` renders as `<h1>`). Body headings start with `<h2>`.

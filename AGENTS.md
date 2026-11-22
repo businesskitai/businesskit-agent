@@ -23,11 +23,19 @@ You are operating a business through **BusinessKit**. You interact with the busi
    - Amounts are handled in integer smallest currency units (e.g. cents, paise) where required.
    - Posted journal entries cannot be edited. Errors must be corrected with reversing entries via tools.
 
-5. **Profile Awareness**:
-   - Start sessions by confirming the active profile via `profile_list` or `system_get_capabilities`.
-   - If work targets a different organization, switch profile using `profile_switch` before modifying state.
+5. **Profile Awareness & Multi-Profile Operations**:
+   - **Discover & Verify**: Check the active profile via `profile_list` or `system_get_capabilities`.
+   - **In-Memory Locking**: `profile_switch(profile_id="...")` switches the active Turso database connection and locks it in memory (`profile_locked = true`). You only need to switch once per session or when moving between organizations; subsequent tool calls remain locked to that profile.
+   - **Multi-Profile Execution Modes**:
+     - *Sequential Batching (Single MCP Connection)*: Complete all operations for Profile A, call `profile_switch(profile_id="<profile_b>")`, then complete all operations for Profile B.
+     - *True Parallel Execution (Multi-Server Setup)*: When working across multiple desktop windows simultaneously, configure separate MCP servers in client config (e.g. `businesskit-org1` and `businesskit-org2`), each passing `--profile <id>`. This allows concurrent calls to multiple databases in the exact same turn with zero collisions.
+   - **Database Isolation**: Each profile connects to a separate, dedicated Turso database. Data, ledger rows, and content never cross-contaminate.
 
-6. **Deliverables in `output/`**:
+6. **Cross-Hub Collections & Navigation**:
+   - When creating a collection row in `collections`, **always** set `category_id` (`cat_32` for Docs sidebar, `cat_36` for Guides hub).
+   - Use identical `collection_id` across different CMS hubs (`docs`, `guides`, `blog`, `videos`) so the UI can connect and display related cross-hub content together.
+
+7. **Deliverables in `output/`**:
    - All generated drafts, CSV exports, reports, and scratch artifacts must be written to `./output/`.
 
 ---
@@ -36,8 +44,8 @@ You are operating a business through **BusinessKit**. You interact with the busi
 
 | Domain | Key Tools | Notes |
 | :--- | :--- | :--- |
-| **System** | `system_get_capabilities`, `profile_list`, `profile_switch` | Check active features and target organization. |
-| **Docs & CMS** | `blog_post_create`, `content_list`, `content_get`, `content_update` | Articles, documentation (`cat_32`), guides, blog posts. |
+| **System** | `system_get_capabilities`, `profile_list`, `profile_switch` | Check active features, list profiles, switch organizations. |
+| **Docs & CMS** | `blog_post_create`, `content_list`, `content_get`, `content_update` | Articles, documentation (`cat_32`), guides (`cat_36`), blogs. |
 | **Pages & Web** | `page_create`, `page_get`, `page_update`, `page_publish`, `component_create`, `page_get_section_schema` | Visual storefront, landing pages, custom HTML/CSS components. |
 | **Shop & POS** | `shop_create_new_bill`, `invoice_create`, `invoice_send` | POS walk-in billing, B2B invoices, sales orders. |
 | **Inventory** | `inventory_add_stock`, `inventory_get_levels`, `inventory_receive_purchase_invoice`, `product_update_pricing` | Physical stock levels, purchase bills, price lists. |
@@ -50,7 +58,8 @@ You are operating a business through **BusinessKit**. You interact with the busi
 ## 3. Workflow Skills
 
 When handling specific domain tasks, reference the relevant declarative skill in `skills/`:
-- **Docs & Knowledge Base**: `skills/docs-cms/SKILL.md` (with `references/how-to.md`)
+- **Universal CMS & Cross-Hub Publishing**: `skills/cms/SKILL.md` (with `references/cms-hubs.md`, `references/html-blocks.md`)
+- **Technical Documentation & Knowledge Base**: `skills/docs/SKILL.md` (with `references/how-to.md`)
 - **Visual Website & Pages**: `skills/pages/SKILL.md` (with `references/sections-catalog.json`)
 - **Shop Billing & Invoicing**: `skills/billing/SKILL.md`
 - **Inventory & Purchasing**: `skills/inventory/SKILL.md`
