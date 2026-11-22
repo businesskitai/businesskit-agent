@@ -26,8 +26,10 @@ You are operating a business through **BusinessKit**. You interact with the busi
 5. **Profile Awareness & Multi-Profile Operations**:
    - **Discover & Verify**: Check the active profile via `profile_list` or `system_get_capabilities`.
    - **In-Memory Locking**: `profile_switch(profile_id="...")` switches the active Turso database connection and locks it in memory (`profile_locked = true`). You only need to switch once per session or when moving between organizations; subsequent tool calls remain locked to that profile.
+   - **Per-Call `profile_id` Parameter**: All tools accept an optional `profile_id: "<id>"` argument. When supplied, the MCP server connects to and executes against that profile's database directly (using its internal connection pool) without mutating the active session profile!
    - **Multi-Profile Execution Modes**:
-     - *Sequential Batching (Single MCP Connection)*: Complete all operations for Profile A, call `profile_switch(profile_id="<profile_b>")`, then complete all operations for Profile B.
+     - *Per-Call Override (Single MCP Connection)*: Pass `"profile_id": "<target>"` in tool arguments to target different businesses in the same turn without switching.
+     - *Sequential Batching (Single MCP Connection)*: Complete operations for Profile A, call `profile_switch(profile_id="<profile_b>")`, then complete operations for Profile B.
      - *True Parallel Execution (Multi-Server Setup)*: When working across multiple desktop windows simultaneously, configure separate MCP servers in client config (e.g. `businesskit-org1` and `businesskit-org2`), each passing `--profile <id>`. This allows concurrent calls to multiple databases in the exact same turn with zero collisions.
    - **Database Isolation**: Each profile connects to a separate, dedicated Turso database. Data, ledger rows, and content never cross-contaminate.
 
