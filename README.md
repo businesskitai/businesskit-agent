@@ -42,9 +42,22 @@ All business logic, financial ledger balancing, inventory calculations, and data
 
 ## Quick Start
 
-### Option A: Install as Claude Code Plugin
+### Option A: Install via Agent CLI / Marketplace
+
+**Claude Code**:
 ```bash
 claude plugin add https://github.com/businesskitai/businesskit-agent
+```
+
+**Antigravity / Gemini CLI**:
+```bash
+agy plugin install https://github.com/businesskitai/businesskit-agent
+```
+
+**SuperConsole AI**:
+In SuperConsole, go to **Customize** → **Plugins** → **Add from URL** and paste:
+```
+https://github.com/businesskitai/businesskit-agent/blob/main/.superconsole-plugin/plugin.json
 ```
 
 ### Option B: Run Universal Setup (All IDEs & Agents)
@@ -81,7 +94,11 @@ Type any slash command directly:
 ```
 
 ### Antigravity & Gemini CLI
-Antigravity connects via the registered `businesskit` MCP server and reads `AGENTS.md`, `commands/`, and `skills/`.
+Install the plugin directly:
+```bash
+agy plugin install https://github.com/businesskitai/businesskit-agent
+```
+Antigravity automatically discovers `plugin.json`, `rules/AGENTS.md`, `mcp_config.json`, and `skills/`.
 You can use natural language or slash triggers:
 - *"Draft a customer invoice for Acme Corp with 10 units of consulting"*
 - `/write-docs "Pages Architecture"`
@@ -91,6 +108,16 @@ You can use natural language or slash triggers:
 Open this folder in Cursor (`cursor .`). Cursor detects `.cursorrules` and `.cursor/mcp.json`. Use natural language or slash commands with the agent:
 - *"Create a landing page for our Black Friday Sale with hero, features, and pricing"*
 - *"Check stock levels for Tellzy 40"*
+
+### SuperConsole AI
+In SuperConsole:
+1. Navigate to **Customize** → **Plugins**.
+2. Click **Add from GitHub URL**.
+3. Paste:
+   ```
+   https://github.com/businesskitai/businesskit-agent/blob/main/.superconsole-plugin/plugin.json
+   ```
+4. Click **Install**. All skills and commands are activated.
 
 ---
 

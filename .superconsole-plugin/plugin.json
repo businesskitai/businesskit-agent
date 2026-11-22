@@ -1,32 +1,61 @@
 {
-    "id": "businesskit",
-    "name": "BusinessKit Agent",
-    "description": "Autonomous business copilot: POS sales billing, B2B invoicing, purchase restock, visual landing pages, CMS publishing, and CRM via native MCP tools.",
-    "version": "1.0.5",
-    "author": {
-        "name": "BusinessKit",
-        "email": "hello@businesskit.io",
-        "url": "https://businesskit.io"
-    },
-    "repository": "https://github.com/businesskitai/businesskit-agent",
-    "homepage": "https://businesskit.io",
-    "license": "MIT",
-    "type": "mcp",
-    "runtime": "stdio",
-    "command": "businesskit",
-    "args": [
-        "--mcp"
-    ],
-    "tags": [
-        "business",
-        "billing",
-        "invoicing",
-        "pos",
-        "inventory",
-        "crm",
-        "cms",
-        "pages",
-        "mcp"
-    ],
-    "icon": "https://businesskit.io/favicon.ico"
+  "id": "businesskit",
+  "name": "BusinessKit Agent",
+  "version": "1.0.5",
+  "description": "Autonomous business copilot: POS sales billing, B2B invoicing, purchase restock, visual landing pages, CMS publishing, and CRM via native MCP tools.",
+  "author": "BusinessKit",
+  "icon": "💼",
+  "category": "business",
+  "scope": "project",
+  "docs": "https://github.com/businesskitai/businesskit-agent",
+  "github_url": "https://github.com/businesskitai/businesskit-agent",
+  "mcp": [
+    {
+      "id": "businesskit",
+      "name": "BusinessKit MCP",
+      "type": "stdio",
+      "command": "businesskit",
+      "args": ["--mcp"]
+    }
+  ],
+  "commands": [
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/create-new-bill.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/create-invoice.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/send-invoice.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/add-inventory-from-invoice.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/check-stock.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/adjust-stock.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/add-contact.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/update-contact.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/create-page.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/update-page.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/publish-page.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/list-pages.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/write-docs.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/write-blog.md",
+    "https://github.com/businesskitai/businesskit-agent/blob/main/commands/capabilities.md"
+  ],
+  "skills": [
+    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/billing",
+    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/inventory",
+    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/crm",
+    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/inbox",
+    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/pages",
+    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/docs-cms"
+  ],
+  "type": "mcp",
+  "runtime": "stdio",
+  "command": "businesskit",
+  "args": ["--mcp"],
+  "tags": [
+    "business",
+    "billing",
+    "invoicing",
+    "pos",
+    "inventory",
+    "crm",
+    "cms",
+    "pages",
+    "mcp"
+  ]
 }
