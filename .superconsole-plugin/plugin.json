@@ -41,7 +41,8 @@
     "https://github.com/businesskitai/businesskit-agent/tree/main/skills/crm",
     "https://github.com/businesskitai/businesskit-agent/tree/main/skills/inbox",
     "https://github.com/businesskitai/businesskit-agent/tree/main/skills/pages",
-    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/docs-cms"
+    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/cms",
+    "https://github.com/businesskitai/businesskit-agent/tree/main/skills/docs"
   ],
   "type": "mcp",
   "runtime": "stdio",

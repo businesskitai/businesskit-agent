@@ -8,7 +8,8 @@ Skills load on demand based on task context—never load all skills simultaneous
 
 | Skill | Directory | Core MCP Tools | Purpose |
 | :--- | :--- | :--- | :--- |
-| **Docs & CMS** | `docs-cms/` | `blog_post_create`, `content_list`, `content_get`, `content_update` | Technical docs, knowledge base articles, guides, and blog posts with TipTap semantic HTML. |
+| **Universal CMS** | `cms/` | `blog_post_create`, `content_list`, `content_get`, `content_update` | Blog posts, newsletters, guides, notes, and custom hubs with universal TipTap HTML blocks. |
+| **Docs & Knowledge Base** | `docs/` | `blog_post_create`, `content_list`, `content_get`, `content_update` | Technical documentation, nested collection hierarchy, and knowledge base articles (`cat_32`). |
 | **Visual Pages** | `pages/` | `page_create`, `page_update`, `page_publish`, `component_create`, `page_get_section_schema` | Storefront and landing pages using native modular sections and custom components. |
 | **Billing & POS** | `billing/` | `shop_create_new_bill`, `invoice_create`, `invoice_send` | Rapid POS sales receipts, handwritten bill parsing, and B2B invoices. |
 | **Inventory** | `inventory/` | `inventory_receive_purchase_invoice`, `inventory_add_stock`, `inventory_get_levels` | Supplier purchase bills, automated restocking, stock adjustments, and moving average cost. |

@@ -65,6 +65,11 @@ Create or update structured technical reference and knowledge base documentation
   </div>
   ```
 
+## Reference Catalogs
+Before authoring `body_html`, read:
+- [`skills/docs/references/how-to.md`](../skills/docs/references/how-to.md) for documentation collection hierarchy and naming rules.
+- [`skills/cms/references/html-blocks.md`](../skills/cms/references/html-blocks.md) for the universal HTML element catalog (steps, callouts, task lists, code blocks, accordion FAQs).
+
 ## Execution Protocol
 1. Call `content_list(category_id: "cat_32")` to find matching child collections.
 2. Compose article with concise `excerpt` and prefixed SEO title (e.g. `Pages: Visual Site Architecture`).

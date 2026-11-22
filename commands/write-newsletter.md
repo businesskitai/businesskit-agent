@@ -27,6 +27,10 @@ Draft or publish a conversational email newsletter issue with curated highlights
 4. **Callout Tip**: Use `<div data-type="info-card">` or checklist `<ul data-type="taskList">`.
 5. **Call-to-Action (CTA)**: Provide explicit button label and URL (`cta_button_text: "Read Full Release"`, `cta_button_url: "https://..."`).
 
+## Reference Catalog
+Before authoring `body_html`, read:
+- [`skills/cms/references/html-blocks.md`](../skills/cms/references/html-blocks.md) for exact supported HTML snippets (steps, callout cards, task lists, and CTA blocks).
+
 ## Execution Protocol
 1. Compose issue title and lead copy.
 2. Structure sections using semantic HTML.

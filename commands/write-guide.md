@@ -29,6 +29,10 @@ Create an actionable how-to walkthrough with clear prerequisites, numbered step 
 5. **Troubleshooting FAQ**: Closing FAQ accordion using `<div data-type="accordion-group" class="tech-accordion">`.
 6. **Metadata**: Set `additional_details` like `[{"key": "Difficulty", "value": "Beginner"}, {"key": "Time", "value": "10 mins"}]`.
 
+## Reference Catalog
+Before authoring `body_html`, read:
+- [`skills/cms/references/html-blocks.md`](../skills/cms/references/html-blocks.md) for exact supported HTML snippets (sequential `<div data-type="steps">`, callout cards, task lists, code blocks, and accordion FAQs).
+
 ## Execution Protocol
 1. Call `content_list(category_id: "cat_36")` to discover existing guide categories.
 2. Draft semantic HTML following the step sequence structure.

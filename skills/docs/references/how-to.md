@@ -1,6 +1,6 @@
-# How-To: Authoring & Publishing BusinessKit Documentation (CMS & Knowledge Base)
+# How-To: Structuring & Publishing BusinessKit Documentation
 
-This guide documents the semantic rules, structural schemas, and MCP tool workflows used to author, format, and publish documentation and knowledge base articles for **BusinessKit**.
+This guide documents the hierarchy, collection mapping, semantic rules, and MCP tool workflows used to author, format, and organize documentation and knowledge base articles for **BusinessKit**.
 
 ---
 
@@ -14,8 +14,6 @@ Whenever authoring or publishing documentation, these constraints must always be
 | **Doc Title** | **$\le$ 3 words strictly** | E.g., `What Are Pages`, `Create New Page`, `Visual Page Editor`, `Install BusinessKit`. |
 | **SEO Title** | Prefixed with Domain | E.g., `Pages: Visual Drag and Drop Canvas Editor`, `Deploy: Connect Cloudflare Pages`. |
 | **No `<h1>` in HTML** | Prohibited in body | The article title is rendered by the layout as the primary `<h1>`. Body headings must start with `<h2>` then `<h3>`. |
-| **Accordions** | Collapsed by default | Must have `isOpen = false` and `aria-expanded="false"`. |
-| **Task Lists** | Pure semantic structure | No bullet markers. Uses vector SVG checkmarks without border hacks. |
 | **Status Field** | `published: 1` | `1` = published live, `0` = saved as draft. |
 
 ---
@@ -48,68 +46,28 @@ Docs are organized into root domains and nested subcollections:
 
 ---
 
-## 3. Semantic HTML Guidelines for Document Body
+## 3. Supported HTML Elements & Widgets (Single Source of Truth)
 
-When writing the article body HTML (`body_html` / `content`):
+All documentation articles must use clean semantic TipTap HTML. Do not maintain separate markup schemas.
 
-### A. Section Headings
-```html
-<h2>First Major Topic</h2>
-<p>Explaining the architecture and functionality.</p>
-
-<h3>Subtopic or Specific Flow</h3>
-<p>Step-by-step description.</p>
-```
-
-### B. Task Lists & Checkboxes
-Task lists must use the standard TipTap/Docs schema:
-```html
-<ul data-type="taskList" class="task-list tech-task-list">
-  <li data-type="taskItem" class="task-list-item tech-task-item">
-    <label><input type="checkbox" checked="checked" /></label>
-    <div><p>Complete initial setup in the Pages workspace.</p></div>
-  </li>
-  <li data-type="taskItem" class="task-list-item tech-task-item">
-    <label><input type="checkbox" /></label>
-    <div><p>Attach custom components to the canvas.</p></div>
-  </li>
-</ul>
-```
-
-### C. Collapsible Accordions (Must Be Collapsed by Default)
-```html
-<div data-type="accordion-group" class="tech-accordion-group">
-  <div data-type="accordion-item" class="tech-accordion-item" aria-expanded="false">
-    <div data-type="accordion-title" class="tech-accordion-title">How do templates differ from native sections?</div>
-    <div data-type="accordion-content" class="tech-accordion-content" hidden="hidden">
-      <p>Native sections adapt their colors to the profile theme token automatically, while templates provide full-page layouts.</p>
-    </div>
-  </div>
-</div>
-```
-
-### D. Callout Cards
-```html
-<div data-type="info-card" class="tech-callout tech-callout--info" role="note">
-  <p><strong>Note:</strong> Changes made in the Visual Editor are auto-saved locally before publishing.</p>
-</div>
-```
-
-### E. Code Blocks
-Always HTML-escape `<` as `&lt;` and `>` as `&gt;`:
-```html
-<pre><code class="language-bash">businesskit --mcp
-curl -X POST https://api.businesskit.io/v1/pages</code></pre>
-```
+👉 **Read the Universal HTML Block Reference**:
+Consult [`../../cms/references/html-blocks.md`](../../cms/references/html-blocks.md) for exact markup snippets and attributes:
+- **Sequential Steps**: `<div data-type="steps" class="tech-steps">` with `<div data-type="step-item">`
+- **Info Callouts**: `<div data-type="info-card" class="tech-callout tech-callout--info" role="note">`
+- **Checklists**: `<ul data-type="taskList"><li data-type="taskItem" data-checked="false">...</li></ul>`
+- **Code & Named Files**: `<pre data-filename="..."><code>...</code></pre>`
+- **Tables & Matrices**: `<table><thead><tr><th>...</th></tr></thead><tbody>...</tbody></table>`
+- **Accordion FAQs**: `<div data-type="accordion-group" class="tech-accordion">` (collapsed by default)
+- **Inline Elements**: `<kbd class="tech-kbd">⌘K</kbd>`, `<code>inline</code>`, `<strong>`, `<em>`
 
 ---
 
 ## 4. MCP Tool Workflows
 
-All CMS and documentation operations execute through the native BusinessKit MCP server. The agent operates within the user's active business profile.
+All documentation operations execute through the native BusinessKit MCP server within the user's active business profile.
 
-### A. Listing Existing Documentation
-Query published articles and drafts in the documentation category:
+### A. Listing Existing Documentation & Collections
+Query published articles and collections in the docs category:
 ```json
 call_tool("content_list", {
   "category_id": "cat_32"
@@ -123,6 +81,7 @@ call_tool("blog_post_create", {
   "title": "What Are Pages",
   "slug": "what-are-pages",
   "category_id": "cat_32",
+  "content_type": "docs",
   "collection_id": "col_pg_start",
   "excerpt": "Overview of Pages: BusinessKit's visual website builder.",
   "seo_title": "Pages: Visual Site Architecture and Canvas Editor",
@@ -172,6 +131,6 @@ published: true
 After authoring or updating docs, verify:
 1. **Title length**: Title has 3 words or fewer.
 2. **No `<h1>`**: Body headings start with `<h2>`.
-3. **Category match**: `category_id` is `"cat_32"`.
-4. **Accordions**: Default to collapsed (`aria-expanded="false"`).
+3. **Category match**: `category_id` is `"cat_32"` and `content_type` is `"docs"`.
+4. **Accordions**: Default to collapsed (`aria-expanded="false"` or `data-open="false"`).
 5. **Clean HTML**: All code tags HTML-escaped.

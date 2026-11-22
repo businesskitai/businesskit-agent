@@ -155,7 +155,8 @@ All 23 universal commands match the BusinessKit in-app commands 1:1:
 
 ## Workflow Skills (`skills/`)
 
-- [`skills/docs-cms/SKILL.md`](./skills/docs-cms/SKILL.md) — Technical documentation (`cat_32`), guides, and blog articles (with `references/how-to.md`).
+- [`skills/cms/SKILL.md`](./skills/cms/SKILL.md) — Universal CMS publishing (Blog, Newsletter, Guides, Notes, custom hubs) with [`references/html-blocks.md`](./skills/cms/references/html-blocks.md).
+- [`skills/docs/SKILL.md`](./skills/docs/SKILL.md) — Technical documentation and knowledge base hierarchy (`cat_32`) with [`references/how-to.md`](./skills/docs/references/how-to.md).
 - [`skills/pages/SKILL.md`](./skills/pages/SKILL.md) — Visual site builder, section schemas, and custom HTML/CSS components (with `references/sections-catalog.json`).
 - [`skills/billing/SKILL.md`](./skills/billing/SKILL.md) — POS bills, B2B invoices, and payment tracking.
 - [`skills/inventory/SKILL.md`](./skills/inventory/SKILL.md) — Stock levels, purchase invoices, and price lists.

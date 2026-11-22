@@ -33,6 +33,10 @@ Draft or publish an engaging, SEO-optimized blog article with clean semantic Tip
    - `seo_description` (150–160 chars) and relevant `seo_keywords`.
 4. **Draft Mode**: Save as draft (`published: false`) unless the user explicitly requests immediate publishing.
 
+## Reference Catalog
+Before authoring `body_html`, read:
+- [`skills/cms/references/html-blocks.md`](../skills/cms/references/html-blocks.md) for exact supported HTML snippets (steps, callout cards, task lists, code blocks, accordion FAQs, and video embeds).
+
 ## Execution Protocol
 1. Formulate title, excerpt, and engaging opening paragraph.
 2. Structure sections using `<h2>`, `<h3>`, and relevant widgets.

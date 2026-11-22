@@ -29,6 +29,7 @@ Fetch, revise, and update an existing post, documentation article, guide, or new
 
 ### Step 2: Apply Edits to HTML
 - Preserve existing valid HTML elements and classes (`tech-callout`, `tech-steps`, `tech-accordion`).
+- For supported HTML element syntax, consult [`skills/cms/references/html-blocks.md`](../skills/cms/references/html-blocks.md).
 - Apply the user's specific requested changes (e.g. rewrite a paragraph, add a code block, fix typos).
 - Keep pure semantic HTML — never insert raw Markdown syntax.
 
