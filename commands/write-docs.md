@@ -28,6 +28,7 @@ Create or update structured technical reference and knowledge base documentation
 3. **Never Emit `<h1>` in HTML**: Top-level headings inside `body_html` must start with `<h2>`, followed by `<h3>`.
 4. **Pure Semantic HTML in `body_html`**: Never write Markdown syntax (`##`, `*`, ``` ```, `- `).
 5. **Collection Scoping**: Always associate with a child collection (e.g. `col_pg_start`, `col_crm`). Call `content_list(category_id: "cat_32")` first to discover active collections.
+6. **Collection Row Requirement**: When creating or inserting a new `collections` row, **ALWAYS** pass `category_id = "cat_32"`. Collections without `category_id` become orphaned.
 
 ## Supported HTML Blocks
 - **Section Headings**: `<h2>Section Title</h2>`, `<h3>Subtopic</h3>`

@@ -44,6 +44,25 @@ Docs are organized into root domains and nested subcollections:
 19. `col_settings_account` — Settings & Account (`settings-account`)
 20. `col_help_support` — Help & Support (`help`)
 
+### Collection Row Schema & Mandatory `category_id`
+
+When creating or seeding a collection row in the `collections` table:
+- **Docs Collections**: `category_id = "cat_32"` (MANDATORY)
+- **Guides Collections**: `category_id = "cat_36"` (MANDATORY)
+
+```sql
+-- Docs collection row
+INSERT INTO collections (id, title, slug, category_id, parent_id, order_index, sort_order)
+VALUES ('col_pg_start', 'Get Started', 'pg-get-started', 'cat_32', 'col_website', 1, 10);
+
+-- Guides collection row
+INSERT INTO collections (id, title, slug, category_id, parent_id, order_index, sort_order)
+VALUES ('col_payments_guide', 'Payment Setup', 'payment-setup', 'cat_36', NULL, 1, 10);
+```
+
+> [!IMPORTANT]
+> Never omit `category_id` when creating a collection row. The sidebar and hub routers use `category_id` to associate collections with the Docs (`cat_32`) or Guides (`cat_36`) hub. If `category_id` is omitted or null, the collection will be orphaned from navigation.
+
 ---
 
 ## 3. Supported HTML Elements & Widgets (Single Source of Truth)

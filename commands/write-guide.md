@@ -28,6 +28,7 @@ Create an actionable how-to walkthrough with clear prerequisites, numbered step 
 4. **Step Sequence**: Numbered tutorial inside `<div data-type="steps" class="tech-steps">` with code blocks `<pre data-filename="...">` and `<kbd class="tech-kbd">`.
 5. **Troubleshooting FAQ**: Closing FAQ accordion using `<div data-type="accordion-group" class="tech-accordion">`.
 6. **Metadata**: Set `additional_details` like `[{"key": "Difficulty", "value": "Beginner"}, {"key": "Time", "value": "10 mins"}]`.
+7. **Collection Row Requirement**: When creating or inserting a new `collections` row for guides, **ALWAYS** pass `category_id = "cat_36"`. Collections without `category_id` become orphaned.
 
 ## Reference Catalog
 Before authoring `body_html`, read:
