@@ -14,6 +14,11 @@
     "skills",
     "templates",
     "scripts",
+    "rules",
+    "assets",
+    "plugin.json",
+    "mcp_config.json",
+    "server.json",
     "AGENTS.md",
     "CLAUDE.md",
     "GEMINI.md",
@@ -21,7 +26,8 @@
     "README.md",
     ".cursorrules",
     ".claude-plugin",
-    ".cursor-plugin"
+    ".cursor-plugin",
+    ".superconsole-plugin"
   ],
   "scripts": {
     "setup": "bash ./scripts/setup.sh",

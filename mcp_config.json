@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "businesskit": {
+      "command": "businesskit",
+      "args": ["--mcp"]
+    }
+  }
+}

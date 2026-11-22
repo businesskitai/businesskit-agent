@@ -1,0 +1,32 @@
+{
+    "id": "businesskit",
+    "name": "BusinessKit Agent",
+    "description": "Autonomous business copilot: POS sales billing, B2B invoicing, purchase restock, visual landing pages, CMS publishing, and CRM via native MCP tools.",
+    "version": "1.0.5",
+    "author": {
+        "name": "BusinessKit",
+        "email": "hello@businesskit.io",
+        "url": "https://businesskit.io"
+    },
+    "repository": "https://github.com/businesskitai/businesskit-agent",
+    "homepage": "https://businesskit.io",
+    "license": "MIT",
+    "type": "mcp",
+    "runtime": "stdio",
+    "command": "businesskit",
+    "args": [
+        "--mcp"
+    ],
+    "tags": [
+        "business",
+        "billing",
+        "invoicing",
+        "pos",
+        "inventory",
+        "crm",
+        "cms",
+        "pages",
+        "mcp"
+    ],
+    "icon": "https://businesskit.io/favicon.ico"
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.businesskitai/agent",
+  "title": "BusinessKit Agent",
+  "description": "Universal BusinessKit Agent Kit — operate billing & POS, inventory restocking, CRM contacts, customer support triage, and landing page publishing via local native BusinessKit MCP server.",
+  "repository": {
+    "url": "https://github.com/businesskitai/businesskit-agent",
+    "source": "github"
+  },
+  "version": "1.0.5",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@businesskit/agent",
+      "version": "1.0.5",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

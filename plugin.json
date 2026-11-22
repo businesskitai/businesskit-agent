@@ -1,0 +1,32 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "businesskit",
+  "displayName": "BusinessKit",
+  "version": "1.0.5",
+  "description": "Universal BusinessKit autonomous agent kit — POS billing, B2B invoices, inventory restocking, CRM contacts, customer support triage, and website publishing via native MCP tools.",
+  "logo": "assets/logo.svg",
+  "author": {
+    "name": "BusinessKit Team",
+    "url": "https://businesskit.ai"
+  },
+  "homepage": "https://businesskit.ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/businesskitai/businesskit-agent"
+  },
+  "suggestedPrompts": [
+    "Draft a customer invoice for Acme Corp with 10 units of consulting",
+    "Restock inventory items from this supplier purchase invoice",
+    "Create a new landing page with hero, features, and pricing sections"
+  ],
+  "keywords": [
+    "businesskit",
+    "mcp",
+    "billing",
+    "pos",
+    "invoicing",
+    "inventory",
+    "crm",
+    "website-builder"
+  ]
+}
