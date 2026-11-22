@@ -1,0 +1,6 @@
+archive/
+context/
+output/
+.gemini/
+.claude/settings.local.json
+*.log

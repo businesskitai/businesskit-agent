@@ -40,12 +40,18 @@ All business logic, financial ledger balancing, inventory calculations, and data
 
 ---
 
-## Quick Start (1 Command)
+## Quick Start
 
-### 1. Run Setup
+### Option A: Install as Claude Code Plugin
+```bash
+claude plugin add https://github.com/businesskitai/businesskit-agent
+```
+
+### Option B: Run Universal Setup (All IDEs & Agents)
 From inside this directory:
 ```bash
 ./bin/businesskit.js
+# or: npx @businesskit/agent
 # or: npm run setup
 ```
 

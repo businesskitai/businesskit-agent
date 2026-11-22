@@ -1,12 +1,28 @@
 {
   "name": "@businesskit/agent",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Universal BusinessKit Agent Kit — Antigravity, Cursor, Claude Code, VS Code, and Gemini CLI via BusinessKit native MCP tools.",
   "type": "module",
+  "mcpName": "io.github.businesskitai/agent",
   "bin": {
     "bk": "./bin/businesskit.js",
     "businesskit": "./bin/businesskit.js"
   },
+  "files": [
+    "bin",
+    "commands",
+    "skills",
+    "templates",
+    "scripts",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "LICENSE",
+    "README.md",
+    ".cursorrules",
+    ".claude-plugin",
+    ".cursor-plugin"
+  ],
   "scripts": {
     "setup": "bash ./scripts/setup.sh",
     "setup:ts": "npx tsx scripts/setup.ts"
@@ -17,6 +33,7 @@
     "antigravity",
     "cursor",
     "mcp",
+    "model-context-protocol",
     "ai-agent",
     "business-agent",
     "businesskit"
@@ -31,8 +48,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/businesskit-io/businesskit-agent"
+    "url": "https://github.com/businesskitai/businesskit-agent"
   },
-  "homepage": "https://github.com/businesskit-io/businesskit-agent",
+  "homepage": "https://github.com/businesskitai/businesskit-agent#readme",
   "license": "MIT"
 }
