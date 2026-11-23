@@ -31,7 +31,8 @@
   ],
   "scripts": {
     "setup": "bash ./scripts/setup.sh",
-    "setup:ts": "npx tsx scripts/setup.ts"
+    "setup:ts": "npx tsx scripts/setup.ts",
+    "update": "bash ./scripts/update.sh"
   },
   "keywords": [
     "claude-code",

@@ -79,6 +79,28 @@ The setup script automatically:
 
 ---
 
+## Updating to New Releases
+
+When a new version of BusinessKit Agent is released with new skills, updated commands, or new MCP capabilities, update your local workspace with one command:
+
+```bash
+npm run update
+# or
+npx @businesskit/agent update
+# or
+bk update
+# or inside Claude Code / Antigravity:
+/update-agent
+```
+
+### Safety Guarantees During Updates:
+* **Your Custom Context is Preserved**: `context/business.md`, `brand.md`, and `brand-voice.md` are snapshotted in memory and restored automatically. Your store details and brand personality are **never overwritten**.
+* **Your Custom Skills & Commands are Preserved**: Any custom skills you added (e.g. `skills/my-custom-skill/`) or custom slash commands (`commands/my-command.md`) are untracked by Git and **never deleted**.
+* **Memory & Deliverables are Preserved**: `memory/` and `output/` are git-ignored and remain 100% intact.
+* **Upstream Skills & Commands are Refreshed**: All official commands, modular skills, and MCP configurations are updated to the latest upstream release.
+
+---
+
 ## Using With Your Agent
 
 ### Claude Code
