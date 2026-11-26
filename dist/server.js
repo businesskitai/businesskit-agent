@@ -14,22 +14,30 @@ dotenv.config();
 var clientInstance = null;
 var currentProfileId = process.env.PROFILE_ID || process.env.BK_PROFILE_ID || "";
 var profileResolved = false;
+function cleanVal(v) {
+  if (!v) return "";
+  const trimmed = v.trim();
+  if (trimmed.includes("your-db") || trimmed.includes("your-database") || trimmed.includes("your-token") || trimmed.includes("your-turso-auth-token")) {
+    return "";
+  }
+  return trimmed;
+}
 function getTursoConfig() {
-  const url = process.env.TURSO_DATABASE_URL || process.env.TURSO_URL || process.env.BK_TURSO_URL || process.env.DATABASE_URL || "";
-  const token = process.env.TURSO_AUTH_TOKEN || process.env.TURSO_TOKEN || process.env.TURSO_READ_ONLY_TOKEN || process.env.TURSO_RO_TOKEN || process.env.BK_TURSO_TOKEN || process.env.AUTH_TOKEN || "";
+  const url = cleanVal(process.env.TURSO_DATABASE_URL) || cleanVal(process.env.TURSO_URL) || cleanVal(process.env.BK_TURSO_URL) || cleanVal(process.env.DATABASE_URL);
+  const writeToken = cleanVal(process.env.TURSO_AUTH_TOKEN) || cleanVal(process.env.TURSO_TOKEN) || cleanVal(process.env.BK_TURSO_TOKEN) || cleanVal(process.env.AUTH_TOKEN);
+  const roToken = cleanVal(process.env.TURSO_READ_ONLY_TOKEN) || cleanVal(process.env.TURSO_RO_TOKEN);
   const isReadOnly = Boolean(
-    process.env.TURSO_READ_ONLY_TOKEN || process.env.TURSO_RO_TOKEN || process.env.READ_ONLY === "true" || process.env.TURSO_READONLY === "true"
+    !writeToken && roToken || process.env.READ_ONLY === "true" || process.env.TURSO_READONLY === "true"
   );
-  const trimmedUrl = url.trim();
-  const trimmedToken = token.trim();
-  if (!trimmedUrl || !trimmedToken || trimmedUrl.includes("your-db") || trimmedUrl.includes("your-database") || trimmedToken.includes("your-token") || trimmedToken.includes("your-turso-auth-token")) {
+  const token = writeToken || roToken;
+  if (!url || !token) {
     return null;
   }
-  let normalizedUrl = trimmedUrl;
+  let normalizedUrl = url;
   if (normalizedUrl.startsWith("turso://")) {
     normalizedUrl = "https://" + normalizedUrl.slice(8);
   }
-  return { url: normalizedUrl, token: trimmedToken, readOnly: isReadOnly };
+  return { url: normalizedUrl, token, readOnly: isReadOnly };
 }
 function isDbConfigured() {
   return getTursoConfig() !== null;
@@ -2050,6 +2058,32 @@ var toolMap = /* @__PURE__ */ new Map();
 for (const tool of allTools) {
   toolMap.set(tool.name, tool);
 }
+var WRITE_TOOLS = /* @__PURE__ */ new Set([
+  "inventory_receive_purchase_invoice",
+  "product_update_pricing",
+  "inventory_add_stock",
+  "invoice_create",
+  "invoice_send",
+  "shop_create_new_bill",
+  "contact_create",
+  "contact_update",
+  "blog_post_create",
+  "content_update",
+  "page_create",
+  "page_update",
+  "page_publish",
+  "component_create",
+  "domain_set_agent_notes",
+  "inbox_tool_set_category",
+  "inbox_tool_set_state",
+  "inbox_tool_add_label",
+  "inbox_tool_link_entity",
+  "inbox_tool_draft_reply",
+  "inbox_tool_schedule_send",
+  "inbox_tool_archive",
+  "inbox_tool_save_attachments",
+  "profile_switch"
+]);
 function getAllToolDefinitions() {
   return allTools.map((t) => ({
     name: t.name,
@@ -2069,6 +2103,11 @@ async function dispatchTool(name, args) {
   if (!isDbConfigured()) {
     throw new Error(
       `Database connection not configured. To execute '${name}', please set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN in your .env file or environment variables.`
+    );
+  }
+  if (WRITE_TOOLS.has(name) && isDbReadOnly()) {
+    throw new Error(
+      `Operation rejected: Database is connected in read-only mode (read-only token). Write tool '${name}' is disabled.`
     );
   }
   const profileId = await getActiveProfileId();

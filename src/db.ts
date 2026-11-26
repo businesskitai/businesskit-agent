@@ -12,52 +12,56 @@ let clientInstance: Client | null = null;
 let currentProfileId: string = process.env.PROFILE_ID || process.env.BK_PROFILE_ID || '';
 let profileResolved = false;
 
+function cleanVal(v?: string): string {
+  if (!v) return '';
+  const trimmed = v.trim();
+  if (
+    trimmed.includes('your-db') ||
+    trimmed.includes('your-database') ||
+    trimmed.includes('your-token') ||
+    trimmed.includes('your-turso-auth-token')
+  ) {
+    return '';
+  }
+  return trimmed;
+}
+
 export function getTursoConfig(): { url: string; token: string; readOnly: boolean } | null {
   const url =
-    process.env.TURSO_DATABASE_URL ||
-    process.env.TURSO_URL ||
-    process.env.BK_TURSO_URL ||
-    process.env.DATABASE_URL ||
-    '';
+    cleanVal(process.env.TURSO_DATABASE_URL) ||
+    cleanVal(process.env.TURSO_URL) ||
+    cleanVal(process.env.BK_TURSO_URL) ||
+    cleanVal(process.env.DATABASE_URL);
 
-  const token =
-    process.env.TURSO_AUTH_TOKEN ||
-    process.env.TURSO_TOKEN ||
-    process.env.TURSO_READ_ONLY_TOKEN ||
-    process.env.TURSO_RO_TOKEN ||
-    process.env.BK_TURSO_TOKEN ||
-    process.env.AUTH_TOKEN ||
-    '';
+  const writeToken =
+    cleanVal(process.env.TURSO_AUTH_TOKEN) ||
+    cleanVal(process.env.TURSO_TOKEN) ||
+    cleanVal(process.env.BK_TURSO_TOKEN) ||
+    cleanVal(process.env.AUTH_TOKEN);
+
+  const roToken =
+    cleanVal(process.env.TURSO_READ_ONLY_TOKEN) ||
+    cleanVal(process.env.TURSO_RO_TOKEN);
 
   const isReadOnly = Boolean(
-    process.env.TURSO_READ_ONLY_TOKEN ||
-      process.env.TURSO_RO_TOKEN ||
+    (!writeToken && roToken) ||
       process.env.READ_ONLY === 'true' ||
       process.env.TURSO_READONLY === 'true'
   );
 
-  const trimmedUrl = url.trim();
-  const trimmedToken = token.trim();
+  const token = writeToken || roToken;
 
-  // Guard against missing or placeholder values
-  if (
-    !trimmedUrl ||
-    !trimmedToken ||
-    trimmedUrl.includes('your-db') ||
-    trimmedUrl.includes('your-database') ||
-    trimmedToken.includes('your-token') ||
-    trimmedToken.includes('your-turso-auth-token')
-  ) {
+  if (!url || !token) {
     return null;
   }
 
   // Normalize URL to https or libsql
-  let normalizedUrl = trimmedUrl;
+  let normalizedUrl = url;
   if (normalizedUrl.startsWith('turso://')) {
     normalizedUrl = 'https://' + normalizedUrl.slice(8);
   }
 
-  return { url: normalizedUrl, token: trimmedToken, readOnly: isReadOnly };
+  return { url: normalizedUrl, token, readOnly: isReadOnly };
 }
 
 export function isDbConfigured(): boolean {
