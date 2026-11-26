@@ -12,7 +12,7 @@ let clientInstance: Client | null = null;
 let currentProfileId: string = process.env.PROFILE_ID || process.env.BK_PROFILE_ID || '';
 let profileResolved = false;
 
-export function getTursoConfig(): { url: string; token: string } | null {
+export function getTursoConfig(): { url: string; token: string; readOnly: boolean } | null {
   const url =
     process.env.TURSO_DATABASE_URL ||
     process.env.TURSO_URL ||
@@ -23,9 +23,18 @@ export function getTursoConfig(): { url: string; token: string } | null {
   const token =
     process.env.TURSO_AUTH_TOKEN ||
     process.env.TURSO_TOKEN ||
+    process.env.TURSO_READ_ONLY_TOKEN ||
+    process.env.TURSO_RO_TOKEN ||
     process.env.BK_TURSO_TOKEN ||
     process.env.AUTH_TOKEN ||
     '';
+
+  const isReadOnly = Boolean(
+    process.env.TURSO_READ_ONLY_TOKEN ||
+      process.env.TURSO_RO_TOKEN ||
+      process.env.READ_ONLY === 'true' ||
+      process.env.TURSO_READONLY === 'true'
+  );
 
   const trimmedUrl = url.trim();
   const trimmedToken = token.trim();
@@ -48,11 +57,16 @@ export function getTursoConfig(): { url: string; token: string } | null {
     normalizedUrl = 'https://' + normalizedUrl.slice(8);
   }
 
-  return { url: normalizedUrl, token: trimmedToken };
+  return { url: normalizedUrl, token: trimmedToken, readOnly: isReadOnly };
 }
 
 export function isDbConfigured(): boolean {
   return getTursoConfig() !== null;
+}
+
+export function isDbReadOnly(): boolean {
+  const cfg = getTursoConfig();
+  return cfg ? cfg.readOnly : false;
 }
 
 export function getDbClient(): Client {
@@ -124,6 +138,11 @@ export async function execute(
   sql: string,
   args: any[] = []
 ): Promise<{ rowsAffected: number; lastInsertRowid?: bigint }> {
+  if (isDbReadOnly()) {
+    throw new Error(
+      'Database is connected in read-only mode (read-only token). Write operations (INSERT, UPDATE, DELETE) are not permitted.'
+    );
+  }
   const client = getDbClient();
   const res = await client.execute({ sql, args });
   return {

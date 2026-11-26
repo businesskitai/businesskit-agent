@@ -8,20 +8,41 @@ The official **Model Context Protocol (MCP)** server and autonomous agent toolbe
 
 ---
 
-## Quick Start
+## Two Connection Modes
 
-### 1. Configure Database Credentials
+### Mode 1: With BusinessKit App (macOS, Windows, Linux) — Zero Config
+If the BusinessKit desktop app is installed on your machine, **you do not need a `.env` file**. Run the universal setup:
 
-The MCP server connects directly to your Turso database. Provide credentials via `.env` (see [`.env.example`](./.env.example)) or environment variables:
-
-```env
-TURSO_DATABASE_URL=libsql://your-database.turso.io
-TURSO_AUTH_TOKEN=your-turso-auth-token
+```bash
+npx @businesskit/agent setup
+# or: npm run setup
 ```
 
-> **Note**: Tool discovery (`initialize` and `tools/list`) succeeds out-of-the-box even before `.env` is configured, allowing MCP registries and clients to inspect schemas immediately.
+The setup wizard automatically locates the installed app binary, connects to your active organization profile, and pairs with your agent environment with zero manual configuration.
 
-### 2. Connect Your Agent
+---
+
+### Mode 2: Standalone / Cloud / Headless (No App Required)
+Run anywhere Node.js is available (remote server, VPS, Glama, Docker, or machine without the desktop app):
+
+1. **Configure `.env`** (see [`.env.example`](./.env.example)):
+   ```env
+   TURSO_DATABASE_URL=libsql://your-database.turso.io
+   TURSO_AUTH_TOKEN=your-turso-auth-token
+   ```
+
+2. **Read-Only Mode Option**:
+   To grant your AI agent safe read-only access (query inventory, check stock, inspect pages, and read CMS content without permitting writes), supply a read-only token instead:
+   ```env
+   TURSO_DATABASE_URL=libsql://your-database.turso.io
+   TURSO_READ_ONLY_TOKEN=your-read-only-token
+   ```
+
+> **Note**: Tool discovery (`initialize` and `tools/list`) succeeds out-of-the-box even before `.env` is configured, allowing MCP registries (Glama, Smithery) and IDE clients to inspect schemas immediately.
+
+---
+
+## MCP Client Configuration
 
 #### Claude Desktop (`claude_desktop_config.json`)
 ```json
@@ -80,7 +101,7 @@ claude mcp add businesskit npx -y @businesskit/agent
 
 ## Documentation & References
 
-Instead of duplicating documentation, this repository organizes capabilities into modular reference files:
+Capabilities and workflows are organized in modular reference files:
 
 - **Agent Operating Rules & Directives**: [`AGENTS.md`](./AGENTS.md) — Multi-profile operations, ledger invariants, and draft-first safeguards.
 - **Workflow Skills**: [`skills/`](./skills/)

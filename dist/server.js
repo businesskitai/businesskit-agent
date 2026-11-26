@@ -16,7 +16,10 @@ var currentProfileId = process.env.PROFILE_ID || process.env.BK_PROFILE_ID || ""
 var profileResolved = false;
 function getTursoConfig() {
   const url = process.env.TURSO_DATABASE_URL || process.env.TURSO_URL || process.env.BK_TURSO_URL || process.env.DATABASE_URL || "";
-  const token = process.env.TURSO_AUTH_TOKEN || process.env.TURSO_TOKEN || process.env.BK_TURSO_TOKEN || process.env.AUTH_TOKEN || "";
+  const token = process.env.TURSO_AUTH_TOKEN || process.env.TURSO_TOKEN || process.env.TURSO_READ_ONLY_TOKEN || process.env.TURSO_RO_TOKEN || process.env.BK_TURSO_TOKEN || process.env.AUTH_TOKEN || "";
+  const isReadOnly = Boolean(
+    process.env.TURSO_READ_ONLY_TOKEN || process.env.TURSO_RO_TOKEN || process.env.READ_ONLY === "true" || process.env.TURSO_READONLY === "true"
+  );
   const trimmedUrl = url.trim();
   const trimmedToken = token.trim();
   if (!trimmedUrl || !trimmedToken || trimmedUrl.includes("your-db") || trimmedUrl.includes("your-database") || trimmedToken.includes("your-token") || trimmedToken.includes("your-turso-auth-token")) {
@@ -26,10 +29,14 @@ function getTursoConfig() {
   if (normalizedUrl.startsWith("turso://")) {
     normalizedUrl = "https://" + normalizedUrl.slice(8);
   }
-  return { url: normalizedUrl, token: trimmedToken };
+  return { url: normalizedUrl, token: trimmedToken, readOnly: isReadOnly };
 }
 function isDbConfigured() {
   return getTursoConfig() !== null;
+}
+function isDbReadOnly() {
+  const cfg = getTursoConfig();
+  return cfg ? cfg.readOnly : false;
 }
 function getDbClient() {
   if (clientInstance) {
@@ -84,6 +91,11 @@ async function query(sql, args = []) {
   return res.rows;
 }
 async function execute(sql, args = []) {
+  if (isDbReadOnly()) {
+    throw new Error(
+      "Database is connected in read-only mode (read-only token). Write operations (INSERT, UPDATE, DELETE) are not permitted."
+    );
+  }
   const client = getDbClient();
   const res = await client.execute({ sql, args });
   return {
