@@ -1,8 +1,12 @@
 {
   "mcpServers": {
     "businesskit": {
-      "command": "businesskit",
-      "args": ["--mcp"]
+      "command": "node",
+      "args": ["bin/businesskit.js"],
+      "env": {
+        "TURSO_DATABASE_URL": "${TURSO_DATABASE_URL}",
+        "TURSO_AUTH_TOKEN": "${TURSO_AUTH_TOKEN}"
+      }
     }
   }
 }

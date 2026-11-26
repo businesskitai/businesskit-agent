@@ -24,7 +24,6 @@ node_modules/
 .npm/
 
 # Build artifacts & logs
-dist/
 build/
 *.log
 npm-debug.log*

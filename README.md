@@ -1,198 +1,206 @@
-# BusinessKit Agent
+# BusinessKit MCP Server & Agent Kit
 
-The universal autonomous agent workspace for **BusinessKit**. Operate, manage, and automate your entire business from any AI assistant or coding agent—including **Claude Code**, **Cursor**, **Antigravity**, **VS Code Copilot**, and **Gemini CLI**.
+The official **Model Context Protocol (MCP)** server and autonomous agent toolbelt for **BusinessKit**. Operate, manage, and automate your entire business from any MCP-compatible AI client—including **Claude Desktop**, **Claude Code**, **Cursor**, **Antigravity**, **OpenAI Codex**, **VS Code**, and **Glama**.
 
----
-
-## What is BusinessKit Agent?
-
-BusinessKit Agent connects your favorite AI agent directly to your local BusinessKit desktop app through the **Model Context Protocol (MCP)**. 
-
-Instead of switching back and forth between apps and forms, your AI assistant can execute real business operations on your behalf:
-- **Billing & POS**: Create walk-in POS receipts, parse handwritten bills, and draft formal customer invoices.
-- **Inventory & Purchasing**: Scan supplier purchase invoices, automatically restock items, update moving average cost, and adjust inventory.
-- **Website & Landing Pages**: Assemble responsive landing pages with native modular sections or create bespoke custom components.
-- **Docs & Publishing**: Write and publish technical documentation, guides, newsletters, and SEO-optimized blog posts.
-- **CRM & Contacts**: Register and organize clients, suppliers, and leads with tags and contact info.
-- **Support Inbox**: Triage customer threads, extract 2FA verification codes, and draft email replies.
+[![npm version](https://img.shields.io/npm/v/@businesskit/agent.svg)](https://www.npmjs.com/package/@businesskit/agent)
+[![MCP Compatible](https://img.shields.io/badge/MCP-2024--11--05-blue.svg)](https://modelcontextprotocol.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## How It Works
+## What is BusinessKit MCP Server?
 
+This repository contains a standalone, runnable TypeScript Model Context Protocol (MCP) server that provides AI agents with 36 native business tools across:
+- **Billing & POS**: Create walk-in sales receipts, record custom rates/discounts, and draft formal customer invoices.
+- **Inventory & Purchasing**: Process supplier purchase invoices, auto-create missing products with clean alphanumeric SKUs, update cost and selling prices, and maintain double-entry stock ledgers.
+- **Website & Landing Pages**: Create and publish pages with modular responsive sections (`sc_navbar`, `sc_hero`, `pricing`, `faq`, `sc_footer`) or create custom HTML/CSS components.
+- **Docs & Publishing (CMS)**: Draft and publish documentation, guides, newsletters, and SEO-optimized blog posts with rich TipTap/HTML blocks.
+- **CRM & Contacts**: Create and update customer leads and contacts with tags, notes, and outreach status.
+- **Support Inbox**: Triage email threads, classify categories, manage thread states, extract OTP verification codes, and draft agent replies.
+- **Domains**: Track domain expiration horizons, monitor RDAP statuses, and save agent renewal reminders.
+
+---
+
+## Quick Start: Running the MCP Server
+
+### 1. Environment Configuration
+
+The MCP server connects directly to your Turso database. Create a `.env` file in your working directory (or set environment variables):
+
+```env
+# Turso Database Connection
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-turso-auth-token
+
+# Optional: active profile ID (auto-detected if omitted)
+PROFILE_ID=
 ```
-AI Assistant / IDE
-(Claude Code / Cursor / Antigravity / VS Code)
-  │
-  ├─ Reads Universal Commands & Skills (`commands/` & `skills/`)
-  │    └─ Editorial rules, page layouts, accounting workflows
-  │
-  └─ Calls BusinessKit MCP Server (`businesskit --mcp --profile <id>`)
-       │
-       └─ Native BusinessKit Engine
-            ├─ Automatic double-entry ledger balancing (`fin_journal_entries`)
-            ├─ Append-only stock & customer credit ledgers
-            ├─ Isolated local profile database
-            └─ Zero credential exposure (keys stay in OS Keychain)
+
+> **Note**: Even without database credentials configured, the MCP server cleanly boots and serves `initialize` and `tools/list` with complete JSON schemas, allowing MCP clients and registries to inspect capabilities immediately.
+
+### 2. Connect to Your MCP Client
+
+#### Claude Desktop (`claude_desktop_config.json`)
+```json
+{
+  "mcpServers": {
+    "businesskit": {
+      "command": "npx",
+      "args": ["-y", "@businesskit/agent"],
+      "env": {
+        "TURSO_DATABASE_URL": "libsql://your-database.turso.io",
+        "TURSO_AUTH_TOKEN": "your-turso-auth-token"
+      }
+    }
+  }
+}
 ```
 
-All business logic, financial ledger balancing, inventory calculations, and database operations are executed safely inside the native BusinessKit engine. Your database credentials never leak into LLM prompts.
+#### Cursor (`.cursor/mcp.json`)
+```json
+{
+  "mcpServers": {
+    "businesskit": {
+      "command": "npx",
+      "args": ["-y", "@businesskit/agent"],
+      "env": {
+        "TURSO_DATABASE_URL": "libsql://your-database.turso.io",
+        "TURSO_AUTH_TOKEN": "your-turso-auth-token"
+      }
+    }
+  }
+}
+```
 
----
-
-## Quick Start
-
-### Option A: Install via Agent CLI / Marketplace
-
-**Claude Code**:
+#### Claude Code
 ```bash
-claude plugin add https://github.com/businesskitai/businesskit-agent
+claude mcp add businesskit npx -y @businesskit/agent
 ```
 
-**Antigravity / Gemini CLI**:
-```bash
-agy plugin install https://github.com/businesskitai/businesskit-agent
+#### Antigravity / Gemini CLI (`.gemini/mcp_config.json`)
+```json
+{
+  "mcpServers": {
+    "businesskit": {
+      "command": "npx",
+      "args": ["-y", "@businesskit/agent"],
+      "env": {
+        "TURSO_DATABASE_URL": "libsql://your-database.turso.io",
+        "TURSO_AUTH_TOKEN": "your-turso-auth-token"
+      }
+    }
+  }
+}
 ```
-
-**SuperConsole AI**:
-In SuperConsole, go to **Customize** → **Plugins** → **Add from URL** and paste:
-```
-https://github.com/businesskitai/businesskit-agent/blob/main/.superconsole-plugin/plugin.json
-```
-
-### Option B: Run Universal Setup (All IDEs & Agents)
-From inside this directory:
-```bash
-./bin/businesskit.js
-# or: npx @businesskit/agent
-# or: npm run setup
-```
-
-The setup script automatically:
-1. Detects your installed BusinessKit app (`/Applications/BusinessKit.app` on macOS, or build binary).
-2. Connects to your active organization profile.
-3. Configures your agent environment:
-   - **Claude Code**: generates `.mcp.json` and `.claude/commands`
-   - **Cursor**: generates `.cursor/mcp.json` and `.cursorrules`
-   - **Antigravity / Gemini CLI**: registers via `agy mcp add` / `.gemini/mcp_config.json`
-   - **VS Code**: generates `.vscode/mcp.json`
 
 ---
 
-## Updating to New Releases
+## MCP Tools Reference (36 Tools)
 
-When a new version of BusinessKit Agent is released with new skills, updated commands, or new MCP capabilities, update your local workspace with one command:
+### 🛒 Shop, Inventory & Billing
+| Tool | Description |
+| :--- | :--- |
+| `inventory_receive_purchase_invoice` | Process supplier purchase invoices, auto-create catalog items, update cost/selling prices, and append to stock ledger with movement_type `purchase`. |
+| `product_update_pricing` | Directly update selling price, cost price, markup %, MRP, or discounts for an existing SKU or item. |
+| `inventory_add_stock` | Adjust inventory stock levels with movement_type `purchase` or `adjustment`. |
+| `inventory_get_levels` | Query on-hand inventory levels and stock balances, optionally filtered by SKU or category. |
+| `invoice_create` | Draft customer sales invoices with line items, quantities, and due dates. |
+| `invoice_send` | Mark a sales invoice as issued and ready for customer dispatch. |
+| `shop_create_new_bill` | Create a customer POS sales bill (`SAL-XXXX`), apply line or bill-level discounts, deduct stock ledger, and record customer details. |
 
-```bash
-npm run update
-# or
-npx @businesskit/agent update
-# or
-bk update
-# or inside Claude Code / Antigravity:
-/update-agent
-```
+### 👥 CRM & Contacts
+| Tool | Description |
+| :--- | :--- |
+| `contact_create` | Add new leads, clients, or suppliers with first/last name, email, phone, and tags. |
+| `contact_update` | Modify existing contact information, notes, company, or outreach status. |
 
-### Safety Guarantees During Updates:
-* **Your Custom Context is Preserved**: `context/business.md`, `brand.md`, and `brand-voice.md` are snapshotted in memory and restored automatically. Your store details and brand personality are **never overwritten**.
-* **Your Custom Skills & Commands are Preserved**: Any custom skills you added (e.g. `skills/my-custom-skill/`) or custom slash commands (`commands/my-command.md`) are untracked by Git and **never deleted**.
-* **Memory & Deliverables are Preserved**: `memory/` and `output/` are git-ignored and remain 100% intact.
-* **Upstream Skills & Commands are Refreshed**: All official commands, modular skills, and MCP configurations are updated to the latest upstream release.
+### 📝 CMS & Content Publishing
+| Tool | Description |
+| :--- | :--- |
+| `blog_post_create` | Publish rich HTML blog posts, docs, newsletters, or guides with SEO metadata, excerpt, and word count. |
+| `content_list` | List existing content articles, docs, or newsletters filtered by hub or publish status. |
+| `content_get` | Fetch complete HTML content and metadata by ID or slug. |
+| `content_update` | Update HTML body, title, slug, collection, or publish status on existing articles. |
 
----
+### 🌐 Pages & Custom UI Components
+| Tool | Description |
+| :--- | :--- |
+| `page_create` | Create a full website page with title, slug, SEO tags, and visual section blocks (`sc_navbar`, `sc_hero`, `pricing`, `faq`, `sc_footer`). |
+| `page_get` | Fetch website page sections, FAQ items, and metadata by ID or slug. |
+| `page_update` | Update page title, slug, sections, FAQ, or SEO metadata. |
+| `page_publish` | Toggle published or draft status for a website page. |
+| `page_list` | List website pages, URLs, and publication statuses. |
+| `component_create` | Create bespoke custom HTML/CSS/JS section components with editable fields schema. |
+| `component_list` | List custom components stored for the active profile. |
+| `component_get` | Fetch custom component source (HTML, CSS, JS, and slideover schema). |
+| `page_get_section_schema` | Inspect JSON blueprints and reference HTML/CSS for all native website sections. |
 
-## Using With Your Agent
+### 📬 Inbox & Customer Communication
+| Tool | Description |
+| :--- | :--- |
+| `inbox_tool_set_category` | Categorize an email thread (`billing`, `support`, `sales`, `spam`). |
+| `inbox_tool_set_state` | Transition thread state (`open`, `snoozed`, `closed`, `archived`). |
+| `inbox_tool_add_label` | Append labels/tags to an email thread. |
+| `inbox_tool_link_entity` | Link an email thread to a CRM contact, order, or deal. |
+| `inbox_tool_draft_reply` | Draft outbound replies stored with `author='agent'` for human review. |
+| `inbox_tool_schedule_send` | Schedule outbound draft emails at a specified Unix timestamp. |
+| `inbox_tool_archive` | Archive an email thread upon resolution. |
+| `inbox_tool_extract_verification_code` | Extract OTP or verification PIN codes from latest inbound message. |
+| `inbox_tool_save_attachments` | File inbound email attachments into the media library. |
 
-### Claude Code
-Open your terminal in this repository and start Claude:
-```bash
-claude
-```
-Type any slash command directly:
-```bash
-/write-docs "Getting Started"
-/create-page "About Us"
-/create-new-bill 5 Box Tellzy 40 Tab @ ₹1258.83 -15%
-```
+### 🌍 Domains
+| Tool | Description |
+| :--- | :--- |
+| `domain_list_expiring` | List domain names expiring within N days with renewal prices and auto-renew status. |
+| `domain_set_agent_notes` | Store agent recommendations or renewal reminders on a domain without overwriting user notes. |
 
-### Antigravity & Gemini CLI
-Install the plugin directly:
-```bash
-agy plugin install https://github.com/businesskitai/businesskit-agent
-```
-Antigravity automatically discovers `plugin.json`, `rules/AGENTS.md`, `mcp_config.json`, and `skills/`.
-You can use natural language or slash triggers:
-- *"Draft a customer invoice for Acme Corp with 10 units of consulting"*
-- `/write-docs "Pages Architecture"`
-- *"Restock items from this supplier bill"*
-
-### Cursor
-Open this folder in Cursor (`cursor .`). Cursor detects `.cursorrules` and `.cursor/mcp.json`. Use natural language or slash commands with the agent:
-- *"Create a landing page for our Black Friday Sale with hero, features, and pricing"*
-- *"Check stock levels for Tellzy 40"*
-
-### SuperConsole AI
-In SuperConsole:
-1. Navigate to **Customize** → **Plugins**.
-2. Click **Add from GitHub URL**.
-3. Paste:
-   ```
-   https://github.com/businesskitai/businesskit-agent/blob/main/.superconsole-plugin/plugin.json
-   ```
-4. Click **Install**. All skills and commands are activated.
-
----
-
-## Universal Commands (`commands/`)
-
-All 23 universal commands match the BusinessKit in-app commands 1:1:
-
-| Domain | Command | Description |
-| :--- | :--- | :--- |
-| **Docs & CMS** | `/write-docs` | Write structured documentation or knowledge base articles (`cat_32`) |
-| | `/write-blog` | Draft or publish a blog post with clean TipTap HTML (`cat_35`) |
-| | `/write-guide` | Step-by-step how-to guide with prerequisites and FAQs (`cat_36`) |
-| | `/write-newsletter` | Conversational email newsletter issue with sections and CTA (`cat_20`) |
-| | `/list-content` | List published and draft articles across hubs |
-| | `/update-content` | Edit body HTML, metadata, collection, or publish status |
-| | `/seo-audit` | Audit SEO titles, meta descriptions, and keywords |
-| **Pages & Web** | `/create-page` | Assemble a complete landing page using native visual sections |
-| | `/update-page` | Update sections, copy, or settings on an existing page |
-| | `/publish-page` | Toggle page live/published status |
-| | `/list-pages` | List all website pages and publication statuses |
-| | `/create-component` | Generate a bespoke custom component in `user_components` |
-| | `/list-components` | List custom components stored in `user_components` |
-| **Shop & POS** | `/create-new-bill` | Immediate POS billing receipt, natural language or handwritten bill |
-| | `/create-invoice` | Draft a formal itemized B2B customer invoice |
-| | `/send-invoice` | Send customer invoice via email and generate payment link |
-| | `/update-price` | Update retail selling price, cost, or discount floor |
-| **Inventory** | `/add-inventory-from-invoice` | Scan purchase invoice to restock items and post accounting |
-| | `/check-stock` | Query on-hand inventory levels and low-stock alerts |
-| | `/adjust-stock` | Record damage, shrinkage, or audit count variances |
-| **CRM** | `/add-contact` | Register a new client, lead, or supplier in CRM |
-| | `/update-contact` | Update contact information, company, or tags |
-| **System** | `/capabilities` | Discover active modules, profile settings, and tools |
+### ⚙️ System & Profiles
+| Tool | Description |
+| :--- | :--- |
+| `system_get_capabilities` | Introspect BusinessKit capabilities, domain summaries, and tool counts. |
+| `profile_list` | List available organization profiles and check active profile. |
+| `profile_switch` | Switch active organization profile for the MCP session. |
 
 ---
 
-## Workflow Skills (`skills/`)
+## Local Development & Building
 
-- [`skills/cms/SKILL.md`](./skills/cms/SKILL.md) — Universal CMS publishing (Blog, Newsletter, Guides, Notes, custom hubs) with [`references/html-blocks.md`](./skills/cms/references/html-blocks.md).
-- [`skills/docs/SKILL.md`](./skills/docs/SKILL.md) — Technical documentation and knowledge base hierarchy (`cat_32`) with [`references/how-to.md`](./skills/docs/references/how-to.md).
-- [`skills/pages/SKILL.md`](./skills/pages/SKILL.md) — Visual site builder, section schemas, and custom HTML/CSS components (with `references/sections-catalog.json`).
-- [`skills/billing/SKILL.md`](./skills/billing/SKILL.md) — POS bills, B2B invoices, and payment tracking.
-- [`skills/inventory/SKILL.md`](./skills/inventory/SKILL.md) — Stock levels, purchase invoices, and price lists.
-- [`skills/crm/SKILL.md`](./skills/crm/SKILL.md) — Contacts, leads, and customer tags.
-- [`skills/inbox/SKILL.md`](./skills/inbox/SKILL.md) — Triage, 2FA code extraction, and reply drafting.
-- [`skills/brand/SKILL.md`](./skills/brand/SKILL.md) — Brand identity, voice guidelines, and store context.
-- [`skills/humanizer/SKILL.md`](./skills/humanizer/SKILL.md) — De-AI writing patterns and voice polishing.
-- [`skills/copywriting/SKILL.md`](./skills/copywriting/SKILL.md) — High-converting sales page copywriting.
-- [`skills/social/SKILL.md`](./skills/social/SKILL.md) — Multi-platform social copy and threads.
+Clone the repository and install dependencies:
+```bash
+git clone https://github.com/businesskitai/businesskit-agent.git
+cd businesskit-agent
+npm install
+```
+
+Build the production bundle:
+```bash
+npm run build
+```
+
+Run the server locally over stdio:
+```bash
+node dist/server.js
+# or during development:
+npm run dev
+```
+
+Run CLI setup or update:
+```bash
+./bin/businesskit.js setup
+./bin/businesskit.js update
+```
 
 ---
 
-## Operating Principles
+## Safety & Architecture Guarantees
 
-1. **Native Engine Execution**: All operations run through verified BusinessKit tools with atomic database transactions.
-2. **Drafts First**: External communications, customer invoices, and emails are prepared as drafts for human review before transmission.
-3. **Structured Outputs**: All deliverables, exports, and generated files are organized in `./output/`.
+- **No Non-JSON on Stdout**: The MCP server strictly directs all logging, diagnostics, and notifications to `stderr`. `stdout` is reserved exclusively for JSON-RPC 2.0 messages.
+- **Zero Credential Leakage**: Database tokens and secrets remain safely in your `.env` or system environment; they are never reflected into tool responses or prompts.
+- **Fail-Safe Offline Inspection**: Registry validators and MCP inspectors can verify tool catalogs and schemas without requiring database credentials.
+- **Append-Only Ledgers**: All stock adjustments and invoicing write immutable ledger entries, preventing accounting discrepancies.
+
+---
+
+## License
+
+MIT License. Copyright (c) 2026 BusinessKit AI.

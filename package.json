@@ -1,8 +1,11 @@
 {
   "name": "@businesskit/agent",
-  "version": "1.0.5",
-  "description": "Universal BusinessKit Agent Kit — Antigravity, Cursor, Claude Code, VS Code, and Gemini CLI via BusinessKit native MCP tools.",
+  "version": "1.0.6",
+  "description": "Official Model Context Protocol (MCP) server & agent toolbelt for BusinessKit — POS, invoicing, inventory restock, CRM, and website publishing.",
   "type": "module",
+  "main": "dist/server.js",
+  "module": "dist/server.js",
+  "types": "dist/server.d.ts",
   "mcpName": "io.github.businesskitai/agent",
   "bin": {
     "bk": "bin/businesskit.js",
@@ -10,6 +13,8 @@
   },
   "files": [
     "bin",
+    "dist",
+    "src",
     "commands",
     "skills",
     "templates",
@@ -30,9 +35,13 @@
     ".superconsole-plugin"
   ],
   "scripts": {
+    "build": "esbuild src/server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js",
+    "start": "node dist/server.js",
+    "dev": "tsx src/server.ts",
     "setup": "bash ./scripts/setup.sh",
     "setup:ts": "npx tsx scripts/setup.ts",
-    "update": "bash ./scripts/update.sh"
+    "update": "bash ./scripts/update.sh",
+    "prepack": "npm run build"
   },
   "keywords": [
     "claude-code",
@@ -41,12 +50,15 @@
     "cursor",
     "mcp",
     "model-context-protocol",
+    "mcp-server",
     "ai-agent",
     "business-agent",
-    "businesskit"
+    "businesskit",
+    "turso"
   ],
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "esbuild": "^0.27.4",
     "tsx": "^4.19.0",
     "typescript": "^5.4.5"
   },
@@ -58,5 +70,10 @@
     "url": "git+https://github.com/businesskitai/businesskit-agent.git"
   },
   "homepage": "https://github.com/businesskitai/businesskit-agent#readme",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "dotenv": "^18.0.10"
+  }
 }
