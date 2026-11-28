@@ -127,6 +127,8 @@ npx @businesskit/agent update
 /update-agent
 ```
 
+- If you have a big idea you'd like us to consider, feel free to [open a discussion](https://github.com/businesskitai/businesskit-agent/discussions) about it.
+
 ---
 
 ## License
