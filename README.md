@@ -115,6 +115,8 @@ Capabilities and workflows are organized in modular reference files:
 - **Universal Slash Commands**: [`commands/`](./commands/) — 23 ready-to-run agent commands (`/create-new-bill`, `/write-docs`, `/create-page`, `/add-inventory-from-invoice`, etc.).
 - **MCP Server Source**: [`src/server.ts`](./src/server.ts) and [`src/tools/`](./src/tools/) — Typed tool implementations and schemas.
 
+- If you have a big idea you'd like us to consider, feel free to [open a discussion](https://github.com/businesskitai/businesskit-agent/discussions) about it.
+
 ---
 
 ## Updating
@@ -126,8 +128,6 @@ npx @businesskit/agent update
 # or inside agent chat:
 /update-agent
 ```
-
-- If you have a big idea you'd like us to consider, feel free to [open a discussion](https://github.com/businesskitai/businesskit-agent/discussions) about it.
 
 ---
 
